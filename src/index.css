@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background-color: #e6e6e6;
+}
+
+:root {
+  --purp: #6f4ff2;
+  --light: #6c7aa0;
+  --txt-gray: #68676e;
+  --laal: #dc3546;
+  --bg-clr: #ededed;
+  --txt-clr: #565858;
+  --bg-comp: #ffffff;
+  --bg-dd: #e8e5e5;
+}
+
+.dark {
+  --bg-clr: #23272a;
+  --txt-clr: #fff;
+  --bg-comp: #2c2f33;
+  --bg-dd: #261e4b;
+}

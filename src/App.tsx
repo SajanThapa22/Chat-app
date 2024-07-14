@@ -1,5 +1,11 @@
+import Login from "./pages/Login";
+
 const App = () => {
-  return <p className="uppercase">App</p>;
+  return (
+    <>
+      <Login />
+    </>
+  );
 };
 
 export default App;
