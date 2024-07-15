@@ -21,9 +21,9 @@ const Register = () => {
 
         <div className="grid gap-3">
           <Button text="Login" styles="hover:bg-[#0f57c4]" />
-          <p className="text-[14px]">
-            Already have an account?{" "}
-            <a className="text-blue-500 underline" href="#">
+          <p className="text-[14px] text-txtClr">
+            Already have an account?
+            <a className="text-blue-500 underline ml-2" href="#">
               Login
             </a>
           </p>
