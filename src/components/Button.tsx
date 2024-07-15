@@ -7,7 +7,7 @@ const Button = ({ text, styles }: Props) => {
     <div
       className={`px-4 py-2 rounded-[10px] bg-[#0068FF] text-center text-white cursor-pointer ${styles}`}
     >
-      <p className="text-[18px] font-[600]">{text}</p>
+      <p className="text-[18px] font-[500]">{text}</p>
     </div>
   );
 };
