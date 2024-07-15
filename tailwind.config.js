@@ -13,6 +13,7 @@ export default {
         light: "var(--light)",
         "bg-dd": "var( --bg-dd)",
         hariyo: "var(--hariyo)",
+        primary: "var(--primary)",
       },
     },
   },
