@@ -5,9 +5,6 @@
 * {
   font-family: "Poppins", sans-serif;
 }
-body {
-  background-color: #e6e6e6;
-}
 
 :root {
   --purp: #6f4ff2;
@@ -23,6 +20,6 @@ body {
 .dark {
   --bg-clr: #23272a;
   --txt-clr: #fff;
-  --bg-comp: #2c2f33;
+  --bg-comp: #41454b;
   --bg-dd: #261e4b;
 }

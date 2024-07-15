@@ -9,7 +9,11 @@ const modes = [
   { text: "system", icon: System },
 ];
 
-const ThemeSwitch = () => {
+interface Props {
+  visibility?: string;
+}
+
+const ThemeSwitch = ({ visibility }: Props) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const handleClick = () => setIsClicked(!isClicked);
 
@@ -67,7 +71,7 @@ const ThemeSwitch = () => {
           isClicked ? "visible" : "hidden"
         }`}
       ></div>
-      <div>
+      <div className={`${visibility}`}>
         <div onClick={handleClick} className="relative z-[100]">
           <div>
             {theme === "dark" && <Moon className="w-6 h-6 text-txt-clr" />}
