@@ -19,7 +19,7 @@ const Login = () => {
         </div>
         <div className="grid gap-3">
           <Button text="Login" styles="hover:bg-[#0f57c4]" />
-          <p className="text-[14px] text-txtClr">
+          <p className="text-[14px] font-[300] text-txtClr">
             Don't have an account yet?
             <a className="text-blue-500 underline ml-2" href="#">
               Sign up
