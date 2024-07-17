@@ -14,8 +14,8 @@ const Login = () => {
         </div>
 
         <div className="grid gap-3">
-          <Input type="text" placeholder="Email" />
-          <Input type="password" placeholder="Password" />
+          <Input value="" type="text" placeholder="Email" />
+          <Input value="" type="password" placeholder="Password" />
         </div>
         <div className="grid gap-3">
           <Button text="Login" styles="hover:bg-[#0f57c4]" />
