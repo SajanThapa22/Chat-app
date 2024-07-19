@@ -4,8 +4,8 @@ import Register from "./pages/Register";
 
 const App = () => (
   <>
-    <ThemeSwitch visibility="hidden" />
-    {/* <Login /> */}
+    {/* <ThemeSwitch /> */}
+    {/* <Login  /> */}
     <Register />
   </>
 );
