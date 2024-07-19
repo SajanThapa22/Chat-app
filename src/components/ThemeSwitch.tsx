@@ -86,6 +86,7 @@ const ThemeSwitch = ({ visibility }: Props) => {
           >
             {modes.map((m) => (
               <li
+                key={m.text}
                 onClick={() => {
                   setTheme(m.text);
                 }}
