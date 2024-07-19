@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import Button from "../components/Button";
 
 interface FormData {
   firstName: string;
@@ -14,7 +15,7 @@ const Register = () => {
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isValid, touchedFields, dirtyFields },
+    formState: { errors, isValid },
   } = useForm<FormData>({ mode: "all" });
 
   // Watch the password field value
@@ -136,13 +137,7 @@ const Register = () => {
         </div>
 
         <div className="grid gap-3">
-          <button
-            type="submit"
-            className="bg-primary text-white px-4 py-2 rounded-lg"
-          >
-            Register
-          </button>
-
+          <Button text="register" type="submit" />
           <p className="text-[14px] font-[400] text-txtClr">
             Already have an account?
             <a className="text-blue-500 underline ml-2" href="#">
