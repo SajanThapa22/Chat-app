@@ -1,9 +1,11 @@
 import Input from "../components/Input";
 import Logo from "../assets/img/messenger.png";
 import Button from "../components/Button";
-import { FormEvent, useState } from "react";
 
-interface Props {
+import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface FormData {
   firstName: string;
   lastName: string;
   email: string;
@@ -20,24 +22,33 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  const handleInputChange = () => {
-    const {name, value} = event.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    })
-  }
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   reset,
+  //   formState: { errors, isValid },
+  // } = useForm<FormData>();
+
+  // const handleInputChange = (event:FormEvent) => {
+  //   const {name, value} = event.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value
+  //   })
+  // }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    try{
-      fetch('http://localhost:5000/user/register', {
-        method: 'POST',
+    try {
+      fetch("http://localhost:5000/user/register", {
+        method: "POST",
         headers: {
-          "Content-Type": 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
-      })
+        body: JSON.stringify(formData),
+      });
+    } catch (err) {
+      console.log("error occured", err);
     }
   };
 
@@ -52,26 +63,30 @@ const Register = () => {
         </div>
 
         <div className="grid gap-3">
-          <Input
-            type="text"
-            value={formData?.firstName}
-            placeholder="Last name"
-          />
-          <Input
-            type="text"
-            value={formData?.lastName}
+          <input
+            className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-primary"
             placeholder="First name"
+            type="text"
           />
-          <Input type="text" value={formData?.email} placeholder="Email" />
-          <Input
-            type="password"
-            value={formData?.password}
+          <input
+            className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-primary"
+            placeholder="Last name"
+            type="text"
+          />
+          <input
+            className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-primary"
+            placeholder="Email"
+            type="text"
+          />
+          <input
+            className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-primary"
             placeholder="Password"
-          />
-          <Input
             type="password"
-            value={formData?.confirmPassword}
-            placeholder="Confirm assword"
+          />
+          <input
+            className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-primary"
+            placeholder="Confirm password"
+            type="password"
           />
         </div>
 
