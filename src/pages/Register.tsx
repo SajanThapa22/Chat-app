@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
+
 import Button from "../components/Button";
+import Logo from "../assets/img/messenger.png";
 
 interface FormData {
   firstName: string;
@@ -21,37 +23,43 @@ const Register = () => {
   // Watch the password field value
   const password = watch("password");
 
-  // const handleInputChange = (event:FormEvent) => {
-  //   const {name, value} = event.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value
-  //   })
-  // }
-
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     fetch("http://localhost:5000/user/register", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(formData),
-  //     });
-  //   } catch (err) {
-  //     console.log("error occured", err);
-  //   }
-  // };
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    if (isValid) {
+      fetch("/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert("registration successfull");
+          } else {
+            alert("Registration failed: " + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error: ", error);
+        });
+    }
+  };
 
   return (
     <div className="w-full min-h-screen flex items-center bg-bgClr px-10">
       <form
-        onSubmit={handleSubmit((data: FormData) => {
-          console.log(data);
-        })}
+        onSubmit={handleSubmit(onSubmit)}
         className="rounded-[16px] bg-bgComp px-5 py-[20px] xl:py-[30px] w-[350px] xl:w-[450px] 2xl:w-[600px] mx-auto my-auto grid gap-10 2xl:gap-14"
       >
+        <div className="w-full flex flex-col gap-3 2xl:gap-5 justify-center text-center items-center">
+          <img className="size-[80px]" src={Logo} alt="" />
+          <div className="text-center">
+            <p className="text-[26px] text-txtClr">Register an account</p>
+          </div>
+        </div>
+
         <div className="grid gap-3">
           <div>
             <input

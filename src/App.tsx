@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 const App = () => (
   <>
     {/* <ThemeSwitch /> */}
-    {/* <Login  /> */}
+    {/* <Login /> */}
     <Register />
   </>
 );

@@ -12,17 +12,37 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    reset,
-    watch,
     formState: { errors, isValid },
   } = useForm<FormData>({ mode: "all" });
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    if (isValid) {
+      fetch("/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert("registration successfull");
+          } else {
+            alert("Registration failed: " + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error: ", error);
+        });
+    }
+  };
 
   return (
     <div className="w-full h-screen flex items-center bg-bgClr px-10">
       <form
-        onSubmit={handleSubmit((data: FormData) => {
-          console.log(data);
-        })}
+        onSubmit={handleSubmit(onSubmit)}
         className="rounded-[16px] bg-bgComp px-5 py-[30px] w-[350px] xl:w-[400px] 2xl:w-[600px] mx-auto my-auto grid gap-10 2xl:gap-14"
       >
         <div className="w-full flex flex-col gap-3 2xl:gap-5 justify-center text-center items-center">
@@ -43,6 +63,22 @@ const Login = () => {
             />
             {errors.email?.type === "required" && (
               <p className="text-red-700">Please enter your email address</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              id="password"
+              {...register("password", { required: true, minLength: 7 })}
+              className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-none focus:border-primary w-full bg-bgComp"
+              placeholder="Password"
+              type="password"
+            />
+            {errors.password?.type === "required" && (
+              <p className="text-red-700">Please enter the password</p>
+            )}
+            {errors.password?.type === "minLength" && (
+              <p className="text-red-700">Password must be 7 characters long</p>
             )}
           </div>
         </div>
