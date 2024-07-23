@@ -5,7 +5,17 @@ const chatUI = () => {
   return (
     <div className="flex">
       <div id="all-chats">
-        <div>Chats</div>
+        <div>
+          <div>Chats</div>
+
+          <div className="rounded-[10px] border border-gray-400 px-4 py-2">
+            <input
+              type="text"
+              className="w-full focus:outline-none border-none"
+            />
+          </div>
+        </div>
+
         <div id="user-chats"></div>
       </div>
 
