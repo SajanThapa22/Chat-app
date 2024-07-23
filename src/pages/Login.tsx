@@ -1,4 +1,3 @@
-import Input from "../components/Input";
 import Logo from "../assets/img/messenger.png";
 import Button from "../components/Button";
 import { useForm } from "react-hook-form";
@@ -33,6 +32,8 @@ const Login = () => {
         .then((data) => {
           if (data.success) {
             alert("registration successfull");
+            setAccessToken(data.access);
+            setRefreshToken(data.refresh);
           } else {
             alert("Registration failed: " + data.message);
           }

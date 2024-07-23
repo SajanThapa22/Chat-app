@@ -14,7 +14,6 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    reset,
     watch,
     formState: { errors, isValid },
   } = useForm<FormData>();
