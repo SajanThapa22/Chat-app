@@ -3,8 +3,8 @@ import { useState } from "react";
 const chatUI = () => {
   const [user, setuser] = useState();
   return (
-    <div className="flex">
-      <div id="all-chats">
+    <div className="grid grid-cols-[1]">
+      <div id="all-chats" className="bg-bgComp">
         <div>
           <div>Chats</div>
 
