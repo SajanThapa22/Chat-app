@@ -2,6 +2,7 @@ import Input from "../components/Input";
 import Logo from "../assets/img/messenger.png";
 import Button from "../components/Button";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 interface FormData {
   email: string;
@@ -9,6 +10,9 @@ interface FormData {
 }
 
 const Login = () => {
+  const [aceessToken, setAccessToken] = useState();
+  const [refreshToken, setRefreshToken] = useState();
+
   const {
     register,
     handleSubmit,

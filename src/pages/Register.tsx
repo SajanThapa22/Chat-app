@@ -4,8 +4,7 @@ import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
 
 interface FormData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -18,20 +17,21 @@ const Register = () => {
     reset,
     watch,
     formState: { errors, isValid },
-  } = useForm<FormData>({ mode: "all" });
+  } = useForm<FormData>();
 
   // Watch the password field value
   const password = watch("password");
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    const { confirmPassword, ...rest } = data;
+    console.log(rest);
     if (isValid) {
       fetch("/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(rest),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -63,32 +63,16 @@ const Register = () => {
         <div className="grid gap-3">
           <div>
             <input
-              id="firstName"
-              {...register("firstName", { required: true, minLength: 2 })}
+              id="fullName"
+              {...register("fullName", { required: true, minLength: 3 })}
               className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-none focus:border-primary w-full bg-bgComp"
-              placeholder="First name"
+              placeholder="Full name"
               type="text"
             />
-            {errors.firstName?.type === "required" && (
-              <p className="text-red-700">Please enter the first name</p>
+            {errors.fullName?.type === "required" && (
+              <p className="text-red-700">Please enter your full name</p>
             )}
-            {errors.firstName?.type === "minLength" && (
-              <p className="text-red-700">Enter atleast 3 characters</p>
-            )}
-          </div>
-
-          <div>
-            <input
-              id="lastName"
-              {...register("lastName", { required: true, minLength: 2 })}
-              className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-none focus:border-primary w-full bg-bgComp"
-              placeholder="Last name"
-              type="text"
-            />
-            {errors.lastName?.type === "required" && (
-              <p className="text-red-700">Please enter the last name</p>
-            )}
-            {errors.lastName?.type === "minLength" && (
+            {errors.fullName?.type === "minLength" && (
               <p className="text-red-700">Enter atleast 3 characters</p>
             )}
           </div>
