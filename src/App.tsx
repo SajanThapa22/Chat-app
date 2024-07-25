@@ -7,8 +7,8 @@ const App = () => (
   <>
     {/* <ThemeSwitch /> */}
     {/* <Login /> */}
-    {/* <Register /> */}
-    <ChatUI />
+    <Register />
+    {/* <ChatUI /> */}
   </>
 );
 

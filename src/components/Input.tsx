@@ -8,7 +8,7 @@ interface Props {
 const Input = ({ type, styles, placeholder, value }: Props) => {
   return (
     <div
-      className={`rounded-[13px] bg-bgComp px-[20px] py-[10px] border border-[#c7c4c4] focus-within:border-[#517fc5] ${styles}`}
+      className={`rounded-[12px] bg-bgComp px-[20px] py-[10px] border border-[#c7c4c4] focus-within:border-[#517fc5] ${styles}`}
     >
       <input
         placeholder={placeholder}
