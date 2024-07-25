@@ -1,20 +1,23 @@
 interface Props {
   img: string;
   userName: string;
+  message?: string;
+  time?: string;
+  style?: string;
 }
 
-const User = ({ img }: Props) => {
+const User = ({ img, userName, message, time, style }: Props) => {
   return (
-    <div className="flex gap-3">
+    <div className={`flex gap-3 px-2 py-2 items-center ${style}`}>
       <div className="rounded-full aspect-square overflow-hidden size-10">
-        <img src={img} alt="" />
+        <img src={img} className="size-full" />
       </div>
 
-      <div>
+      <div className="w-full">
         <div>{userName}</div>
-        <div className="flex gap-2">
-          message...
-          <div>4:50 pm</div>
+        <div className="flex justify-between gap-2 text-sm">
+          <div className="">{message}</div>
+          <div>{time}</div>
         </div>
       </div>
     </div>
