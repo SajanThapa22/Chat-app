@@ -44,10 +44,10 @@ const ChatUI = () => {
 
         <div id="chats" className="flex-1 p-5 flex flex-col  gap-3">
           <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
-            hello baby what are you doing
+            hello baby what are you doing now
           </div>
           <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
-            hello sajan baby how are you doing
+            hello sajan baby how are you doing aer you good
           </div>
         </div>
       </div>
