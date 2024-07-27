@@ -6,7 +6,7 @@ import ChatUI from "./pages/chatUI";
 const App = () => (
   <>
     {/* <ThemeSwitch /> */}
-    <Login />
+    {/* <Login /> */}
     <Register />
     {/* <ChatUI /> */}
   </>

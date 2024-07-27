@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
 
 interface FormData {
-  fullName: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -25,7 +25,7 @@ const Register = () => {
     const { confirmPassword, ...rest } = data;
     console.log(rest);
     if (isValid) {
-      fetch("/register", {
+      fetch("http://127.0.0.1:8000/auth/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,16 +62,16 @@ const Register = () => {
         <div className="grid gap-3">
           <div>
             <input
-              id="fullName"
-              {...register("fullName", { required: true, minLength: 3 })}
+              id="userName"
+              {...register("username", { required: true, minLength: 3 })}
               className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-none focus:border-primary w-full bg-bgComp"
-              placeholder="Full name"
+              placeholder="User name"
               type="text"
             />
-            {errors.fullName?.type === "required" && (
+            {errors.username?.type === "required" && (
               <p className="text-red-700">Please enter your full name</p>
             )}
-            {errors.fullName?.type === "minLength" && (
+            {errors.username?.type === "minLength" && (
               <p className="text-red-700">Enter atleast 3 characters</p>
             )}
           </div>
