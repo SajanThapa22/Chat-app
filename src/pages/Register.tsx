@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 
 import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
+import axios from "axios";
 
 interface FormData {
   username: string;
@@ -21,28 +22,26 @@ const Register = () => {
   // Watch the password field value
   const password = watch("password");
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     const { confirmPassword, ...rest } = data;
-    console.log(rest);
     if (isValid) {
-      fetch("http://127.0.0.1:8000/auth/register/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(rest),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            alert("registration successfull");
-          } else {
-            alert("Registration failed: " + data.message);
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/auth/register/",
+          rest,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        })
-        .catch((error) => {
-          console.error("Error: ", error);
-        });
+        );
+
+        if (response.status === 201) {
+          alert("successfully registered");
+        }
+      } catch (error) {
+        console.log("Signup failed:", error);
+      }
     }
   };
 
