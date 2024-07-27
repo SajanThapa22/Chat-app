@@ -3,9 +3,11 @@ import Button from "../components/Button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import api from "../services/api";
 
 interface FormData {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -18,27 +20,17 @@ const Login = () => {
     formState: { errors, isValid },
   } = useForm<FormData>({ mode: "all" });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = async (data: FormData) => {
     if (isValid) {
-      fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            alert("registration successfull");
-          } else {
-            alert("Registration failed: " + data.message);
-          }
+      console.log(data);
+      api
+        .post(`/api/token`, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .catch((error) => {
-          console.error("Error: ", error);
-        });
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
     }
   };
 
@@ -58,14 +50,14 @@ const Login = () => {
         <div className="grid gap-3">
           <div>
             <input
-              id="email"
-              {...register("email", { required: true })}
+              id="username"
+              {...register("username", { required: true })}
               className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-none focus:border-primary w-full bg-bgComp"
-              placeholder="Email"
+              placeholder="Username"
               type="text"
             />
-            {errors.email?.type === "required" && (
-              <p className="text-red-700">Please enter your email address</p>
+            {errors.username?.type === "required" && (
+              <p className="text-red-700">Please enter your username</p>
             )}
           </div>
 

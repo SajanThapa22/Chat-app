@@ -1,7 +1,7 @@
 import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
 
-import API from "../services/api";
+import api from "../services/api";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -35,8 +35,8 @@ const Register = () => {
   const onSubmit = (data: FormData) => {
     const { confirmPassword, ...rest } = data;
     if (isValid) {
-      axios
-        .post(`${API}/register/`, rest, {
+      api
+        .post(`/register/`, rest, {
           headers: {
             "Content-Type": "application/json",
           },
