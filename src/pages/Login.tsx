@@ -10,8 +10,7 @@ interface FormData {
 }
 
 const Login = () => {
-  const [aceessToken, setAccessToken] = useState();
-  const [refreshToken, setRefreshToken] = useState();
+  const [token, setToken] = useState();
 
   const {
     register,
@@ -33,8 +32,6 @@ const Login = () => {
         .then((data) => {
           if (data.success) {
             alert("registration successfull");
-            setAccessToken(data.access);
-            setRefreshToken(data.refresh);
           } else {
             alert("Registration failed: " + data.message);
           }

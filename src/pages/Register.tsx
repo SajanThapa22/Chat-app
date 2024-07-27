@@ -1,11 +1,11 @@
-import { useForm } from "react-hook-form";
-
 import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
+
+import API from "../services/api";
 import axios from "axios";
 import { useState } from "react";
-import Login from "./Login";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 interface FormData {
   username: string;
@@ -36,7 +36,7 @@ const Register = () => {
     const { confirmPassword, ...rest } = data;
     if (isValid) {
       axios
-        .post("http://127.0.0.1:8000/auth/register/", rest, {
+        .post(`${API}/register/`, rest, {
           headers: {
             "Content-Type": "application/json",
           },
