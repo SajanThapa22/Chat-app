@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
 import axios from "axios";
+import { useState } from "react";
+import Login from "./Login";
+import { Link, useNavigate } from "react-router-dom";
 
 interface FormData {
   username: string;
@@ -11,7 +14,14 @@ interface FormData {
   confirmPassword: string;
 }
 
+interface Error {
+  username: string;
+  email: string;
+}
 const Register = () => {
+  const [error, setError] = useState<Error>();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -22,26 +32,27 @@ const Register = () => {
   // Watch the password field value
   const password = watch("password");
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = (data: FormData) => {
     const { confirmPassword, ...rest } = data;
     if (isValid) {
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/auth/register/",
-          rest,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
+      axios
+        .post("http://127.0.0.1:8000/auth/register/", rest, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 201) {
+            setError({ ...error, email: "", username: "" });
+            setTimeout(
+              () => window.confirm("registered") && navigate("/"),
+              1000
+            );
           }
-        );
-
-        if (response.status === 201) {
-          alert("successfully registered");
-        }
-      } catch (error) {
-        console.log("Signup failed:", error);
-      }
+        })
+        .catch((err) => {
+          setError(err.response.data);
+        });
     }
   };
 
@@ -68,8 +79,13 @@ const Register = () => {
               type="text"
             />
             {errors.username?.type === "required" && (
-              <p className="text-red-700">Please enter your full name</p>
+              <p className="text-red-700">Please enter your username</p>
             )}
+
+            {error?.username && (
+              <p className="text-red-700">{error.username}</p>
+            )}
+
             {errors.username?.type === "minLength" && (
               <p className="text-red-700">Enter atleast 3 characters</p>
             )}
@@ -86,6 +102,7 @@ const Register = () => {
             {errors.email?.type === "required" && (
               <p className="text-red-700">Please enter your email address</p>
             )}
+            {error?.email && <p className="text-red-700">{error.email}</p>}
           </div>
 
           <div>
@@ -130,9 +147,9 @@ const Register = () => {
           <Button text="register" type="submit" />
           <p className="text-[14px] font-[400] text-txtClr">
             Already have an account?
-            <a className="text-blue-500 underline ml-2" href="#">
+            <Link className="text-blue-500 underline ml-2" to="/">
               Login
-            </a>
+            </Link>
           </p>
         </div>
       </form>

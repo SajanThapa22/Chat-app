@@ -2,6 +2,7 @@ import Logo from "../assets/img/messenger.png";
 import Button from "../components/Button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface FormData {
   email: string;
@@ -91,9 +92,9 @@ const Login = () => {
           <Button text="Login" styles="hover:bg-[#0f57c4]" />
           <p className="text-[14px] font-[300] text-txtClr">
             Don't have an account yet?
-            <a className="text-blue-500 underline ml-2" href="#">
+            <Link className="text-blue-500 underline ml-2" to="/register">
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </form>

@@ -7,7 +7,7 @@ const App = () => (
   <>
     {/* <ThemeSwitch /> */}
     {/* <Login /> */}
-    <Register />
+    <Login />
     {/* <ChatUI /> */}
   </>
 );
