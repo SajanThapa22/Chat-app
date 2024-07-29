@@ -47,7 +47,7 @@ const ChatUI = () => {
             hello baby what are you doing now
           </div>
           <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
-            hello sajan baby how are you doing aer you good
+            hello sajan baby how are you doing.
           </div>
         </div>
       </div>
