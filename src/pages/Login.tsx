@@ -11,8 +11,13 @@ interface FormData {
   password: string;
 }
 
+interface Tokens {
+  access: string;
+  refresh: string;
+}
+
 const Login = () => {
-  const [token, setToken] = useState();
+  const [tokens, setTokens] = useState<Tokens>();
 
   const {
     register,
@@ -22,15 +27,17 @@ const Login = () => {
 
   const onSubmit = async (data: FormData) => {
     if (isValid) {
-      console.log(data);
       api
-        .post(`/api/token`, data, {
+        .post<Tokens>(`/token/`, data, {
           headers: {
             "Content-Type": "application/json",
           },
         })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then((res) => {
+          setTokens(res.data);
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err.message));
     }
   };
 
