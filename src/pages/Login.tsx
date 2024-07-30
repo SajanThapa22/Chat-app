@@ -1,10 +1,10 @@
 import Logo from "../assets/img/messenger.png";
 import Button from "../components/Button";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 interface FormData {
   username: string;
@@ -17,7 +17,21 @@ interface Tokens {
 }
 
 const Login = () => {
-  const [tokens, setTokens] = useState<Tokens>();
+  const { isLoggedIn } = useAuth();
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const result = await isLoggedIn();
+      setAuthenticated(result);
+      if (authenticated) {
+        navigate("/");
+      }
+    };
+
+    checkAuth();
+  }, [isLoggedIn]);
 
   const {
     register,

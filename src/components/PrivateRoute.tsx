@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-interface Props {
-  path: string;
-}
-
-const PrivateRoute = ({ path }: Props) => {
+const PrivateRoute: React.FC = () => {
   const { isLoggedIn } = useAuth();
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
       const result = await isLoggedIn();
-      setIsAuthenticated(result);
+      setAuthenticated(result);
+      if (!result) {
+        navigate("/login");
+      }
     };
-    checkAuth();
-  }, [isLoggedIn]);
 
-  return isAuthenticated ? <Navigate to={path} /> : <Navigate to="/login" />;
+    checkAuth();
+  }, [isLoggedIn, navigate]);
+
+  return authenticated ? <Outlet /> : null;
 };
+
 export default PrivateRoute;

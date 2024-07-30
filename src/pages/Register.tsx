@@ -45,7 +45,7 @@ const Register = () => {
           if (response.status === 201) {
             setError({ ...error, email: "", username: "" });
             setTimeout(
-              () => window.confirm("registered") && navigate("/"),
+              () => window.confirm("registered") && navigate("/login"),
               1000
             );
           }
