@@ -8,7 +8,7 @@ import Login from "./Login";
 const Layout = () => {
   return (
     <AuthProvider>
-      <PrivateRoute component={<Login />} />
+      <PrivateRoute path="home" />
     </AuthProvider>
   );
 };
