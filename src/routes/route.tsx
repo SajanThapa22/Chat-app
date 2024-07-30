@@ -3,13 +3,15 @@ import Login from "../pages/Login";
 import App from "../App";
 import Register from "../pages/Register";
 import Layout from "../pages/Layout";
+import ChatUI from "../pages/chatUI";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      { index: true, element: <Login /> },
+      { path: "/", element: <ChatUI /> },
+      { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
     ],
   },
