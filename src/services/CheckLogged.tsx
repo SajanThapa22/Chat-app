@@ -11,8 +11,6 @@ const CheckLogged = () => {
     const checkAuth = async () => {
       const result = await isLoggedIn();
       setAuthenticated(result);
-      if (!result) navigate("/login");
-      if (result) navigate("/");
     };
 
     checkAuth();
