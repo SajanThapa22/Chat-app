@@ -3,8 +3,10 @@ import Button from "../components/Button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import CheckLogged from "../services/CheckLogged";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 interface FormData {
   username: string;
@@ -17,22 +19,14 @@ interface Tokens {
 }
 
 const Login = () => {
-  const { isLoggedIn } = useAuth();
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+  const [authenticated, setAuthenticated] = useState<boolean>();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const result = await isLoggedIn();
-      setAuthenticated(result);
-      if (authenticated) {
-        navigate("/");
-      }
-    };
-
-    checkAuth();
+    const result = isLoggedIn();
+    setAuthenticated(result);
   }, [isLoggedIn]);
-
   const {
     register,
     handleSubmit,
@@ -50,6 +44,9 @@ const Login = () => {
         .then((res) => {
           localStorage.setItem("accessToken", res.data.access);
           localStorage.setItem("refreshToken", res.data.refresh);
+          if (res.status === 200) {
+            navigate("/");
+          }
         })
         .catch((err) => console.log(err.message));
     }

@@ -10,7 +10,8 @@ import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
   accessToken: string | null;
-  isLoggedIn: () => Promise<boolean>;
+  isLoggedIn: () => boolean | undefined;
+  fetchNewToken: () => Promise<boolean | undefined>;
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
 }
@@ -65,13 +66,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [refreshToken]);
 
-  const isLoggedIn = useCallback(async (): Promise<boolean> => {
+  const isLoggedIn = () => {
     if (isTokenValid(accessToken)) {
       return true;
     } else {
+      return false;
+    }
+  };
+
+  const fetchNewToken = async () => {
+    if (!isLoggedIn) {
       return await refreshAccessToken();
     }
-  }, [accessToken, refreshAccessToken]);
+  };
 
   const login = (newAccessToken: string, newRefreshToken: string): void => {
     setAccessToken(newAccessToken);
@@ -92,7 +99,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [isLoggedIn]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, isLoggedIn, login, logout }}>
+    <AuthContext.Provider
+      value={{ accessToken, isLoggedIn, login, logout, fetchNewToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

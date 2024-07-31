@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import CheckLogged from "../services/CheckLogged";
+import { useAuth } from "../context/AuthContext";
 
-const PrivateRoute: React.FC = () => {
+const PrivateRoute = () => {
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+  const [authenticated, setAuthenticated] = useState<boolean>();
 
-  const { authenticated } = CheckLogged();
+  useEffect(() => {
+    const result = isLoggedIn();
+    setAuthenticated(result);
+  }, [isLoggedIn]);
 
   return authenticated ? <Outlet /> : null;
 };

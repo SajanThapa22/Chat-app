@@ -4,19 +4,20 @@ import { useNavigate } from "react-router-dom";
 
 const CheckLogged = () => {
   const { isLoggedIn } = useAuth();
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState<boolean | undefined>();
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
-      const result = await isLoggedIn();
+      const result = isLoggedIn();
       setAuthenticated(result);
+      result ? navigate("/") : navigate("/login");
     };
 
     checkAuth();
   }, [isLoggedIn]);
 
-  return { authenticated };
+  return { authenticated, setAuthenticated };
 };
 
 export default CheckLogged;
