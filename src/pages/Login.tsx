@@ -22,6 +22,8 @@ const Login = () => {
   const { authenticated, setAuthenticated } = CheckLogged();
   const navigate = useNavigate();
 
+  const [error, setError] = useState<string>("");
+
   useEffect(() => {
     const checkAuth = () => {
       const result = isLoggedIn();
@@ -52,6 +54,7 @@ const Login = () => {
           localStorage.setItem("accessToken", res.data.access);
           localStorage.setItem("refreshToken", res.data.refresh);
           if (res.status === 200) {
+            setError("");
             const { access, refresh } = res.data;
             login(access, refresh);
             if (isLoggedIn()) {
@@ -59,7 +62,12 @@ const Login = () => {
             }
           }
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => {
+          console.log(err.message);
+          if (err.response.status === 401) {
+            setError("Invalid username or password");
+          }
+        });
     }
   };
 
@@ -76,7 +84,8 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 text-center">
+          {error && <p className="text-red-700 text-[18px]">{error}</p>}
           <div>
             <input
               id="username"
@@ -100,9 +109,6 @@ const Login = () => {
             />
             {errors.password?.type === "required" && (
               <p className="text-red-700">Please enter the password</p>
-            )}
-            {errors.password?.type === "minLength" && (
-              <p className="text-red-700">Password must be 7 characters long</p>
             )}
           </div>
         </div>
