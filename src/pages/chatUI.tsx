@@ -39,15 +39,15 @@ const ChatUI = () => {
 
       <div id="chat-section" className="flex flex-col">
         <div className="px-3 py-2 border-b border-b-[#e6e6e6]">
-          <User img={pp} userName="Salina Giri" />
+          <User img={pp} userName="Dipshan Chakka" />
         </div>
 
         <div id="chats" className="flex-1 p-5 flex flex-col  gap-3">
           <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
-            hello baby what are you doing now
+            hello brother
           </div>
           <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
-            hello sajan how are you man?
+            hello nigga
           </div>
           <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
             hello sajan how are you man?
