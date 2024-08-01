@@ -8,7 +8,7 @@ const CheckLogged = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       const result = isLoggedIn();
       setAuthenticated(result);
       result ? navigate("/") : navigate("/login");

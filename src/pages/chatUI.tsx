@@ -22,15 +22,15 @@ const ChatUI = () => {
 
         <div id="user-chats" className="mt-6 grid gap-2">
           <User
-            userName="Salina Giri"
-            message="hello baby how..."
+            userName="Sajan Thapa"
+            message="hello friend how..."
             img={pp}
             time="11:29 PM"
             style="rounded-[8px] hover:bg-[#d1d1d1]"
           />
           <User
-            userName="Salina Giri"
-            message="hello janu baby how..."
+            userName="Dipshan Bhatta"
+            message="hello friend whats up..."
             img={pp}
             time="11:29 PM"
           />

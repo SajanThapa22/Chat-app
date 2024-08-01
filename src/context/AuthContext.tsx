@@ -41,7 +41,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!refreshToken) return false;
 
     try {
-      const response = await fetch("YOUR_AUTH_SERVER_ENDPOINT", {
+      const response = await fetch("http://127.0.0.1:8000/token/refresh", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

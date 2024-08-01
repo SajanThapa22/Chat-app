@@ -4,9 +4,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import CheckLogged from "../services/CheckLogged";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { jwtDecode } from "jwt-decode";
 
 interface FormData {
   username: string;
@@ -19,14 +18,22 @@ interface Tokens {
 }
 
 const Login = () => {
-  const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
   const [authenticated, setAuthenticated] = useState<boolean>();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const result = isLoggedIn();
-    setAuthenticated(result);
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   const checkAuth = () => {
+  //     const result = isLoggedIn();
+  //     setAuthenticated(result);
+  //     if (result) {
+  //       navigate("/");
+  //     }
+  //   };
+
+  //   checkAuth();
+  // }, [isLoggedIn]);
+
   const {
     register,
     handleSubmit,
