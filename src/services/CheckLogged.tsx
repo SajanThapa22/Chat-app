@@ -11,7 +11,6 @@ const CheckLogged = () => {
     const checkAuth = () => {
       const result = isLoggedIn();
       setAuthenticated(result);
-      result ? navigate("/") : navigate("/login");
     };
 
     checkAuth();
