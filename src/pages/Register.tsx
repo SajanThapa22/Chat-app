@@ -3,9 +3,10 @@ import Logo from "../assets/img/messenger.png";
 
 import api from "../services/api";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
 
 interface FormData {
   username: string;
@@ -19,6 +20,21 @@ interface Error {
   email: string;
 }
 const Register = () => {
+  // const { isLoggedIn } = useAuth();
+  // const [authenticated, setAuthenticated] = useState<boolean>();
+
+  // useEffect(() => {
+  //   const checkAuth = () => {
+  //     const result = isLoggedIn();
+  //     setAuthenticated(result);
+  //     if (result) {
+  //       navigate("/");
+  //     }
+  //   };
+
+  //   checkAuth();
+  // }, [isLoggedIn]);
+
   const [error, setError] = useState<Error>();
   const navigate = useNavigate();
 

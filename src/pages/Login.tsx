@@ -18,8 +18,8 @@ interface Tokens {
 }
 
 const Login = () => {
-  const { isLoggedIn } = useAuth();
-  const [authenticated, setAuthenticated] = useState<boolean>();
+  const { isLoggedIn, login } = useAuth();
+  const { authenticated, setAuthenticated } = CheckLogged();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,7 +52,11 @@ const Login = () => {
           localStorage.setItem("accessToken", res.data.access);
           localStorage.setItem("refreshToken", res.data.refresh);
           if (res.status === 200) {
-            navigate("/");
+            const { access, refresh } = res.data;
+            login(access, refresh);
+            if (isLoggedIn()) {
+              navigate("/");
+            }
           }
         })
         .catch((err) => console.log(err.message));

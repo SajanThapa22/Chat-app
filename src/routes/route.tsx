@@ -4,6 +4,7 @@ import Register from "../pages/Register";
 import Layout from "../pages/Layout";
 import ChatUI from "../pages/chatUI";
 import PrivateRoute from "../components/PrivateRoute";
+import CheckLogged from "../services/CheckLogged";
 
 const router = createBrowserRouter([
   {
