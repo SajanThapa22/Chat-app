@@ -13,11 +13,13 @@ const PrivateRoute: React.FC = () => {
       setAuthenticated(result);
       if (!result) {
         navigate("/login");
+      } else {
+        navigate("/");
       }
     };
 
     checkAuth();
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn]);
 
   return authenticated ? <Outlet /> : null;
 };

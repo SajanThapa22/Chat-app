@@ -22,17 +22,17 @@ const Login = () => {
   const [authenticated, setAuthenticated] = useState<boolean>();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const checkAuth = () => {
-  //     const result = isLoggedIn();
-  //     setAuthenticated(result);
-  //     if (result) {
-  //       navigate("/");
-  //     }
-  //   };
+  useEffect(() => {
+    const checkAuth = () => {
+      const result = isLoggedIn();
+      setAuthenticated(result);
+      if (result) {
+        navigate("/");
+      }
+    };
 
-  //   checkAuth();
-  // }, [isLoggedIn]);
+    checkAuth();
+  }, [isLoggedIn]);
 
   const {
     register,
