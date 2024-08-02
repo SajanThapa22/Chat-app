@@ -11,7 +11,7 @@ const ChatUI = () => {
         className="bg-bgComp px-2 border-r border-r-[#d1d1d1] min-h-screen"
       >
         <div>
-          <div className="flex justify-between">
+          <div className="flex justify-between py-3">
             <div>Chats</div>
             <div onClick={logout} className="cursor-pointer">
               Logout

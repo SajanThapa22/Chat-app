@@ -25,8 +25,8 @@ const Login = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const checkAuth = () => {
-      const result = isLoggedIn();
+    const checkAuth = async () => {
+      const result = await isLoggedIn();
       setAuthenticated(result);
       if (result) {
         navigate("/");
@@ -57,9 +57,6 @@ const Login = () => {
             setError("");
             const { access, refresh } = res.data;
             login(access, refresh);
-            if (isLoggedIn()) {
-              navigate("/");
-            }
           }
         })
         .catch((err) => {

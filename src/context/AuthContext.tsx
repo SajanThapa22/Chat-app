@@ -10,8 +10,7 @@ import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
   accessToken: string | null;
-  isLoggedIn: () => boolean | undefined;
-  fetchNewToken: () => Promise<boolean | undefined>;
+  isLoggedIn: () => Promise<boolean>;
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
 }
@@ -38,6 +37,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const refreshAccessToken = useCallback(async (): Promise<boolean> => {
+    let refresh = refreshToken;
     if (!refreshToken) return false;
 
     try {
@@ -46,10 +46,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ refreshToken }),
+        body: JSON.stringify({ refresh }),
       });
-
-      if (response.ok) {
+      console.log(response.status);
+      if (response.status === 200) {
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
           await response.json();
         setAccessToken(newAccessToken);
@@ -66,19 +66,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [refreshToken]);
 
-  const isLoggedIn = () => {
-    if (isTokenValid(accessToken)) {
+  const isLoggedIn = useCallback(async (): Promise<boolean> => {
+    if (isTokenValid(refreshToken)) {
+      setInterval(refreshAccessToken, 4 * 60 * 1000);
       return true;
     } else {
       return false;
     }
-  };
-
-  const fetchNewToken = async () => {
-    if (!isLoggedIn) {
-      return await refreshAccessToken();
-    }
-  };
+  }, [accessToken, refreshAccessToken]);
 
   const login = (newAccessToken: string, newRefreshToken: string): void => {
     setAccessToken(newAccessToken);
@@ -99,9 +94,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [isLoggedIn]);
 
   return (
-    <AuthContext.Provider
-      value={{ accessToken, isLoggedIn, login, logout, fetchNewToken }}
-    >
+    <AuthContext.Provider value={{ accessToken, isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,13 +9,12 @@ const PrivateRoute: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const result = isLoggedIn();
+    const checkAuth = async () => {
+      const result = await isLoggedIn();
       if (!result) {
         navigate("/login");
       }
     };
-
     checkAuth();
   }, [isLoggedIn, navigate]);
 
