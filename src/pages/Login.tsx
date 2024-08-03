@@ -51,8 +51,6 @@ const Login = () => {
           },
         })
         .then((res) => {
-          localStorage.setItem("accessToken", res.data.access);
-          localStorage.setItem("refreshToken", res.data.refresh);
           if (res.status === 200) {
             setError("");
             const { access, refresh } = res.data;

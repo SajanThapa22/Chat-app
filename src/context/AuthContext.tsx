@@ -24,10 +24,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [accessToken, setAccessToken] = useState<string | null>(
-    localStorage.getItem("accessToken")
+    localStorage.getItem("access")
   );
   const [refreshToken, setRefreshToken] = useState<string | null>(
-    localStorage.getItem("refreshToken")
+    localStorage.getItem("refresh")
   );
 
   const isTokenValid = (token: string | null): boolean => {
@@ -53,8 +53,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           response.data;
         setAccessToken(newAccessToken);
         setRefreshToken(newRefreshToken);
-        localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
+        localStorage.setItem("access", newAccessToken);
+        localStorage.setItem("refresh", newRefreshToken);
         return true;
       } else {
         return false;
@@ -77,15 +77,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = (newAccessToken: string, newRefreshToken: string): void => {
     setAccessToken(newAccessToken);
     setRefreshToken(newRefreshToken);
-    localStorage.setItem("accessToken", newAccessToken);
-    localStorage.setItem("refreshToken", newRefreshToken);
+    localStorage.setItem("access", newAccessToken);
+    localStorage.setItem("refresh", newRefreshToken);
   };
 
   const logout = (): void => {
     setAccessToken(null);
     setRefreshToken(null);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
   };
 
   useEffect(() => {

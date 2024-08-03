@@ -2,8 +2,12 @@ import { CiSearch } from "react-icons/ci";
 import User from "../components/User";
 import pp from "../assets/img/pp.png";
 import { useAuth } from "../context/AuthContext";
+import GetUsers from "../services/GetUsers";
+
 const ChatUI = () => {
   const { logout } = useAuth();
+  const { users } = GetUsers();
+  console.log(users);
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1fr,3fr]">
       <div
