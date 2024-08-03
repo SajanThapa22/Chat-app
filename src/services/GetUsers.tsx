@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from "axios";
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export interface Users {
@@ -8,7 +8,7 @@ export interface Users {
   username: string;
 }
 
-const GetUsers = (searchTerm?: string) => {
+const GetUsers = () => {
   const [users, setUsers] = useState<Users[]>();
   const [error, setError] = useState();
   const { fetchNewAccess } = useAuth();
@@ -20,32 +20,21 @@ const GetUsers = (searchTerm?: string) => {
 
     if (!access) return;
 
-    if (!searchTerm || searchTerm.trim() === "") {
-      setUsers([]);
-      return;
-    }
-
     axios
       .get(url, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
-        params: {
-          search: searchTerm,
-        },
       })
       .then((res) => {
-        const visibleUsers: Users[] = res.data.filter(
-          (u: Users) => u.username !== "admin"
-        );
-        setUsers(visibleUsers);
+        setUsers(res.data);
       })
       .catch((err) => {
         if (err.response.status === 400) {
           console.log(err.message);
         }
       });
-  }, [searchTerm]);
+  }, []);
   return { users, setUsers };
 };
 

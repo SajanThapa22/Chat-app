@@ -13,7 +13,7 @@ const User = ({ img, userName, style, message, time }: Props) => {
         <img src={img} className="size-full" />
       </div>
 
-      <div className="w-full">
+      <div className="w-full text-txtClr">
         <div className="text-[18px]">{userName}</div>
         <div className="flex justify-between gap-2 text-sm">
           <div className="">{message}</div>

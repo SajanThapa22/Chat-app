@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import GetUsers, { Users } from "../services/GetUsers";
+import { Users } from "../services/GetUsers";
 import axios from "axios";
-import { DiVim } from "react-icons/di";
 import User from "./User";
 import pp from "../assets/img/pp.png";
 
@@ -11,16 +9,49 @@ interface Props {
 }
 
 const BoxUsersSearch = ({ searchTerm }: Props) => {
-  const { users } = GetUsers(searchTerm);
+  const [users, setUsers] = useState<Users[]>();
   const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    const access = localStorage.getItem("access");
+    const url = `http://127.0.0.1:8000/chat/users`;
+    console.log(users?.length);
+
+    if (!access) return;
+
+    if (!searchTerm || searchTerm.trim() === "") {
+      setUsers([]);
+      return;
+    }
+
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+        params: {
+          search: searchTerm,
+        },
+      })
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          setError("No users found");
+        }
+      });
+  }, [searchTerm]);
 
   return (
     <div>
       {users?.length === 0 ? (
-        searchTerm?.length === 0 ? (
-          <div className="text-black text-center text-[20px]">Search Users</div>
+        !searchTerm ? (
+          <div className="text-center text-[20px] text-txtClr">
+            Search Users
+          </div>
         ) : (
-          <div className="text-black text-center text-[20px]">
+          <div className="text-center text-[20px] text-txtClr">
             No users found
           </div>
         )

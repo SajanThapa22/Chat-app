@@ -6,6 +6,7 @@ import GetUsers from "../services/GetUsers";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
+import ThemeSwitch from "../components/ThemeSwitch";
 
 const ChatUI = () => {
   const { users, setUsers } = GetUsers();
@@ -17,20 +18,23 @@ const ChatUI = () => {
     <div className="grid grid-cols-1 xl:grid-cols-[1fr,3fr]">
       <div
         id="all-chats"
-        className="bg-bgComp px-2 border-r border-r-[#d1d1d1] min-h-screen"
+        className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-screen"
       >
         <div>
-          <div className="flex justify-between py-3">
+          <div className="flex justify-between py-3 text-txtClr">
             <div>Chats</div>
-            <div onClick={logout} className="cursor-pointer">
-              Logout
+            <div className="flex gap-5">
+              <ThemeSwitch />
+              <div onClick={logout} className="cursor-pointer">
+                Logout
+              </div>
             </div>
           </div>
 
           <div className="rounded-[8px] border border-gray-400 px-2 py-1 flex gap-2">
             <input
               type="text"
-              className="w-full focus:outline-none border-none "
+              className="w-full focus:outline-none border-none bg-transparent text-txtClr"
               onChange={(e) => {
                 setSearchTerm(e.target.value);
               }}
@@ -62,7 +66,7 @@ const ChatUI = () => {
         )}
       </div>
 
-      <div id="chat-section" className="flex flex-col">
+      <div id="chat-section" className="flex flex-col bg-bgComp">
         <div className="px-3 py-2 border-b border-b-[#e6e6e6]">
           <User img={pp} userName="Dipshan Chakka" />
         </div>
