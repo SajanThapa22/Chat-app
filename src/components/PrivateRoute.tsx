@@ -12,7 +12,7 @@ const PrivateRoute: React.FC = () => {
     const checkAuth = async () => {
       const result = await isLoggedIn();
       if (!result) {
-        navigate("/login");
+        navigate("/login", { replace: true });
       }
     };
     checkAuth();

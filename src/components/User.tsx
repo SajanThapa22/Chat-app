@@ -16,7 +16,7 @@ const User = ({ img, userName, style, message, time }: Props) => {
       <div className="w-full">
         <div className="text-[18px]">{userName}</div>
         <div className="flex justify-between gap-2 text-sm">
-          <div className="">click to send message</div>
+          <div className="">{message}</div>
           <div>{time}</div>
         </div>
       </div>

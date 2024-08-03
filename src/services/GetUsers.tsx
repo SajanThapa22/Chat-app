@@ -2,23 +2,51 @@ import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const GetUsers = () => {
-  const [users, setUsers] = useState();
-  const { logout, fetchNewAccess } = useAuth();
+export interface Users {
+  id: string;
+  email: string;
+  username: string;
+}
+
+const GetUsers = (searchTerm?: string) => {
+  const [users, setUsers] = useState<Users[]>();
+  const [error, setError] = useState();
+  const { fetchNewAccess } = useAuth();
 
   useEffect(() => {
     const access = localStorage.getItem("access");
-    setInterval(fetchNewAccess, 4 * 60 * 1000);
+    const url = `http://127.0.0.1:8000/chat/users`;
+    console.log(users?.length);
+
+    if (!access) return;
+
+    if (!searchTerm || searchTerm.trim() === "") {
+      setUsers([]);
+      return;
+    }
+
     axios
-      .get("http://127.0.0.1:8000/chat/users", {
+      .get(url, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
+        params: {
+          search: searchTerm,
+        },
       })
-      .then((res) => console.log(res.data));
-  }, []);
-
-  return { users };
+      .then((res) => {
+        const visibleUsers: Users[] = res.data.filter(
+          (u: Users) => u.username !== "admin"
+        );
+        setUsers(visibleUsers);
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          console.log(err.message);
+        }
+      });
+  }, [searchTerm]);
+  return { users, setUsers };
 };
 
 export default GetUsers;

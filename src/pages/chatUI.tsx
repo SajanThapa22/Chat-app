@@ -5,34 +5,13 @@ import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-interface Users {
-  id: string;
-  email: string;
-  username: string;
-}
+import BoxUsersSearch from "../components/BoxUsersSearch";
 
 const ChatUI = () => {
-  const [users, setUsers] = useState<Users[]>();
+  const { users, setUsers } = GetUsers();
   const { logout, fetchNewAccess } = useAuth();
-
-  useEffect(() => {
-    const access = localStorage.getItem("access");
-    setInterval(fetchNewAccess, 4 * 60 * 1000);
-    axios
-      .get("http://127.0.0.1:8000/chat/users", {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        const filteredUsers: Users[] = res.data.filter(
-          (u: Users) => u.username !== "admin"
-        );
-        setUsers(filteredUsers);
-      });
-  }, []);
+  const [searchTerm, setSearchTerm] = useState<string>();
+  const [searchVisibility, setSearchVisibility] = useState<boolean>();
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1fr,3fr]">
@@ -52,16 +31,35 @@ const ChatUI = () => {
             <input
               type="text"
               className="w-full focus:outline-none border-none "
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
+              onFocus={() => setSearchVisibility(true)}
+              onBlur={() => {
+                setSearchVisibility(false);
+              }}
             />
             <CiSearch className="size-6 text-gray-500" />
           </div>
         </div>
 
-        <div id="user-chats" className="mt-6 grid gap-2">
-          {users?.map((u) => (
-            <User key={u.id} userName={u.username} img={pp} />
-          ))}
-        </div>
+        {searchVisibility ? (
+          <div id="user-chats" className="mt-6 grid gap-2">
+            <BoxUsersSearch searchTerm={searchTerm} />
+          </div>
+        ) : (
+          <div id="user-chats" className="mt-6 grid gap-2">
+            {users?.map((u) => (
+              <User
+                key={u.id}
+                userName={u.username}
+                img={pp}
+                message="click to send message"
+                time="11:20 PM"
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div id="chat-section" className="flex flex-col">
