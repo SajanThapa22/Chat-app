@@ -7,6 +7,7 @@ import React, {
   useContext,
 } from "react";
 import { jwtDecode } from "jwt-decode";
+import api from "../services/api";
 
 interface AuthContextType {
   accessToken: string | null;
@@ -41,17 +42,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!refreshToken) return false;
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/token/refresh", {
-        method: "POST",
+      const response = await api.post(`/token/refresh/`, refresh, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ refresh }),
       });
       console.log(response.status);
       if (response.status === 200) {
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-          await response.json();
+          response.data;
         setAccessToken(newAccessToken);
         setRefreshToken(newRefreshToken);
         localStorage.setItem("accessToken", newAccessToken);
