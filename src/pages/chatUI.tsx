@@ -3,11 +3,37 @@ import User from "../components/User";
 import pp from "../assets/img/pp.png";
 import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+interface Users {
+  id: string;
+  email: string;
+  username: string;
+}
 
 const ChatUI = () => {
-  const { logout } = useAuth();
-  const { users } = GetUsers();
-  console.log(users);
+  const [users, setUsers] = useState<Users[]>();
+  const { logout, fetchNewAccess } = useAuth();
+
+  useEffect(() => {
+    const access = localStorage.getItem("access");
+    setInterval(fetchNewAccess, 4 * 60 * 1000);
+    axios
+      .get("http://127.0.0.1:8000/chat/users", {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        const filteredUsers: Users[] = res.data.filter(
+          (u: Users) => u.username !== "admin"
+        );
+        setUsers(filteredUsers);
+      });
+  }, []);
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1fr,3fr]">
       <div
@@ -32,19 +58,9 @@ const ChatUI = () => {
         </div>
 
         <div id="user-chats" className="mt-6 grid gap-2">
-          <User
-            userName="Sajan Thapa"
-            message="hello friend how..."
-            img={pp}
-            time="11:29 PM"
-            style="rounded-[8px] hover:bg-[#d1d1d1]"
-          />
-          <User
-            userName="Dipshan Bhatta"
-            message="hello friend whats up..."
-            img={pp}
-            time="11:29 PM"
-          />
+          {users?.map((u) => (
+            <User key={u.id} userName={u.username} img={pp} />
+          ))}
         </div>
       </div>
 

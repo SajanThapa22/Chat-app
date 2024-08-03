@@ -14,6 +14,7 @@ interface AuthContextType {
   isLoggedIn: () => Promise<boolean>;
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
+  fetchNewAccess: () => void;
 }
 
 interface AuthProviderProps {
@@ -47,7 +48,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response.status);
+
       if (response.status === 200) {
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
           response.data;
@@ -67,12 +68,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const isLoggedIn = useCallback(async (): Promise<boolean> => {
     if (isTokenValid(refreshToken)) {
-      setInterval(refreshAccessToken, 4 * 60 * 1000);
       return true;
     } else {
       return false;
     }
-  }, [accessToken, refreshAccessToken]);
+  }, [accessToken]);
+
+  const fetchNewAccess = async () => {
+    if (!isTokenValid(refreshToken)) {
+      return await refreshAccessToken();
+    }
+  };
 
   const login = (newAccessToken: string, newRefreshToken: string): void => {
     setAccessToken(newAccessToken);
@@ -93,7 +99,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [isLoggedIn]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, isLoggedIn, login, logout }}>
+    <AuthContext.Provider
+      value={{ accessToken, isLoggedIn, login, logout, fetchNewAccess }}
+    >
       {children}
     </AuthContext.Provider>
   );

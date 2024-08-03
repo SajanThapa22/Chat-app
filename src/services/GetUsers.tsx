@@ -1,18 +1,23 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios, { AxiosResponse } from "axios";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const GetUsers = () => {
   const [users, setUsers] = useState();
-  const [access, setAccess] = useState(() => localStorage.getItem("access"));
+  const { logout, fetchNewAccess } = useAuth();
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/chat/users/", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${access}`,
-      },
-    }).then((res) => res.json());
+    const access = localStorage.getItem("access");
+    setInterval(fetchNewAccess, 4 * 60 * 1000);
+    axios
+      .get("http://127.0.0.1:8000/chat/users", {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      })
+      .then((res) => console.log(res.data));
   }, []);
+
   return { users };
 };
 

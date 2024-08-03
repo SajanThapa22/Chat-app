@@ -6,7 +6,7 @@ interface Props {
   style?: string;
 }
 
-const User = ({ img, userName, message, time, style }: Props) => {
+const User = ({ img, userName, style, message, time }: Props) => {
   return (
     <div className={`flex gap-4 px-2 py-2 items-center ${style}`}>
       <div className="rounded-full aspect-square overflow-hidden size-10">
@@ -14,9 +14,9 @@ const User = ({ img, userName, message, time, style }: Props) => {
       </div>
 
       <div className="w-full">
-        <div>{userName}</div>
+        <div className="text-[18px]">{userName}</div>
         <div className="flex justify-between gap-2 text-sm">
-          <div className="">{message}</div>
+          <div className="">click to send message</div>
           <div>{time}</div>
         </div>
       </div>
