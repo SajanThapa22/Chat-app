@@ -15,12 +15,12 @@
   --bg-clr: #ededed;
   --txt-clr: #565858;
   --bg-comp: #ffffff;
-  --bg-dd: #e8e5e5;
+  --bg-dd: #e6e6e6;
 }
 
 .dark {
   --bg-clr: #23272a;
   --txt-clr: #fff;
   --bg-comp: #41454b;
-  --bg-dd: #261e4b;
+  --bg-dd: #3b3e43;
 }

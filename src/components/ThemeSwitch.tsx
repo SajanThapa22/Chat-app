@@ -94,12 +94,12 @@ const ThemeSwitch = ({ visibility }: Props) => {
               >
                 <m.icon
                   className={`w-6 h-6 ${
-                    m.text === theme ? "text-blue-400" : "text-txt-clr"
+                    m.text === theme ? "text-blue-400" : "text-txtClr"
                   }`}
                 />
                 <p
                   className={`font-medium text-xl ${
-                    m.text === theme ? "text-blue-400" : "text-txt-clr"
+                    m.text === theme ? "text-blue-400" : "text-txtClr"
                   }`}
                 >
                   {m.text}

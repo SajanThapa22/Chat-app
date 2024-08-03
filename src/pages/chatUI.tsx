@@ -3,13 +3,13 @@ import User from "../components/User";
 import pp from "../assets/img/pp.png";
 import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
 import ThemeSwitch from "../components/ThemeSwitch";
+import { FiLogOut } from "react-icons/fi";
 
 const ChatUI = () => {
-  const { users, setUsers } = GetUsers();
+  const { users } = GetUsers();
   const { logout, fetchNewAccess } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>();
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
@@ -21,12 +21,12 @@ const ChatUI = () => {
         className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-screen"
       >
         <div>
-          <div className="flex justify-between py-3 text-txtClr">
-            <div>Chats</div>
+          <div className="flex justify-between py-3 text-txtClr items-center">
+            <div className="text-[22px] font-medium">Chats</div>
             <div className="flex gap-5">
               <ThemeSwitch />
               <div onClick={logout} className="cursor-pointer">
-                Logout
+                <FiLogOut className="text-txtClr size-6" />
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@ const ChatUI = () => {
                 setSearchVisibility(false);
               }}
             />
-            <CiSearch className="size-6 text-gray-500" />
+            <CiSearch className="size-6 text-txtClr" />
           </div>
         </div>
 
