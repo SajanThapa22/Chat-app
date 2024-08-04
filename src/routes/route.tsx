@@ -6,25 +6,24 @@ import ChatUI from "../pages/chatUI";
 import PrivateRoute from "../components/PrivateRoute";
 import ChatPage from "../pages/ChatPage";
 import ChatLayout from "../pages/ChatLayout";
+import DefaultMessage from "../pages/DefaultMessage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <PrivateRoute />,
     children: [
       {
         path: "/",
-        element: <PrivateRoute />,
+        element: <ChatLayout />,
         children: [
-          {
-            path: "/",
-            element: <ChatLayout />,
-            children: [{ path: "chat/:id/", element: <ChatPage /> }],
-          },
+          { index: true, element: <DefaultMessage /> },
+          { path: "chat/:id/", element: <ChatPage /> },
         ],
       },
     ],
   },
+
   { path: "login", element: <Login /> },
   { path: "register", element: <Register /> },
 ]);

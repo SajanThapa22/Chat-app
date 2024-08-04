@@ -15,6 +15,7 @@ const ChatUI = () => {
   const { logout, fetchNewAccess } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>();
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
+  const [userId, setUserId] = useState<string>();
 
   return (
     <div
@@ -57,12 +58,16 @@ const ChatUI = () => {
         <div id="user-chats" className="mt-6 grid gap-2">
           {users?.map((u) => (
             <User
+              onclick={() => {
+                setUserId(u.id);
+              }}
               id={u.id}
               key={u.id}
               username={u.username}
               img={pp}
               message="click to send message"
               time="11:20 PM"
+              style={u.id === userId ? "bg-selected" : ""}
             />
           ))}
         </div>

@@ -5,14 +5,28 @@ interface Props {
   username: string | undefined;
   message?: string;
   time?: string;
-  style?: string;
+  isSelected?: boolean;
   id?: string;
+  onclick?: () => void;
+  style?: string;
 }
 
-const User = ({ img, username, style, message, time, id }: Props) => {
+const User = ({
+  img,
+  username,
+  isSelected,
+  message,
+  time,
+  id,
+  onclick,
+  style,
+}: Props) => {
   return (
     <Link to={`/chat/${id}`}>
-      <div className={`flex gap-4 px-2 py-2 items-center ${style}`}>
+      <div
+        onClick={onclick}
+        className={`flex gap-4 px-2 py-2 items-center rounded-md ${style}`}
+      >
         <div className="rounded-full aspect-square overflow-hidden size-10">
           <img src={img} className="size-full" />
         </div>

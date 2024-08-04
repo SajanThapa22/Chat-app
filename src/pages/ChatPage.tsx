@@ -14,29 +14,19 @@ interface User {
 
 const ChatPage = () => {
   const { id } = useParams();
-  const [user, setUser] = useState<User>();
-  const url = `http://127.0.0.1:8000/chat/user/${id}`;
-
-  useEffect(() => {
-    const access = localStorage.getItem("access");
-
-    axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setUser(res.data);
-      })
-      .catch((err) => console.log(err.message));
-  }, [id]);
+  const { user } = getUser(id);
 
   return (
     <div id="chat-section" className="flex flex-col bg-bgComp min-h-dvh">
       <div className="px-3 py-2 border-b border-b-[#e6e6e6]">
-        <User id={"123ersr3"} img={pp} username={user?.username} />
+        <div className={`flex gap-4 px-2 py-2 items-center`}>
+          <div className="rounded-full aspect-square overflow-hidden size-10">
+            <img src={pp} className="size-full" />
+          </div>
+          <div className="w-full text-txtClr">
+            <div className="text-[18px]">{user?.username}</div>
+          </div>
+        </div>
       </div>
 
       <div id="chats" className="flex-1 p-5 flex flex-col  gap-3">

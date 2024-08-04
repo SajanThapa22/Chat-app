@@ -14,6 +14,7 @@ export default {
         "bg-dd": "var( --bg-dd)",
         hariyo: "var(--hariyo)",
         primary: "var(--primary)",
+        selected: "var(--bg-selected)",
       },
     },
   },
