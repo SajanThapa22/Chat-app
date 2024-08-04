@@ -13,7 +13,6 @@ const GetUsers = () => {
   useEffect(() => {
     const access = localStorage.getItem("access");
     const url = `http://127.0.0.1:8000/chat/users`;
-    console.log(users?.length);
 
     if (!access) return;
 

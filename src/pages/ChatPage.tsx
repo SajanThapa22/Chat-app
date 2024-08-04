@@ -1,20 +1,40 @@
-import { useEffect, useState } from "react";
 import pp from "../assets/img/pp.png";
 
-import User from "../components/User";
 import { useParams } from "react-router-dom";
 import getUser from "../services/getUser";
-import axios from "axios";
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-}
+import { FormEvent, useEffect, useState } from "react";
+import {
+  disconnectSocket,
+  initiateSocket,
+  sendMessage,
+  subscribeToChat,
+} from "../services/useWebSocket";
 
 const ChatPage = () => {
   const { id } = useParams();
   const { user } = getUser(id);
+  const [inputMessage, setInputMessage] = useState<string>();
+
+  const handleSendMessage = () => {
+    const messageData = {
+      type: "message",
+      message: inputMessage,
+      receiver_id: id,
+      groud_id: null,
+    };
+    if (inputMessage && inputMessage.trim()) {
+      sendMessage(messageData);
+    }
+  };
+
+  useEffect(() => {
+    initiateSocket();
+    console.log(id);
+
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
 
   return (
     <div id="chat-section" className="flex flex-col bg-bgComp min-h-dvh">
@@ -36,13 +56,25 @@ const ChatPage = () => {
       </div>
 
       <div className="px-10 py-5 w-full">
-        <form action="" className="w-full flex gap-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage();
+          }}
+          className="w-full flex gap-4"
+        >
           <input
+            onChange={(e) => {
+              setInputMessage(e.target.value);
+            }}
             type="text"
             className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
             placeholder="Type a message.."
           />
-          <button className="border-none bg-primary rounded-lg px-4 py-2 text-white">
+          <button
+            type="submit"
+            className="border-none bg-primary rounded-lg px-4 py-2 text-white"
+          >
             send
           </button>
         </form>
