@@ -34,6 +34,19 @@ const ChatPage = () => {
           {`hello i am ${user?.username}`}
         </div>
       </div>
+
+      <div className="px-10 py-5 w-full">
+        <form action="" className="w-full flex gap-4">
+          <input
+            type="text"
+            className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
+            placeholder="Type a message.."
+          />
+          <button className="border-none bg-primary rounded-lg px-4 py-2 text-white">
+            send
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
