@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
 
 export interface Users {
   id: string;
@@ -10,8 +9,6 @@ export interface Users {
 
 const GetUsers = () => {
   const [users, setUsers] = useState<Users[]>();
-  const [error, setError] = useState();
-  const { fetchNewAccess } = useAuth();
 
   useEffect(() => {
     const access = localStorage.getItem("access");

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import Sun from "../assets/svg/sun.svg?react";
-import Moon from "../assets/svg/moon.svg?react";
+import { PiSun } from "react-icons/pi";
+import { IoMoonOutline } from "react-icons/io5";
 import System from "../assets/svg/system.svg?react";
 
 const modes = [
-  { text: "light", icon: Sun },
-  { text: "dark", icon: Moon },
+  { text: "light", icon: PiSun },
+  { text: "dark", icon: IoMoonOutline },
   { text: "system", icon: System },
 ];
 
@@ -74,8 +75,10 @@ const ThemeSwitch = ({ visibility }: Props) => {
       <div className={`${visibility}`}>
         <div onClick={handleClick} className="relative z-[100]">
           <div>
-            {theme === "dark" && <Moon className="w-6 h-6 text-txt-clr" />}
-            {theme === "light" && <Sun className="w-6 h-6 text-txt-clr" />}
+            {theme === "dark" && (
+              <IoMoonOutline className="w-6 h-6 text-txt-clr" />
+            )}
+            {theme === "light" && <PiSun className="w-6 h-6 text-txt-clr" />}
             {theme === "system" && <System className="w-6 h-6 text-txt-clr" />}
           </div>
 

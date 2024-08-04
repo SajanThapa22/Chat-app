@@ -3,6 +3,7 @@ import { Users } from "../services/GetUsers";
 import axios from "axios";
 import User from "./User";
 import pp from "../assets/img/pp.png";
+import { CiSearch } from "react-icons/ci";
 
 interface Props {
   searchTerm: string | undefined;
@@ -47,8 +48,9 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
     <div>
       {users?.length === 0 ? (
         !searchTerm ? (
-          <div className="text-center text-[20px] text-txtClr">
-            Search Users
+          <div className="text-center text-[20px] flex gap-3 justify-center text-txtClr capitalize ml-auto mr-auto">
+            <CiSearch className="text-[24px]" />
+            <div>search users</div>
           </div>
         ) : (
           <div className="text-center text-[20px] text-txtClr">
@@ -58,7 +60,7 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       ) : (
         <div className="bg-bgComp w-full h-full">
           {users?.map((u) => (
-            <User key={u.id} img={pp} userName={u.username} />
+            <User key={u.id} img={pp} username={u.username} />
           ))}
         </div>
       )}
