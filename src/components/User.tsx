@@ -24,7 +24,7 @@ const User = ({
   return (
     <NavLink
       to={`/chat/${id}`}
-      className={({ isActive }) => (isActive ? "bg-gray-400 rounded-md" : "")}
+      className={({ isActive }) => (isActive ? "bg-selected rounded-md" : "")}
     >
       <div
         onClick={onclick}

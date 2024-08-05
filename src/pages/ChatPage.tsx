@@ -106,7 +106,7 @@ const ChatPage = () => {
                 className={`rounded-[20px] px-4 py-2 max-w-fit text-white ${
                   msg.user === "self"
                     ? "bg-primary ml-auto"
-                    : "bg-gray-300 mr-auto"
+                    : "bg-gray-500 mr-auto"
                 }`}
               >
                 {msg.user === "self" ? msg.message : msg.message}
@@ -127,7 +127,7 @@ const ChatPage = () => {
             onChange={(e) => setInputMessage(e.target.value)}
             value={inputMessage}
             type="text"
-            className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
+            className="focus:outline-none border border-gray-300 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
             placeholder="Type a message.."
           />
           <button
