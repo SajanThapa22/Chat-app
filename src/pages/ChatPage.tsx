@@ -10,26 +10,47 @@ import {
   subscribeToChat,
 } from "../services/useWebSocket";
 
+interface Message {
+  user: string;
+  message: string;
+}
+
 const ChatPage = () => {
   const { id } = useParams();
   const { user } = getUser(id);
   const [inputMessage, setInputMessage] = useState<string>();
+  const [initialMessage, setInitialMessage] = useState<string[]>([]);
+  const [userdata, setUserData] = useState<Message>();
 
   const handleSendMessage = () => {
     const messageData = {
       type: "message",
       message: inputMessage,
       receiver_id: id,
-      groud_id: null,
+      group_id: null,
     };
     if (inputMessage && inputMessage.trim()) {
       sendMessage(messageData);
+
+      setInitialMessage([...initialMessage, inputMessage]);
+      console.log(userdata?.user, user?.username);
+      setInputMessage("");
     }
   };
 
   useEffect(() => {
     initiateSocket();
     console.log(id);
+
+    subscribeToChat((err, data) => {
+      if (err) {
+        console.error("Error subscribing to chat:", err);
+        return;
+      }
+      if (userdata?.user === user?.username) {
+        setUserData(data.message);
+      }
+    });
 
     return () => {
       disconnectSocket();
@@ -50,9 +71,20 @@ const ChatPage = () => {
       </div>
 
       <div id="chats" className="flex-1 p-5 flex flex-col  gap-3">
-        <div className="rounded-full px-4 py-2 bg-primary max-w-fit text-white">
-          {`hello i am ${user?.username}`}
-        </div>
+        {userdata?.user === user?.username && (
+          <div className="rounded-[20px] px-4 py-2 bg-gray-400 max-w-fit text-white">
+            {userdata?.message}
+          </div>
+        )}
+
+        {initialMessage?.map((msg, index) => (
+          <div
+            key={index}
+            className="rounded-[20px] px-4 py-2 bg-primary max-w-fit text-white ml-auto"
+          >
+            {msg}
+          </div>
+        ))}
       </div>
 
       <div className="px-10 py-5 w-full">
@@ -67,6 +99,7 @@ const ChatPage = () => {
             onChange={(e) => {
               setInputMessage(e.target.value);
             }}
+            value={inputMessage}
             type="text"
             className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
             placeholder="Type a message.."
