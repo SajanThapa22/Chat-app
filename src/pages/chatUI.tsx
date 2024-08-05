@@ -7,12 +7,10 @@ import { useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
 import ThemeSwitch from "../components/ThemeSwitch";
 import { FiLogOut } from "react-icons/fi";
-import ChatPage from "./ChatPage";
-import { Outlet } from "react-router-dom";
 
 const ChatUI = () => {
   const { users } = GetUsers();
-  const { logout, fetchNewAccess } = useAuth();
+  const { logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>();
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
   const [userId, setUserId] = useState<string>();
@@ -20,7 +18,7 @@ const ChatUI = () => {
   return (
     <div
       id="all-chats"
-      className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-screen"
+      className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-dvh"
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
@@ -55,7 +53,10 @@ const ChatUI = () => {
           <BoxUsersSearch searchTerm={searchTerm} />
         </div>
       ) : (
-        <div id="user-chats" className="mt-6 grid gap-2">
+        <div
+          id="user-chats"
+          className="mt-6 grid gap-2 max-h-full overflow-y-scroll hide-scrollbar"
+        >
           {users?.map((u) => (
             <User
               onclick={() => {

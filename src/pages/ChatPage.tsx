@@ -95,7 +95,7 @@ const ChatPage = () => {
 
       <div
         id="chats"
-        className="flex-1 p-5 flex flex-col gap-3 max-h-dvh overflow-y-scroll hide-scrollbar"
+        className="flex-1 p-5 flex flex-col gap-3 max-h-screen overflow-y-scroll hide-scrollbar"
       >
         {initialMessages.map(
           (msg, index) =>
