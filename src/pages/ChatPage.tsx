@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FormEvent } from "react";
+import React, { useEffect, useState, FormEvent, ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
 import pp from "../assets/img/pp.png";
 import getUser from "../services/getUser";
@@ -14,71 +14,88 @@ interface Message {
   message: string;
   receiver: string | undefined;
 }
+interface User {
+  id: string;
+  username: string;
+  email: string;
+}
+interface Props {
+  initialMessages: Message[];
+  handleSendMessage: () => void;
+  user: User | undefined;
+  id: string | undefined;
+  onInputChange: (value: string) => void;
+  value: string;
+}
 
-// interface Chat {
-//   user: string;
-//   message: string;
-//   receiver: string | undefined;
-// }
+const ChatPage = ({
+  initialMessages,
+  handleSendMessage,
+  user,
+  id,
+  onInputChange,
+  value,
+}: Props) => {
+  // const { id } = useParams<{ id: string }>();
+  // const { user } = getUser(id);
+  // const [initialMessages, setInitialMessages] = useState<Message[]>([]);
+  // const [userdata, setUserdata] = useState<Message>();
 
-const ChatPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const { user } = getUser(id);
-  const [inputMessage, setInputMessage] = useState<string>("");
-  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
-  const [userdata, setUserdata] = useState<Message>();
+  // const handleSendMessage = () => {
+  //   if (inputMessage && inputMessage.trim()) {
+  //     const messageData = {
+  //       type: "message",
+  //       message: inputMessage,
+  //       receiver_id: id,
+  //       group_id: null,
+  //     };
 
-  const handleSendMessage = () => {
-    if (inputMessage && inputMessage.trim()) {
-      const messageData = {
-        type: "message",
-        message: inputMessage,
-        receiver_id: id,
-        group_id: null,
-      };
+  //     sendMessage(messageData);
 
-      sendMessage(messageData);
+  //     const selfMessage: Message = {
+  //       user: "self",
+  //       message: inputMessage,
+  //       receiver: id,
+  //     };
 
-      const selfMessage: Message = {
-        user: "self",
-        message: inputMessage,
-        receiver: id,
-      };
+  //     setInitialMessages((prevMessages) => [...prevMessages, selfMessage]);
+  //     setInputMessage("");
+  //   }
+  // };
 
-      setInitialMessages((prevMessages) => [...prevMessages, selfMessage]);
-      setInputMessage("");
-    }
+  // useEffect(() => {
+  //   initiateSocket();
+
+  //   subscribeToChat((err, data) => {
+  //     if (err) {
+  //       console.error("Error subscribing to chat:", err);
+  //       return;
+  //     }
+
+  //     setUserdata(data.message);
+
+  //     console.log("Received data:", data); // Debugging statement
+
+  //     // Assuming data contains user and message keys
+  //     const receivedMessage: Message = {
+  //       user: data.message.user,
+  //       message: data.message.message,
+  //       receiver: id,
+  //     };
+
+  //     console.log("Parsed message:", receivedMessage); // Debugging statement
+
+  //     setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
+  //   });
+
+  //   return () => {
+  //     disconnectSocket();
+  //   };
+  // }, []);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onInputChange(event.target.value);
   };
-
-  useEffect(() => {
-    initiateSocket();
-
-    subscribeToChat((err, data) => {
-      if (err) {
-        console.error("Error subscribing to chat:", err);
-        return;
-      }
-
-      setUserdata(data.message);
-
-      console.log("Received data:", data); // Debugging statement
-
-      // Assuming data contains user and message keys
-      const receivedMessage: Message = {
-        user: data.message.user,
-        message: data.message.message,
-        receiver: id,
-      };
-
-      console.log("Parsed message:", receivedMessage); // Debugging statement
-
-      setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
-    });
-
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
 
   return (
     <div
@@ -130,8 +147,8 @@ const ChatPage = () => {
           className="w-full flex gap-4"
         >
           <input
-            onChange={(e) => setInputMessage(e.target.value)}
-            value={inputMessage}
+            onChange={handleChange}
+            value={value}
             type="text"
             className="focus:outline-none border border-gray-300 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
             placeholder="Type a message.."
