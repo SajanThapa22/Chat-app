@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 interface Props {
   img: string;
@@ -22,7 +22,10 @@ const User = ({
   style,
 }: Props) => {
   return (
-    <Link to={`/chat/${id}`}>
+    <NavLink
+      to={`/chat/${id}`}
+      className={({ isActive }) => (isActive ? "bg-gray-400 rounded-md" : "")}
+    >
       <div
         onClick={onclick}
         className={`flex gap-4 px-2 py-2 items-center rounded-md ${style}`}
@@ -39,7 +42,7 @@ const User = ({
           </div>
         </div>
       </div>
-    </Link>
+    </NavLink>
   );
 };
 

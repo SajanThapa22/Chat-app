@@ -13,6 +13,7 @@ interface Props {
 const BoxUsersSearch = ({ searchTerm }: Props) => {
   const [users, setUsers] = useState<Users[]>();
   const [error, setError] = useState<string>();
+  const [userId, setUserId] = useState<string>();
 
   useEffect(() => {
     const access = localStorage.getItem("access");
@@ -60,7 +61,15 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       ) : (
         <div className="bg-bgComp w-full h-full">
           {users?.map((u) => (
-            <User key={u.id} img={pp} username={u.username} id={u.id} />
+            <User
+              onclick={() => {
+                setUserId(u.id);
+              }}
+              key={u.id}
+              img={pp}
+              username={u.username}
+              id={u.id}
+            />
           ))}
         </div>
       )}

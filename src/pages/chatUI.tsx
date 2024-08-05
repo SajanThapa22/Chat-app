@@ -40,8 +40,8 @@ const ChatUI = () => {
               setSearchTerm(e.target.value);
             }}
             onFocus={() => setSearchVisibility(true)}
-            onBlur={() => {
-              setSearchVisibility(false);
+            onBlur={(e) => {
+              !e.target.value && setSearchVisibility(false);
             }}
           />
           <CiSearch className="size-6 text-txtClr" />
@@ -55,7 +55,7 @@ const ChatUI = () => {
       ) : (
         <div
           id="user-chats"
-          className="mt-6 grid gap-2 max-h-full overflow-y-scroll hide-scrollbar"
+          className="mt-6 grid gap-2 max-h-96 overflow-y-scroll hide-scrollbar"
         >
           {users?.map((u) => (
             <User
@@ -68,7 +68,6 @@ const ChatUI = () => {
               img={pp}
               message="click to send message"
               time="11:20 PM"
-              style={u.id === userId ? "bg-selected" : ""}
             />
           ))}
         </div>
