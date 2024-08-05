@@ -81,7 +81,10 @@ const ChatPage = () => {
   }, []);
 
   return (
-    <div id="chat-section" className="flex flex-col bg-bgComp max-h-dvh">
+    <div
+      id="chat-section"
+      className="flex flex-col bg-bgComp max-h-dvh max-w-full"
+    >
       <div className="px-3 py-2 border-b border-b-[#e6e6e6]">
         <div className="flex gap-4 px-2 py-2 items-center">
           <div className="rounded-full aspect-square overflow-hidden size-10">
@@ -103,7 +106,10 @@ const ChatPage = () => {
               (msg.user === "self" && msg.receiver === id)) && (
               <div
                 key={index}
-                className={`rounded-[20px] px-4 py-2 max-w-fit text-white ${
+                style={{
+                  wordBreak: "break-all",
+                }}
+                className={`rounded-[20px] px-4 py-2 text-wrap max-w-[60%] text-white  ${
                   msg.user === "self"
                     ? "bg-primary ml-auto"
                     : "bg-gray-500 mr-auto"

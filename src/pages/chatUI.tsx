@@ -18,7 +18,7 @@ const ChatUI = () => {
   return (
     <div
       id="all-chats"
-      className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-dvh"
+      className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-screen flex flex-col"
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
@@ -49,13 +49,16 @@ const ChatUI = () => {
       </div>
 
       {searchVisibility ? (
-        <div id="user-chats" className="mt-6 grid gap-2">
+        <div
+          id="user-chats"
+          className="mt-6 flex flex-col gap-2 flex-1 overflow-y-scroll"
+        >
           <BoxUsersSearch searchTerm={searchTerm} />
         </div>
       ) : (
         <div
           id="user-chats"
-          className="mt-6 grid gap-2 max-h-96 overflow-y-scroll hide-scrollbar"
+          className="mt-6 flex flex-col flex-1 gap-2 overflow-y-scroll hide-scrollbar"
         >
           {users?.map((u) => (
             <User
