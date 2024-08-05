@@ -42,8 +42,8 @@ const ChatUI = () => {
               setSearchTerm(e.target.value);
             }}
             onFocus={() => setSearchVisibility(true)}
-            onBlur={(e) => {
-              !e.target.value && setSearchVisibility(false);
+            onBlur={() => {
+              setSearchVisibility(false);
             }}
           />
           <CiSearch className="size-6 text-txtClr" />

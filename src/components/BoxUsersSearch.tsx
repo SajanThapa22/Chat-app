@@ -4,6 +4,7 @@ import axios from "axios";
 import User from "./User";
 import pp from "../assets/img/pp.png";
 import { CiSearch } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 interface Props {
   searchTerm: string | undefined;
@@ -59,7 +60,7 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       ) : (
         <div className="bg-bgComp w-full h-full">
           {users?.map((u) => (
-            <User key={u.id} img={pp} username={u.username} />
+            <User key={u.id} img={pp} username={u.username} id={u.id} />
           ))}
         </div>
       )}
