@@ -8,6 +8,7 @@ import {
   subscribeToChat,
   disconnectSocket,
 } from "../services/useWebSocket";
+import getCurrentUser from "../services/getCurrentUser";
 
 interface Message {
   user: string;
@@ -25,7 +26,7 @@ const ChatPage = () => {
   const { user } = getUser(id);
   const [inputMessage, setInputMessage] = useState<string>();
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
-  const [userdata, setUserdata] = useState<Message>();
+  const [currentUser, setCurrentUser] = useState<User>();
 
   const handleSendMessage = () => {
     if (inputMessage && inputMessage.trim()) {
@@ -49,7 +50,21 @@ const ChatPage = () => {
     }
   };
 
+  const generateChatHistoryName = (
+    senderUserId: string,
+    receiverUserId: string
+  ): string => {
+    const minId = senderUserId < receiverUserId ? senderUserId : receiverUserId;
+    const maxId = senderUserId > receiverUserId ? senderUserId : receiverUserId;
+    return `${minId}_${maxId}`;
+  };
+  const historyName = generateChatHistoryName(currentUser?.id, id);
+
+  const url = `http://127.0.0.1:8000/chat/history/$`;
+
   useEffect(() => {
+    getCurrentUser().then((res) => setCurrentUser(res));
+
     initiateSocket();
 
     subscribeToChat((err, data) => {
@@ -57,8 +72,6 @@ const ChatPage = () => {
         console.error("Error subscribing to chat:", err);
         return;
       }
-
-      setUserdata(data.message);
 
       console.log("Received data:", data); // Debugging statement
 

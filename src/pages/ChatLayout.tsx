@@ -1,14 +1,5 @@
-import React, { useEffect, useState } from "react";
 import ChatUI from "./chatUI";
-import { Outlet, useParams } from "react-router-dom";
-import ChatPage from "./ChatPage";
-import getUser from "../services/getUser";
-import {
-  sendMessage,
-  initiateSocket,
-  subscribeToChat,
-  disconnectSocket,
-} from "../services/useWebSocket";
+import { Outlet } from "react-router-dom";
 
 export interface Message {
   user: string;
