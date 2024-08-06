@@ -8,12 +8,20 @@ import {
   subscribeToChat,
   disconnectSocket,
 } from "../services/useWebSocket";
+import getChatHistory from "../services/getChatHistory";
+import { useAuth } from "../context/AuthContext";
 import getCurrentUser from "../services/getCurrentUser";
 
 interface Message {
-  user: string;
+  chat_history: string;
+  deliverd_timestamp: null;
+  id: number;
+  media: null;
   message: string;
-  receiver: string | undefined;
+  reply_of: null;
+  seen_timestamp: null;
+  sent_timestamp: string;
+  user: string;
 }
 interface User {
   id: string;
@@ -26,6 +34,7 @@ const ChatPage = () => {
   const { user } = getUser(id);
   const [inputMessage, setInputMessage] = useState<string>();
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
+  const [history, setHistory] = useState<string>();
   const [currentUser, setCurrentUser] = useState<User>();
 
   const handleSendMessage = () => {
@@ -39,50 +48,29 @@ const ChatPage = () => {
 
       sendMessage(messageData);
 
-      const selfMessage: Message = {
-        user: "self",
-        message: inputMessage,
-        receiver: id,
-      };
-
-      setInitialMessages((prevMessages) => [...prevMessages, selfMessage]);
       setInputMessage("");
     }
   };
 
-  const generateChatHistoryName = (
-    senderUserId: string,
-    receiverUserId: string
-  ): string => {
-    const minId = senderUserId < receiverUserId ? senderUserId : receiverUserId;
-    const maxId = senderUserId > receiverUserId ? senderUserId : receiverUserId;
-    return `${minId}_${maxId}`;
-  };
-  const historyName = generateChatHistoryName(currentUser?.id, id);
-
-  const url = `http://127.0.0.1:8000/chat/history/$`;
-
   useEffect(() => {
-    getCurrentUser().then((res) => setCurrentUser(res));
-
     initiateSocket();
-
     subscribeToChat((err, data) => {
       if (err) {
         console.error("Error subscribing to chat:", err);
         return;
       }
 
-      console.log("Received data:", data); // Debugging statement
-
-      // Assuming data contains user and message keys
       const receivedMessage: Message = {
-        user: data.message.user,
+        chat_history: data.message.chat_history,
+        deliverd_timestamp: data.message.deliverd_timestamp,
+        id: data.message.id,
+        media: data.message.media,
         message: data.message.message,
-        receiver: id,
+        reply_of: data.message.reply_of,
+        seen_timestamp: data.message.seen_timestamp,
+        sent_timestamp: data.message.sent_timestamp,
+        user: data.message.user,
       };
-
-      console.log("Parsed message:", receivedMessage); // Debugging statement
 
       setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
     });
@@ -90,7 +78,35 @@ const ChatPage = () => {
     return () => {
       disconnectSocket();
     };
-  }, []);
+  }, [id]);
+
+  const generateChatHistoryName = (
+    senderUserId: string | undefined,
+    receiverUserId: string | undefined
+  ) => {
+    const minId =
+      senderUserId && receiverUserId && senderUserId < receiverUserId
+        ? senderUserId
+        : receiverUserId;
+    const maxId =
+      senderUserId && receiverUserId && senderUserId > receiverUserId
+        ? senderUserId
+        : receiverUserId;
+    return `${minId}_${maxId}`;
+  };
+
+  useEffect(() => {
+    const getTexts = async () => {
+      const result = await getCurrentUser();
+      // const chats = await getChatHistory(result.id, id);
+      setCurrentUser(result);
+
+      const historyName = generateChatHistoryName(result.id, id);
+      setHistory(historyName);
+      console.log(historyName);
+    };
+    getTexts();
+  }, [id]);
 
   return (
     <div
@@ -114,20 +130,21 @@ const ChatPage = () => {
       >
         {initialMessages.map(
           (msg, index) =>
-            (msg.user === id ||
-              (msg.user === "self" && msg.receiver === id)) && (
+            msg.chat_history === history &&
+            (msg.user === id || msg.user === currentUser?.id) && (
               <div
                 key={index}
                 style={{
                   wordBreak: "break-all",
                 }}
                 className={`rounded-[20px] px-4 py-2 text-wrap max-w-[60%] text-white  ${
-                  msg.user === "self"
+                  msg.user === currentUser?.id
                     ? "bg-primary ml-auto"
                     : "bg-gray-500 mr-auto"
                 }`}
               >
-                {msg.user === "self" ? msg.message : msg.message}
+                {msg.message}
+                {/* {msg.chat_history} */}
               </div>
             )
         )}
