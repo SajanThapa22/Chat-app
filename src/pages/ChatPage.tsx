@@ -98,9 +98,12 @@ const ChatPage = () => {
   useEffect(() => {
     const getTexts = async () => {
       const result = await getCurrentUser();
-      // const chats = await getChatHistory(result.id, id);
+      const chats = await getChatHistory(result.id, id);
+      console.log(chats);
       setCurrentUser(result);
-
+      for (let i = 0; i < chats.length; i++) {
+        setInitialMessages((prevMessages) => [...prevMessages, chats[i]]);
+      }
       const historyName = generateChatHistoryName(result.id, id);
       setHistory(historyName);
       console.log(historyName);
@@ -130,8 +133,7 @@ const ChatPage = () => {
       >
         {initialMessages.map(
           (msg, index) =>
-            msg.chat_history === history &&
-            (msg.user === id || msg.user === currentUser?.id) && (
+            msg.chat_history === history && (
               <div
                 key={index}
                 style={{
