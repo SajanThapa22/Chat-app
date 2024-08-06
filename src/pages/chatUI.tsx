@@ -69,7 +69,7 @@ const ChatUI = () => {
               key={u.id}
               username={u.username}
               img={pp}
-              message="click to send message"
+              message={"Click to see chats"}
               time="11:20 PM"
             />
           ))}
