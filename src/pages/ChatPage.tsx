@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import pp from "../assets/img/pp.png";
 import { useParams } from "react-router-dom";
 import getUser from "../services/getUser";
@@ -11,6 +11,7 @@ import {
 import getChatHistory from "../services/getChatHistory";
 import getCurrentUser from "../services/getCurrentUser";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
+import Spinner from "../components/Spinner";
 
 interface Message {
   chat_history: string;
@@ -32,13 +33,13 @@ interface User {
 const ChatPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = getUser(id);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inputMessage, setInputMessage] = useState<string>("");
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
-  const [oldMessage, setOldMessage] = useState<Message[]>([]);
   const [history, setHistory] = useState<string>();
   const [currentUser, setCurrentUser] = useState<User>();
-  const [page, setPage] = useState<number>(1);
   const [nextUrl, setNextUrl] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleSendMessage = () => {
     if (inputMessage && inputMessage.trim()) {
@@ -56,7 +57,6 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    setPage(1);
     initiateSocket();
     subscribeToChat((err, data) => {
       if (err) {
@@ -139,12 +139,18 @@ const ChatPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [initialMessages]);
+
   return (
     <div
       id="chat-section"
       className="flex flex-col bg-bgComp max-h-dvh max-w-full"
     >
-      <div className="px-3 py-2 border-b border-b-[#e6e6e6]">
+      <div className="px-3 py-2 border-b border-b-gray-400">
         <div className="flex gap-4 px-2 py-2 items-center">
           <div className="rounded-full aspect-square overflow-hidden size-10">
             <img src={pp} className="size-full" alt="User Avatar" />
@@ -155,7 +161,11 @@ const ChatPage = () => {
         </div>
       </div>
 
-      <div id="chats" className="flex-1 h-full overflow-y-auto hide-scrollbar">
+      <div
+        id="chats"
+        ref={containerRef}
+        className="flex-1 h-full overflow-y-auto hide-scrollbar"
+      >
         {nextUrl && (
           <div
             onClick={handleLoadMore}
@@ -166,7 +176,7 @@ const ChatPage = () => {
         )}
         <div
           id="chatsdivs"
-          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-10 pb-5"
+          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-10 py-5"
         >
           {initialMessages.map(
             (msg, index) =>

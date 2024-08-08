@@ -17,6 +17,7 @@
   --bg-comp: #ffffff;
   --bg-dd: #e6e6e6;
   --bg-selected: #e6e6e6;
+  --spinner: #6b7280;
 }
 
 .dark {
@@ -25,4 +26,5 @@
   --bg-comp: #41454b;
   --bg-dd: #3b3e43;
   --bg-selected: #676d77;
+  --spinner: #fff;
 }

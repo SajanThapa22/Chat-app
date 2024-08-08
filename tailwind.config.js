@@ -15,6 +15,7 @@ export default {
         hariyo: "var(--hariyo)",
         primary: "var(--primary)",
         selected: "var(--bg-selected)",
+        spinner: "var(--spinner)",
       },
     },
   },

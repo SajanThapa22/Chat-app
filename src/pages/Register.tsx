@@ -1,12 +1,12 @@
 import Button from "../components/Button";
 import Logo from "../assets/img/messenger.png";
-
 import api from "../services/api";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import Spinner from "../components/Spinner";
 
 interface FormData {
   username: string;
@@ -20,20 +20,19 @@ interface Error {
   email: string;
 }
 const Register = () => {
-  // const { isLoggedIn } = useAuth();
-  // const [authenticated, setAuthenticated] = useState<boolean>();
+  const { isLoggedIn } = useAuth();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const checkAuth = () => {
-  //     const result = isLoggedIn();
-  //     setAuthenticated(result);
-  //     if (result) {
-  //       navigate("/");
-  //     }
-  //   };
+  useEffect(() => {
+    const checkAuth = async () => {
+      const result = await isLoggedIn();
+      if (result) {
+        navigate("/");
+      }
+    };
 
-  //   checkAuth();
-  // }, [isLoggedIn]);
+    checkAuth();
+  }, [isLoggedIn]);
 
   const [error, setError] = useState<Error>();
   const navigate = useNavigate();
@@ -49,6 +48,7 @@ const Register = () => {
   const password = watch("password");
 
   const onSubmit = (data: FormData) => {
+    setIsLoading(true);
     const { confirmPassword, ...rest } = data;
     if (isValid) {
       api
@@ -59,11 +59,9 @@ const Register = () => {
         })
         .then((response) => {
           if (response.status === 201) {
+            navigate("/login");
+            setIsLoading(false);
             setError({ ...error, email: "", username: "" });
-            setTimeout(
-              () => window.confirm("registered") && navigate("/login"),
-              1000
-            );
           }
         })
         .catch((err) => {
@@ -160,7 +158,15 @@ const Register = () => {
         </div>
 
         <div className="grid gap-3">
-          <Button text="register" type="submit" />
+          <Button type="submit">
+            {isLoading ? (
+              <>
+                <Spinner /> <div className="ml-3">Signing up...</div>
+              </>
+            ) : (
+              "Sign up"
+            )}
+          </Button>
           <p className="text-[14px] font-[400] text-txtClr">
             Already have an account?
             <Link className="text-blue-500 underline ml-2" to="/">

@@ -6,6 +6,7 @@ import api from "../services/api";
 import CheckLogged from "../services/CheckLogged";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import Spinner from "../components/Spinner";
 
 interface FormData {
   username: string;
@@ -20,6 +21,7 @@ interface Tokens {
 const Login = () => {
   const { isLoggedIn, login } = useAuth();
   const { authenticated, setAuthenticated } = CheckLogged();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const [error, setError] = useState<string>("");
@@ -43,6 +45,7 @@ const Login = () => {
   } = useForm<FormData>({ mode: "all" });
 
   const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
     if (isValid) {
       api
         .post<Tokens>(`/token/`, data, {
@@ -55,6 +58,7 @@ const Login = () => {
             setError("");
             const { access, refresh } = res.data;
             login(access, refresh);
+            setIsLoading(false);
           }
         })
         .catch((err) => {
@@ -108,7 +112,15 @@ const Login = () => {
           </div>
         </div>
         <div className="grid gap-3">
-          <Button text="Login" styles="hover:bg-[#0f57c4]" />
+          <Button type="submit" styles="hover:bg-[#0f57c4]">
+            {isLoading ? (
+              <>
+                <Spinner /> <div className="ml-3">Logging...</div>
+              </>
+            ) : (
+              "Login"
+            )}
+          </Button>
           <p className="text-[14px] font-[300] text-txtClr">
             Don't have an account yet?
             <Link className="text-blue-500 underline ml-2" to="/register">
