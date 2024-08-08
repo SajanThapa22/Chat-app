@@ -103,7 +103,7 @@ const ChatPage = () => {
     const chatsData = chats.data;
     if (chats.status === 200) {
       setNextUrl(chatsData.next);
-      if (page === 1) {
+      if (!chatsData.previous) {
         setInitialMessages([]);
         for (let i = chatsData.results.length - 1; i >= 0; i--) {
           setInitialMessages((prevMessages) => [
