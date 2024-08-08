@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const getChatHistory = async (
-  senderId: string | undefined,
-  receiverId: string | undefined,
-  page?: number | undefined
-) => {
+const getChatHistory = async (url: string, page?: number | undefined) => {
   const generateChatHistoryName = (
     senderUserId: string | undefined,
     receiverUserId: string | undefined
@@ -20,9 +16,7 @@ const getChatHistory = async (
         : receiverUserId;
     return `${minId}_${maxId}`;
   };
-  const historyName = generateChatHistoryName(senderId, receiverId);
-
-  const url = `http://127.0.0.1:8000/chat/history/${historyName}`;
+  // const historyName = generateChatHistoryName(senderId, receiverId);
 
   const access = localStorage.getItem("access");
 
@@ -35,8 +29,8 @@ const getChatHistory = async (
         page: page,
       },
     })
-    .then((res) => res.data)
-    .catch((err) => err.message);
+    .then((res) => res)
+    .catch((err) => err);
 };
 
 export default getChatHistory;
