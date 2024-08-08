@@ -10,6 +10,7 @@ import {
 } from "../services/useWebSocket";
 import getChatHistory from "../services/getChatHistory";
 import getCurrentUser from "../services/getCurrentUser";
+import { PiPaperPlaneRightFill } from "react-icons/pi";
 
 interface Message {
   chat_history: string;
@@ -165,7 +166,7 @@ const ChatPage = () => {
         )}
         <div
           id="chatsdivs"
-          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-10 py-5"
+          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-10 pb-5"
         >
           {initialMessages.map(
             (msg, index) =>
@@ -195,20 +196,20 @@ const ChatPage = () => {
             e.preventDefault();
             handleSendMessage();
           }}
-          className="w-full flex gap-4"
+          className="w-full flex items-center gap-4"
         >
           <input
             onChange={(e) => setInputMessage(e.target.value)}
             value={inputMessage}
             type="text"
-            className="focus:outline-none border border-gray-300 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
+            className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
             placeholder="Type a message.."
           />
           <button
             type="submit"
-            className="border-none bg-primary rounded-lg px-4 py-2 text-white"
+            className="border-none size-8 bg-transparent outline-none rounded-lg text-white"
           >
-            Send
+            <PiPaperPlaneRightFill className="text-primary size-8" />
           </button>
         </form>
       </div>
