@@ -100,12 +100,16 @@ const ChatPage = () => {
   useEffect(() => {
     const getTexts = async () => {
       const result = await getCurrentUser();
-      const chats = await getChatHistory(result.id, id, page);
-      setNextUrl(chats.next);
       setCurrentUser(result);
+
+      const chats = await getChatHistory(result.id, id, page);
+      console.log(chats);
+
+      chats && setNextUrl(chats.next);
       if (page === 1) {
         setInitialMessages([]);
         for (let i = chats.results.length - 1; i >= 0; i--) {
+          console.log(chats.results.length);
           setInitialMessages((prevMessages) => [
             ...prevMessages,
             chats.results[i],
