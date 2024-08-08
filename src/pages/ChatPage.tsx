@@ -1,4 +1,4 @@
-import { FormEvent, ChangeEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import pp from "../assets/img/pp.png";
 import { useParams } from "react-router-dom";
 import getUser from "../services/getUser";
@@ -9,8 +9,8 @@ import {
   disconnectSocket,
 } from "../services/useWebSocket";
 import getChatHistory from "../services/getChatHistory";
-import { useAuth } from "../context/AuthContext";
 import getCurrentUser from "../services/getCurrentUser";
+import axios from "axios";
 
 interface Message {
   chat_history: string;
@@ -36,6 +36,8 @@ const ChatPage = () => {
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [history, setHistory] = useState<string>();
   const [currentUser, setCurrentUser] = useState<User>();
+  const [page, setPage] = useState<number>(1);
+  const [nextUrl, setNextUrl] = useState<string | null>();
 
   const handleSendMessage = () => {
     if (inputMessage && inputMessage.trim()) {
@@ -78,7 +80,7 @@ const ChatPage = () => {
     return () => {
       disconnectSocket();
     };
-  }, [id]);
+  }, []);
 
   const generateChatHistoryName = (
     senderUserId: string | undefined,
@@ -98,19 +100,32 @@ const ChatPage = () => {
   useEffect(() => {
     const getTexts = async () => {
       const result = await getCurrentUser();
-      const chats = await getChatHistory(result.id, id);
-      console.log(chats);
+      const chats = await getChatHistory(result.id, id, page);
+      setNextUrl(chats.next);
       setCurrentUser(result);
-      for (let i = 0; i < chats.length; i++) {
-        setInitialMessages((prevMessages) => [...prevMessages, chats[i]]);
+      if (page === 1) {
+        setInitialMessages([]);
+        for (let i = chats.results.length - 1; i >= 0; i--) {
+          setInitialMessages((prevMessages) => [
+            ...prevMessages,
+            chats.results[i],
+          ]);
+        }
+      } else {
+        for (let i = 0; i < chats.results.length; i++) {
+          setInitialMessages((prev) => [chats.results[i], ...prev]);
+        }
       }
+
       const historyName = generateChatHistoryName(result.id, id);
       setHistory(historyName);
-      console.log(historyName);
     };
     getTexts();
-  }, [id]);
+  }, [id, page]);
 
+  const handleMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
   return (
     <div
       id="chat-section"
@@ -127,6 +142,14 @@ const ChatPage = () => {
         </div>
       </div>
 
+      {nextUrl && (
+        <div
+          onClick={handleMore}
+          className="text-center text-white mt-3 text-[18px] cursor-pointer"
+        >
+          load previous messages...
+        </div>
+      )}
       <div
         id="chats"
         className="flex-1 p-5 flex flex-col gap-3 max-h-screen overflow-y-scroll hide-scrollbar"
@@ -142,7 +165,7 @@ const ChatPage = () => {
                 className={`rounded-[20px] px-4 py-2 text-wrap max-w-[60%] text-white  ${
                   msg.user === currentUser?.id
                     ? "bg-primary ml-auto"
-                    : "bg-gray-500 mr-auto"
+                    : "bg-gray-400 mr-auto"
                 }`}
               >
                 {msg.message}

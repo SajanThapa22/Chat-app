@@ -3,7 +3,8 @@ import axios from "axios";
 
 const getChatHistory = async (
   senderId: string | undefined,
-  receiverId: string | undefined
+  receiverId: string | undefined,
+  page?: number | undefined
 ) => {
   const generateChatHistoryName = (
     senderUserId: string | undefined,
@@ -30,8 +31,11 @@ const getChatHistory = async (
       headers: {
         Authorization: `Bearer ${access}`,
       },
+      params: {
+        page: page,
+      },
     })
-    .then((res) => res.data.results)
+    .then((res) => res.data)
     .catch((err) => err.message);
 };
 
