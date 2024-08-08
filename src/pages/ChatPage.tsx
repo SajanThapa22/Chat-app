@@ -158,7 +158,7 @@ const ChatPage = () => {
         {nextUrl && (
           <div
             onClick={handleLoadMore}
-            className="text-center text-white mt-3 text-[18px] cursor-pointer"
+            className="text-center text-txtClr mt-3 text-[18px] cursor-pointer"
           >
             load more messages...
           </div>
