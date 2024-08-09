@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Sun from "../assets/svg/sun.svg?react";
 import { PiSun } from "react-icons/pi";
 import { IoMoonOutline } from "react-icons/io5";
 import System from "../assets/svg/system.svg?react";
+import { useTheme } from "../context/ThemeContext";
 
 const modes = [
   { text: "light", icon: PiSun },
@@ -17,52 +17,7 @@ interface Props {
 const ThemeSwitch = ({ visibility }: Props) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const handleClick = () => setIsClicked(!isClicked);
-
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "system"
-  );
-  const element = document.documentElement;
-
-  const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-  function onWindowMatch() {
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) && darkQuery.matches)
-    ) {
-      element.classList.add("dark");
-    } else {
-      element.classList.remove("dark");
-    }
-  }
-  onWindowMatch();
-
-  useEffect(() => {
-    switch (theme) {
-      case "dark":
-        element.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-        break;
-      case "light":
-        element.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-        break;
-      default:
-        localStorage.removeItem("theme");
-        onWindowMatch();
-        break;
-    }
-  }, [theme]);
-
-  darkQuery.addEventListener("change", (e) => {
-    if (!("theme" in localStorage)) {
-      if (e.matches) {
-        element.classList.add("dark");
-      } else {
-        element.classList.remove("dark");
-      }
-    }
-  });
+  const { theme, setTheme } = useTheme();
 
   return (
     <>
