@@ -39,7 +39,7 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
         setUsers(res.data);
       })
       .catch((err) => {
-        if (err.response.status === 400) {
+        if (err.response.status === 404) {
           setError("No users found");
         }
       });
@@ -54,9 +54,7 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
             <div>search users</div>
           </div>
         ) : (
-          <div className="text-center text-[20px] text-txtClr">
-            No users found
-          </div>
+          <div className="text-center text-[20px] text-txtClr">{error}</div>
         )
       ) : (
         <div className="bg-bgComp w-full h-full">

@@ -78,14 +78,3 @@ export const useAppRouter = () => {
   const routes = createRoutes(windowWidth);
   return createBrowserRouter(routes);
 };
-
-//  [
-//       {
-//         path: "chat/:id/",
-//         element: (
-//           <PrivateRoute>
-//             <ChatPage />
-//           </PrivateRoute>
-//         ),
-//       },
-//     ],

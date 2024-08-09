@@ -10,11 +10,17 @@ export interface Message {
 
 const ChatLayout = () => {
   const [width, setWidth] = useState<number>(window.innerWidth);
+
   useEffect(() => {
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
       setWidth(window.innerWidth);
-    });
-  }, [window.innerWidth]);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.addEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <>

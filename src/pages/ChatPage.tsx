@@ -154,7 +154,7 @@ const ChatPage = () => {
 
   return (
     <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
-      <div className="px-3 py-4 border-b border-b-gray-400">
+      <div className="px-3 lg:px-8 py-4 border-b border-b-gray-400">
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
           <div className="rounded-full aspect-square overflow-hidden size-10">
@@ -181,7 +181,7 @@ const ChatPage = () => {
         )}
         <div
           id="chatsdivs"
-          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 py-5"
+          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 lg:px-8 py-5"
         >
           {initialMessages.map(
             (msg, index) =>
@@ -205,7 +205,7 @@ const ChatPage = () => {
         </div>
       </div>
 
-      <div className="px-4 py-5 w-full">
+      <div className="px-4 lg:px-8 py-5 w-full">
         <form
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
