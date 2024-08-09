@@ -6,7 +6,7 @@ const Navigator = () => {
   return (
     <FaArrowLeft
       onClick={() => navigate("/")}
-      className="size-7 text-gray-500 cursor-pointer lg:hidden"
+      className="size-6 text-gray-500 cursor-pointer lg:hidden"
     />
   );
 };

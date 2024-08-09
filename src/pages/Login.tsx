@@ -62,6 +62,7 @@ const Login = () => {
           }
         })
         .catch((err) => {
+          setIsLoading(false);
           console.log(err.message);
           if (err.response.status === 401) {
             setError("Invalid username or password");
