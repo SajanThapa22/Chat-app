@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import CheckLogged from "../services/CheckLogged";
+import ChatUI from "../pages/chatUI";
+import ChatLayout from "../pages/ChatLayout";
 
-const PrivateRoute: React.FC = () => {
+interface Props {
+  children: ReactNode;
+}
+
+const PrivateRoute = ({ children }: Props) => {
   const { isLoggedIn } = useAuth();
   const { authenticated } = CheckLogged();
   const navigate = useNavigate();
@@ -18,7 +24,7 @@ const PrivateRoute: React.FC = () => {
     checkAuth();
   }, [isLoggedIn, navigate]);
 
-  return authenticated ? <Outlet /> : null;
+  return authenticated && <>{children}</>;
 };
 
 export default PrivateRoute;

@@ -3,27 +3,89 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PrivateRoute from "../components/PrivateRoute";
 import ChatPage from "../pages/ChatPage";
-import ChatLayout from "../pages/ChatLayout";
 import DefaultMessage from "../pages/DefaultMessage";
+import ChatLayout from "../pages/ChatLayout";
+import ChatUI from "../pages/chatUI";
+import { useState, useEffect } from "react";
 
-const router = createBrowserRouter([
+const useWindowWidth = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return windowWidth;
+};
+
+const createRoutes = (windowWidth: number) => [
   {
     path: "/",
-    element: <PrivateRoute />,
-    children: [
-      {
-        path: "/",
-        element: <ChatLayout />,
-        children: [
-          { index: true, element: <DefaultMessage /> },
-          { path: "chat/:id/", element: <ChatPage /> },
-        ],
-      },
-    ],
+    element: (
+      <PrivateRoute>
+        <ChatLayout />
+      </PrivateRoute>
+    ),
+    children:
+      windowWidth > 750
+        ? [
+            {
+              index: true,
+              element: <DefaultMessage />,
+            },
+            {
+              path: "chat/:id/",
+              element: (
+                <PrivateRoute>
+                  <ChatPage />
+                </PrivateRoute>
+              ),
+            },
+          ]
+        : [
+            {
+              index: true,
+              element: (
+                <PrivateRoute>
+                  <ChatUI />
+                </PrivateRoute>
+              ),
+            },
+            {
+              path: "chat/:id/",
+              element: (
+                <PrivateRoute>
+                  <ChatPage />
+                </PrivateRoute>
+              ),
+            },
+          ],
   },
 
   { path: "login", element: <Login /> },
   { path: "register", element: <Register /> },
-]);
+];
 
-export default router;
+export const useAppRouter = () => {
+  const windowWidth = useWindowWidth();
+  const routes = createRoutes(windowWidth);
+  return createBrowserRouter(routes);
+};
+
+//  [
+//       {
+//         path: "chat/:id/",
+//         element: (
+//           <PrivateRoute>
+//             <ChatPage />
+//           </PrivateRoute>
+//         ),
+//       },
+//     ],

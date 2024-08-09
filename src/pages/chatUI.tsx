@@ -11,14 +11,14 @@ import { FiLogOut } from "react-icons/fi";
 const ChatUI = () => {
   const { users } = GetUsers();
   const { logout } = useAuth();
-  const [searchTerm, setSearchTerm] = useState<string>();
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
   const [userId, setUserId] = useState<string>();
 
   return (
     <div
       id="all-chats"
-      className="bg-bgComp px-4 border-r border-r-[#d1d1d1] min-h-screen flex flex-col"
+      className="bg-bgComp px-4 border-r border-r-gray-400 min-h-screen flex flex-col"
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">

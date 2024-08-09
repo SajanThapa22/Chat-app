@@ -12,6 +12,7 @@ import getChatHistory from "../services/getChatHistory";
 import getCurrentUser from "../services/getCurrentUser";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
 import Spinner from "../components/Spinner";
+import Navigator from "../components/Navigator";
 
 interface Message {
   chat_history: string;
@@ -38,7 +39,10 @@ const ChatPage = () => {
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [history, setHistory] = useState<string>();
   const [currentUser, setCurrentUser] = useState<User>();
-  const [nextUrl, setNextUrl] = useState<string | null>(null);
+  const [url, setUrl] = useState<{ nextUrl: string; prevUrl: string }>({
+    nextUrl: "",
+    prevUrl: "",
+  });
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleSendMessage = () => {
@@ -103,7 +107,8 @@ const ChatPage = () => {
     const chats = await getChatHistory(url);
     const chatsData = chats.data;
     if (chats.status === 200) {
-      setNextUrl(chatsData.next);
+      setUrl((prev) => ({ ...prev, nextUrl: chats.data.next }));
+      setUrl((prev) => ({ ...prev, prevUrl: chats.data.previous }));
       if (!chatsData.previous) {
         setInitialMessages([]);
         for (let i = chatsData.results.length - 1; i >= 0; i--) {
@@ -117,6 +122,8 @@ const ChatPage = () => {
           setInitialMessages((prev) => [chatsData.results[i], ...prev]);
         }
       }
+    } else {
+      setUrl((prev) => ({ ...prev, nextUrl: "", prevUrl: "" }));
     }
   };
 
@@ -134,8 +141,8 @@ const ChatPage = () => {
   }, [id]);
 
   const handleLoadMore = async () => {
-    if (nextUrl) {
-      getTexts(nextUrl);
+    if (url.nextUrl) {
+      getTexts(url.nextUrl);
     }
   };
 
@@ -146,12 +153,10 @@ const ChatPage = () => {
   }, [initialMessages]);
 
   return (
-    <div
-      id="chat-section"
-      className="flex flex-col bg-bgComp max-h-dvh max-w-full"
-    >
-      <div className="px-3 py-2 border-b border-b-gray-400">
-        <div className="flex gap-4 px-2 py-2 items-center">
+    <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
+      <div className="px-3 py-4 border-b border-b-gray-400">
+        <div className="flex gap-4 items-center ml-3">
+          <Navigator />
           <div className="rounded-full aspect-square overflow-hidden size-10">
             <img src={pp} className="size-full" alt="User Avatar" />
           </div>
@@ -166,7 +171,7 @@ const ChatPage = () => {
         ref={containerRef}
         className="flex-1 h-full overflow-y-auto hide-scrollbar"
       >
-        {nextUrl && (
+        {url.nextUrl && initialMessages && (
           <div
             onClick={handleLoadMore}
             className="text-center text-txtClr mt-3 text-[18px] cursor-pointer"
@@ -176,7 +181,7 @@ const ChatPage = () => {
         )}
         <div
           id="chatsdivs"
-          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-10 py-5"
+          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 py-5"
         >
           {initialMessages.map(
             (msg, index) =>
@@ -200,7 +205,7 @@ const ChatPage = () => {
         </div>
       </div>
 
-      <div className="px-10 py-5 w-full">
+      <div className="px-4 py-5 w-full">
         <form
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
