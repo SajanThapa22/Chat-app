@@ -16,6 +16,7 @@ export default {
         primary: "var(--primary)",
         selected: "var(--bg-selected)",
         spinner: "var(--spinner)",
+        bgPop: "var(--bg-pop)",
       },
     },
   },

@@ -16,8 +16,9 @@
   --txt-clr: #565858;
   --bg-comp: #ffffff;
   --bg-dd: #e6e6e6;
-  --bg-selected: #e6e6e6;
+  --bg-selected: #d1d5db;
   --spinner: #6b7280;
+  --bg-pop: #e5e7eb;
 }
 
 .dark {
@@ -25,6 +26,7 @@
   --txt-clr: #fff;
   --bg-comp: #41454b;
   --bg-dd: #3b3e43;
-  --bg-selected: #676d77;
+  --bg-selected: #6b7280;
   --spinner: #fff;
+  --bg-pop: #32373d;
 }

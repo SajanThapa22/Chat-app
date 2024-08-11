@@ -1,20 +1,80 @@
 import { useState } from "react";
 import pp from "../assets/img/pp.png";
+import ProfilePictureUpdate from "./ProfilePictureUpdate";
+import ThemeSelector from "./ThemeSelector";
+import { IoClose } from "react-icons/io5";
 
-const UserSettings = () => {
+interface Props {
+  url: string;
+  img: string;
+}
+
+const UserSettings = ({ url, img }: Props) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [firstVisible, setFirstVisible] = useState<boolean>(true);
 
   const handleClick = () => {
     setIsClicked(!isClicked);
   };
 
+  const setFirstVisibleTrue = () => {
+    setFirstVisible(true);
+  };
+  const setFirstVisibleFalse = () => {
+    setFirstVisible(false);
+  };
+
   return (
-    <div className="relative">
-      <div className="size-8 rounded-full overflow-hidden">
+    <div>
+      <div
+        onClick={handleClick}
+        className="size-8 rounded-full overflow-hidden"
+      >
         <img src={pp} className="w-full h-full object-cover" alt="" />
       </div>
+      <div className="absolute top-0 left-1/2 translate-y-1/2 -translate-x-1/2">
+        <div
+          className={`relative  w-[300px] lg:w-[500px] xl:w-[600px] aspect-square size-[300px] bg-bgPop rounded-lg flex p-7 gap-7 ${
+            isClicked ? "visible" : "hidden"
+          }`}
+        >
+          <div>
+            <div
+              onClick={setFirstVisibleTrue}
+              className={`cursor-pointer px-4 py-2 rounded-[8px] ${
+                firstVisible && "bg-selected"
+              }`}
+            >
+              Edit profile
+            </div>
+            <div
+              onClick={setFirstVisibleFalse}
+              className={`mt-2 cursor-pointer px-4 py-2 rounded-[8px] ${
+                !firstVisible && "bg-selected"
+              }`}
+            >
+              Change theme
+            </div>
+          </div>
 
-      <div className="absolute bottom-0 translate-y-full rounded-lg"></div>
+          <div className="h-full w-[1px] bg-selected"></div>
+
+          <div>
+            {firstVisible ? (
+              <ProfilePictureUpdate img={img} url={url} />
+            ) : (
+              <ThemeSelector />
+            )}
+          </div>
+
+          <div
+            onClick={() => setIsClicked(false)}
+            className="absolute right-4 top-4 cursor-pointer"
+          >
+            <IoClose className="text-selected size-6" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
