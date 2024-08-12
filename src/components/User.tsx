@@ -39,7 +39,7 @@ const User = ({
           <div className="w-full flex justify-between">
             <div className="text-[18px]">{username}</div>
             {status === "online" && (
-              <div className="w-5 aspect-square bg-green-500 rounded-full"></div>
+              <div className="size-3 bg-[#00FF00] rounded-full"></div>
             )}
           </div>
           <div className="flex justify-between gap-2 text-sm">
