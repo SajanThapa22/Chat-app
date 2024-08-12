@@ -146,7 +146,7 @@ const ChatPage = () => {
 
   return (
     <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
-      <div className="px-3 lg:px-8 py-4 border-b border-b-gray-400">
+      <div className="px-3 lg:px-8 py-2 lg:py-4 border-b border-b-gray-400">
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
           <div className="rounded-full aspect-square overflow-hidden size-10">
