@@ -9,7 +9,7 @@ interface Props {
   id?: string;
   onclick?: () => void;
   style?: string;
-  status?: "online" | "offline";
+  status?: string;
 }
 
 const User = ({
