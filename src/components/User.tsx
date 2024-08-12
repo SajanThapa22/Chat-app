@@ -31,7 +31,7 @@ const User = ({
         onClick={onclick}
         className={`flex gap-4 px-2 py-2 items-center rounded-md ${style}`}
       >
-        <div className="rounded-full aspect-square overflow-hidden size-10">
+        <div className="rounded-full overflow-hidden size-10">
           <img src={img} className="size-full" />
         </div>
 
