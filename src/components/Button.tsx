@@ -19,26 +19,3 @@ const Button = ({ styles, type, disabled, children }: Props) => {
 };
 
 export default Button;
-
-// const handleInputChange = (event:FormEvent) => {
-//   const {name, value} = event.target;
-//   setFormData({
-//     ...formData,
-//     [name]: value
-//   })
-// }
-
-// const handleSubmit = async (e: FormEvent) => {
-//   e.preventDefault();
-//   try {
-//     fetch("http://localhost:5000/user/register", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(formData),
-//     });
-//   } catch (err) {
-//     console.log("error occured", err);
-//   }
-// };

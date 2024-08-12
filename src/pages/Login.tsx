@@ -3,7 +3,6 @@ import Button from "../components/Button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
-import CheckLogged from "../services/CheckLogged";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Spinner from "../components/Spinner";
@@ -20,7 +19,6 @@ interface Tokens {
 
 const Login = () => {
   const { isLoggedIn, login } = useAuth();
-  const { authenticated, setAuthenticated } = CheckLogged();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -29,7 +27,6 @@ const Login = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const result = await isLoggedIn();
-      setAuthenticated(result);
       if (result) {
         navigate("/");
       }

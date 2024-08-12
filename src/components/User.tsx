@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface Props {
   img: string;
@@ -11,16 +11,7 @@ interface Props {
   style?: string;
 }
 
-const User = ({
-  img,
-  username,
-  isSelected,
-  message,
-  time,
-  id,
-  onclick,
-  style,
-}: Props) => {
+const User = ({ img, username, message, time, id, onclick, style }: Props) => {
   return (
     <NavLink
       to={`/chat/${id}`}

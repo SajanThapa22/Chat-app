@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useState,
   useEffect,
@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { jwtDecode } from "jwt-decode";
 import api from "../services/api";
-import axios from "axios";
 
 interface AuthContextType {
   accessToken: string | null;
@@ -16,13 +15,6 @@ interface AuthContextType {
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   fetchNewAccess: () => void;
-  userdata: User | undefined;
-}
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
 }
 
 interface AuthProviderProps {
@@ -38,7 +30,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [refreshToken, setRefreshToken] = useState<string | null>(
     localStorage.getItem("refresh")
   );
-  const [userdata, setUserdata] = useState<User>();
 
   const isTokenValid = (token: string | null): boolean => {
     if (!token) return false;
@@ -115,7 +106,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         fetchNewAccess,
-        userdata,
       }}
     >
       {children}

@@ -11,7 +11,6 @@ import {
 import getChatHistory from "../services/getChatHistory";
 import getCurrentUser from "../services/getCurrentUser";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
-import Spinner from "../components/Spinner";
 import Navigator from "../components/Navigator";
 
 interface Message {
@@ -34,7 +33,6 @@ interface User {
 const ChatPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = getUser(id);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inputMessage, setInputMessage] = useState<string>("");
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [history, setHistory] = useState<string>();
@@ -192,7 +190,6 @@ const ChatPage = () => {
                   }`}
                 >
                   {msg.message}
-                  {/* {msg.chat_history} */}
                 </div>
               )
           )}

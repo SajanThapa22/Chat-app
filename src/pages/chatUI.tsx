@@ -13,7 +13,6 @@ const ChatUI = () => {
   const { logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
-  const [userId, setUserId] = useState<string>();
 
   return (
     <div
@@ -60,9 +59,6 @@ const ChatUI = () => {
         >
           {users?.map((u) => (
             <User
-              onclick={() => {
-                setUserId(u.id);
-              }}
               id={u.id}
               key={u.id}
               username={u.username}

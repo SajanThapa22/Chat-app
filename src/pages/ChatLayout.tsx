@@ -37,5 +37,3 @@ const ChatLayout = () => {
 };
 
 export default ChatLayout;
-
-// initialMessages, handleSendMessage, user, id

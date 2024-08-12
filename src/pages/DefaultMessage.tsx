@@ -1,5 +1,5 @@
-import React from "react";
 import Logo from "../assets/svg/logo.svg?react";
+
 const DefaultMessage = () => {
   return (
     <div className="text-center w-full h-dvh text-txtClr bg-bgComp flex flex-col justify-center items-center gap-5">
