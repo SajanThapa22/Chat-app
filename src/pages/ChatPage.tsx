@@ -151,7 +151,10 @@ const ChatPage = () => {
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
           <div className="rounded-full aspect-square overflow-hidden size-10">
-            <img src={anonymous} className="size-full" />
+            <img
+              src={user?.profile.profile_pic || anonymous}
+              className="size-full object-cover"
+            />
           </div>
           <div className="text-[18px] text-txtClr">{user?.username}</div>
           {user?.user_status.status === "online" && (

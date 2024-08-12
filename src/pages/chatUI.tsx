@@ -3,16 +3,25 @@ import User from "../components/User";
 import anonymous from "../assets/img/default_image.png";
 import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
 import { FiLogOut } from "react-icons/fi";
 import UserSettings from "../components/UserSettings";
+import getCurrentUser, { Users } from "../services/getCurrentUser";
 
 const ChatUI = () => {
   const { users } = GetUsers();
   const { logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
+  const [currentUser, setCurrentUser] = useState<Users>();
+
+  useEffect(() => {
+    async function getUser() {
+      const result = await getCurrentUser();
+      setCurrentUser(result);
+    }
+  });
 
   return (
     <div
@@ -24,7 +33,10 @@ const ChatUI = () => {
           <div className="text-[22px] font-medium">Chats</div>
           <div className="flex gap-5">
             <FiLogOut onClick={logout} className="size-6 text-txtClr" />
-            <UserSettings url="" img={anonymous} />
+            <UserSettings
+              url=""
+              img={currentUser?.profile.profile_pic || anonymous}
+            />
           </div>
         </div>
 
