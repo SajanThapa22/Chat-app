@@ -30,7 +30,11 @@ const UserSettings = ({ url, img }: Props) => {
         onClick={handleClick}
         className="size-8 rounded-full overflow-hidden cursor-pointer"
       >
-        <img src={anonymous} className="w-full h-full object-cover" alt="" />
+        <img
+          src={img || anonymous}
+          className="w-full h-full object-cover"
+          alt=""
+        />
       </div>
 
       <div className="absolute top-0 left-1/2 translate-y-1/2 -translate-x-1/2">
