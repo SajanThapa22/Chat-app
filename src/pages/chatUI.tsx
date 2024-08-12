@@ -5,7 +5,6 @@ import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
 import { useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
-import ThemeSwitch from "../components/ThemeSwitch";
 import { FiLogOut } from "react-icons/fi";
 import UserSettings from "../components/UserSettings";
 
@@ -25,6 +24,7 @@ const ChatUI = () => {
         <div className="flex justify-between py-3 text-txtClr items-center">
           <div className="text-[22px] font-medium">Chats</div>
           <div className="flex gap-5">
+            <FiLogOut onClick={logout} className="size-6 text-txtClr" />
             <UserSettings url="" img={pp} />
           </div>
         </div>

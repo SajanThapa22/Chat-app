@@ -48,7 +48,7 @@ const Login = () => {
     setIsLoading(true);
     if (isValid) {
       api
-        .post<Tokens>(`/token/`, data, {
+        .post<Tokens>(`/auth/token/`, data, {
           headers: {
             "Content-Type": "application/json",
           },

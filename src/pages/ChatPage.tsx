@@ -133,7 +133,7 @@ const ChatPage = () => {
       setCurrentUser(result);
       const historyName = generateChatHistoryName(result.id, id);
       setHistory(historyName);
-      const initialurl = `http://127.0.0.1:8000/chat/history/${historyName}`;
+      const initialurl = `https://chat-app-xcsf.onrender.com/chat/history/${historyName}`;
       getTexts(initialurl);
     }
 
@@ -145,12 +145,6 @@ const ChatPage = () => {
       getTexts(url.nextUrl);
     }
   };
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [initialMessages]);
 
   return (
     <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
@@ -210,6 +204,10 @@ const ChatPage = () => {
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
             handleSendMessage();
+            if (containerRef.current) {
+              containerRef.current.scrollTop =
+                containerRef.current.scrollHeight;
+            }
           }}
           className="w-full flex items-center gap-4"
         >

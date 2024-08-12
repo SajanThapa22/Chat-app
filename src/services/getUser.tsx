@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import api from "./api";
 
 interface User {
   id: string;
@@ -13,15 +14,18 @@ const getUser = (id?: string) => {
 
   useEffect(() => {
     const access = localStorage.getItem("access");
-    const url = `http://127.0.0.1:8000/chat/user/${id}`;
+    const url = `/chat/user/${id}`;
 
-    axios
+    api
       .get(url, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
       })
-      .then((res) => setUser(res.data))
+      .then((res) => {
+        setUser(res.data);
+        console.log(res.data);
+      })
       .catch((err) => setError(err.message));
   }, [id]);
   return { user, error };

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import api from "./api";
 
 export interface User {
   id: string | undefined;
@@ -9,9 +9,9 @@ export interface User {
 
 const getCurrentUser = async () => {
   const access = localStorage.getItem("access");
-  const url = `http://127.0.0.1:8000/auth/loggedin_user_details/`;
+  const url = `/auth/loggedin_user_details/`;
 
-  return await axios
+  return await api
     .get(url, {
       headers: {
         Authorization: `Bearer ${access}`,

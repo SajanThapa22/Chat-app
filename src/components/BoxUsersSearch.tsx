@@ -5,6 +5,7 @@ import User from "./User";
 import pp from "../assets/img/pp.png";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import api from "../services/api";
 
 interface Props {
   searchTerm: string | undefined;
@@ -17,7 +18,7 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
 
   useEffect(() => {
     const access = localStorage.getItem("access");
-    const url = `http://127.0.0.1:8000/chat/users`;
+    const url = `/chat/users`;
 
     if (!access) return;
 
@@ -26,7 +27,7 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       return;
     }
 
-    axios
+    api
       .get(url, {
         headers: {
           Authorization: `Bearer ${access}`,

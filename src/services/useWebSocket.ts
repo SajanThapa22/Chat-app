@@ -7,7 +7,7 @@ let socket: WebSocket | null = null;
 // Function to initiate the WebSocket connection
 export const initiateSocket = (): WebSocket => {
   const token = localStorage.getItem("access");
-  const socketUrl = `ws://localhost:8000/ws/chat/?token=${token}`;
+  const socketUrl = `wss://chat-app-xcsf.onrender.com/ws/chat/?token=${token}`;
   socket = new WebSocket(socketUrl);
 
   socket.onopen = () => {

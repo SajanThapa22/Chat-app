@@ -16,7 +16,6 @@ interface AuthContextType {
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   fetchNewAccess: () => void;
-  getCurrentUser: () => void;
   userdata: User | undefined;
 }
 
@@ -53,7 +52,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!refreshToken) return false;
 
     try {
-      const response = await api.post(`/token/refresh/`, refresh, {
+      const response = await api.post(`/auth/token/refresh/`, refresh, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -104,20 +103,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem("refresh");
   };
 
-  const getCurrentUser = () => {
-    const url = `http://127.0.0.1:8000/auth/loggedin_user_details/`;
-    axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((res) => setUserdata(res.data))
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   useEffect(() => {
     isLoggedIn();
   }, [isLoggedIn]);
@@ -130,7 +115,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         fetchNewAccess,
-        getCurrentUser,
         userdata,
       }}
     >

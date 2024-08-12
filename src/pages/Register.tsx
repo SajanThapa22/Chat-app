@@ -52,7 +52,7 @@ const Register = () => {
     const { confirmPassword, ...rest } = data;
     if (isValid) {
       api
-        .post(`/register/`, rest, {
+        .post(`/auth/register/`, rest, {
           headers: {
             "Content-Type": "application/json",
           },
