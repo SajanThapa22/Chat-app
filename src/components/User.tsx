@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 interface Props {
-  img: string;
+  img: string | undefined;
   username: string | undefined;
   message?: string;
   time?: string;

@@ -1,9 +1,17 @@
 import api from "./api";
 
-export interface User {
-  id: string | undefined;
+export interface Users {
+  id: string;
   email: string;
   username: string;
+  profile: {
+    profile_pic: string;
+    bio: string;
+  };
+  user_status: {
+    status: string;
+    last_seen: string;
+  };
 }
 
 const getCurrentUser = async () => {

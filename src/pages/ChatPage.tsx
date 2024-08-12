@@ -12,6 +12,7 @@ import getChatHistory from "../services/getChatHistory";
 import getCurrentUser from "../services/getCurrentUser";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
 import Navigator from "../components/Navigator";
+import User from "../components/User";
 
 interface Message {
   chat_history: string;
@@ -149,11 +150,15 @@ const ChatPage = () => {
       <div className="px-3 lg:px-8 py-4 border-b border-b-gray-400">
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
-          <div className="rounded-full aspect-square overflow-hidden size-10">
+          {/* <div className="rounded-full aspect-square overflow-hidden size-10">
             <img src={pp} className="size-full" alt="User Avatar" />
-          </div>
+          </div> */}
           <div className="w-full text-txtClr">
-            <div className="text-[18px]">{user?.username}</div>
+            <User
+              username={user?.username}
+              img={user?.profile.profile_pic}
+              status={user?.user_status.status}
+            />
           </div>
         </div>
       </div>

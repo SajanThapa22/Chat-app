@@ -3,8 +3,16 @@ import api from "./api";
 
 interface User {
   id: string;
-  username: string;
   email: string;
+  username: string;
+  profile: {
+    profile_pic: string;
+    bio: string;
+  };
+  user_status: {
+    status: string;
+    last_seen: string;
+  };
 }
 
 const getUser = (id?: string) => {
