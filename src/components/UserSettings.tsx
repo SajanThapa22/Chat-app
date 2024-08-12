@@ -1,5 +1,5 @@
 import { useState } from "react";
-import pp from "../assets/img/pp.png";
+import anonymous from "../assets/img/default_image.png";
 import ProfilePictureUpdate from "./ProfilePictureUpdate";
 import ThemeSelector from "./ThemeSelector";
 import { IoClose } from "react-icons/io5";
@@ -30,7 +30,7 @@ const UserSettings = ({ url, img }: Props) => {
         onClick={handleClick}
         className="size-8 rounded-full overflow-hidden cursor-pointer"
       >
-        <img src={pp} className="w-full h-full object-cover" alt="" />
+        <img src={anonymous} className="w-full h-full object-cover" alt="" />
       </div>
 
       <div className="absolute top-0 left-1/2 translate-y-1/2 -translate-x-1/2">

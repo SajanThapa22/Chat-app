@@ -12,6 +12,7 @@ import getCurrentUser from "../services/getCurrentUser";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
 import Navigator from "../components/Navigator";
 import User from "../components/User";
+import anonymous from "../assets/img/default_image.png";
 
 interface Message {
   chat_history: string;
@@ -150,7 +151,7 @@ const ChatPage = () => {
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
           <div className="rounded-full aspect-square overflow-hidden size-10">
-            <img src={user?.profile.profile_pic} className="size-full" />
+            <img src={anonymous} className="size-full" />
           </div>
           <div className="text-[18px] text-txtClr">{user?.username}</div>
           {user?.user_status.status === "online" && (

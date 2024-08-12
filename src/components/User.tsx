@@ -31,16 +31,20 @@ const User = ({
         onClick={onclick}
         className={`flex gap-4 px-2 py-2 items-center rounded-md ${style}`}
       >
-        <div className="rounded-full overflow-hidden w-10 h-10">
-          <img src={img} className="size-full" />
+        <div
+          className={`overflow-hidden w-12 aspect-square rounded-full ${
+            status === "online" && "border-[3px] border-[#00FF00]"
+          }`}
+        >
+          <img src={img} className="w-full h-full object-cover" />
         </div>
 
-        <div className="w-full text-txtClr">
+        <div className="text-txtClr w-full">
           <div className="w-full flex justify-between">
             <div className="text-[18px]">{username}</div>
-            {status === "online" && (
+            {/* {status === "online" && (
               <div className="size-3 bg-[#00FF00] rounded-full"></div>
-            )}
+            )} */}
           </div>
           <div className="flex justify-between gap-2 text-sm">
             <div className="">{message}</div>
