@@ -9,9 +9,19 @@ interface Props {
   id?: string;
   onclick?: () => void;
   style?: string;
+  status?: "online" | "offline";
 }
 
-const User = ({ img, username, message, time, id, onclick, style }: Props) => {
+const User = ({
+  img,
+  username,
+  message,
+  time,
+  id,
+  onclick,
+  style,
+  status,
+}: Props) => {
   return (
     <NavLink
       to={`/chat/${id}`}
@@ -26,7 +36,12 @@ const User = ({ img, username, message, time, id, onclick, style }: Props) => {
         </div>
 
         <div className="w-full text-txtClr">
-          <div className="text-[18px]">{username}</div>
+          <div className="w-full flex justify-between">
+            <div className="text-[18px]">{username}</div>
+            {status === "online" && (
+              <div className="w-5 aspect-square bg-green-500 rounded-full"></div>
+            )}
+          </div>
           <div className="flex justify-between gap-2 text-sm">
             <div className="">{message}</div>
             <div>{time}</div>
