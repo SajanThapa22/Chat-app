@@ -1,6 +1,6 @@
 import { CiSearch } from "react-icons/ci";
 import User from "../components/User";
-import pp from "../assets/img/pp.png";
+import anonymous from "../assets/img/default_image.png";
 import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
 import { useState } from "react";
@@ -24,7 +24,7 @@ const ChatUI = () => {
           <div className="text-[22px] font-medium">Chats</div>
           <div className="flex gap-5">
             <FiLogOut onClick={logout} className="size-6 text-txtClr" />
-            <UserSettings url="" img={pp} />
+            <UserSettings url="" img={anonymous} />
           </div>
         </div>
 
@@ -62,7 +62,7 @@ const ChatUI = () => {
               id={u.id}
               key={u.id}
               username={u.username}
-              img={u.profile.profile_pic || pp}
+              img={u.profile.profile_pic || anonymous}
               message={"Click to see chats"}
               time="11:20 PM"
               status={u.user_status.status}
