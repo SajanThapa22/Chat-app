@@ -62,7 +62,7 @@ const ChatUI = () => {
               id={u.id}
               key={u.id}
               username={u.username}
-              img={pp}
+              img={u.profile.profile_pic || pp}
               message={"Click to see chats"}
               time="11:20 PM"
               status={u.user_status.status}

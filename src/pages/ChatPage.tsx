@@ -149,16 +149,17 @@ const ChatPage = () => {
       <div className="px-3 lg:px-8 py-4 border-b border-b-gray-400">
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
-          {/* <div className="rounded-full aspect-square overflow-hidden size-10">
-            <img src={pp} className="size-full" alt="User Avatar" />
-          </div> */}
-          <div className="w-full text-txtClr">
-            <User
-              username={user?.username}
-              img={user?.profile.profile_pic}
-              status={user?.user_status.status}
+          <div className="rounded-full aspect-square overflow-hidden size-10">
+            <img
+              src={user?.profile.profile_pic}
+              className="size-full"
+              alt="User Avatar"
             />
           </div>
+          <div className="text-[18px] ">{user?.username}</div>
+          {user?.user_status.status === "online" && (
+            <div className="size-4 bg-[#00FF00] rounded-full"></div>
+          )}
         </div>
       </div>
 
