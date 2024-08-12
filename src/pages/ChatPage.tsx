@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
-import pp from "../assets/img/pp.png";
 import { useParams } from "react-router-dom";
 import getUser from "../services/getUser";
 import {
