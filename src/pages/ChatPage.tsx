@@ -150,15 +150,11 @@ const ChatPage = () => {
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
           <div className="rounded-full aspect-square overflow-hidden size-10">
-            <img
-              src={user?.profile.profile_pic}
-              className="size-full"
-              alt="User Avatar"
-            />
+            <img src={user?.profile.profile_pic} className="size-full" />
           </div>
-          <div className="text-[18px] ">{user?.username}</div>
+          <div className="text-[18px] text-txtClr">{user?.username}</div>
           {user?.user_status.status === "online" && (
-            <div className="size-4 bg-[#00FF00] rounded-full"></div>
+            <div className="size-3 bg-[#00FF00] rounded-full"></div>
           )}
         </div>
       </div>
