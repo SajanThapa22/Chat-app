@@ -21,7 +21,8 @@ const ChatUI = () => {
       const result = await getCurrentUser();
       setCurrentUser(result);
     }
-  });
+    getUser();
+  }, []);
 
   return (
     <div
