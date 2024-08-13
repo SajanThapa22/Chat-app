@@ -1,106 +1,29 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import getUser from "../services/getUser";
-import {
-  sendMessage,
-  initiateSocket,
-  subscribeToChat,
-  disconnectSocket,
-} from "../services/useWebSocket";
-import getChatHistory from "../services/getChatHistory";
-import getCurrentUser from "../services/getCurrentUser";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
 import Navigator from "../components/Navigator";
-import User from "../components/User";
 import anonymous from "../assets/img/default_image.png";
-
-interface Message {
-  chat_history: string;
-  deliverd_timestamp: null;
-  id: number;
-  media: null;
-  message: string;
-  reply_of: null;
-  seen_timestamp: null;
-  sent_timestamp: string;
-  user: string;
-}
-interface User {
-  id: string;
-  username: string;
-  email: string;
-}
+import { useChat } from "../context/ChatContext";
+import getUser from "../services/getUser";
+import getChatHistory from "../services/getChatHistory";
+import getCurrentUser from "../services/getCurrentUser";
 
 const ChatPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = getUser(id);
-  const [inputMessage, setInputMessage] = useState<string>("");
-  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
-  const [history, setHistory] = useState<string>();
-  const [currentUser, setCurrentUser] = useState<User>();
-  const [url, setUrl] = useState<{ nextUrl: string; prevUrl: string }>({
-    nextUrl: "",
-    prevUrl: "",
-  });
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const handleSendMessage = () => {
-    if (inputMessage && inputMessage.trim()) {
-      const messageData = {
-        type: "message",
-        message: inputMessage,
-        receiver_id: id,
-        group_id: null,
-      };
-
-      sendMessage(messageData);
-
-      setInputMessage("");
-    }
-  };
-
-  useEffect(() => {
-    initiateSocket();
-    subscribeToChat((err, data) => {
-      if (err) {
-        console.error("Error subscribing to chat:", err);
-        return;
-      }
-
-      const receivedMessage: Message = {
-        chat_history: data.message.chat_history,
-        deliverd_timestamp: data.message.deliverd_timestamp,
-        id: data.message.id,
-        media: data.message.media,
-        message: data.message.message,
-        reply_of: data.message.reply_of,
-        seen_timestamp: data.message.seen_timestamp,
-        sent_timestamp: data.message.sent_timestamp,
-        user: data.message.user,
-      };
-
-      setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
-    });
-
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
-
-  const generateChatHistoryName = (
-    senderUserId: string | undefined,
-    receiverUserId: string | undefined
-  ) => {
-    const minId =
-      senderUserId && receiverUserId && senderUserId < receiverUserId
-        ? senderUserId
-        : receiverUserId;
-    const maxId =
-      senderUserId && receiverUserId && senderUserId > receiverUserId
-        ? senderUserId
-        : receiverUserId;
-    return `${minId}_${maxId}`;
-  };
+  const {
+    setInitialMessages,
+    initialMessages,
+    currentUser,
+    setCurrentUser,
+    inputMessage,
+    setInputMessage,
+    url,
+    setUrl,
+    history,
+    setHistory,
+    handleSendMessage,
+  } = useChat();
 
   const getTexts = async (url: string) => {
     const chats = await getChatHistory(url);
@@ -124,6 +47,21 @@ const ChatPage = () => {
     } else {
       setUrl((prev) => ({ ...prev, nextUrl: "", prevUrl: "" }));
     }
+  };
+
+  const generateChatHistoryName = (
+    senderUserId: string | undefined,
+    receiverUserId: string | undefined
+  ) => {
+    const minId =
+      senderUserId && receiverUserId && senderUserId < receiverUserId
+        ? senderUserId
+        : receiverUserId;
+    const maxId =
+      senderUserId && receiverUserId && senderUserId > receiverUserId
+        ? senderUserId
+        : receiverUserId;
+    return `${minId}_${maxId}`;
   };
 
   useEffect(() => {
@@ -163,11 +101,7 @@ const ChatPage = () => {
         </div>
       </div>
 
-      <div
-        id="chats"
-        ref={containerRef}
-        className="flex-1 h-full overflow-y-auto hide-scrollbar"
-      >
+      <div id="chats" className="flex-1 h-full overflow-y-auto hide-scrollbar">
         {url.nextUrl && initialMessages && (
           <div
             onClick={handleLoadMore}
@@ -206,10 +140,6 @@ const ChatPage = () => {
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
             handleSendMessage();
-            if (containerRef.current) {
-              containerRef.current.scrollTop =
-                containerRef.current.scrollHeight;
-            }
           }}
           className="w-full flex items-center gap-4"
         >

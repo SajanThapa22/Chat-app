@@ -32,12 +32,8 @@ const ChatUI = () => {
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
           <div className="text-[22px] font-medium">Chats</div>
-          <div className="flex gap-5">
-            <FiLogOut onClick={logout} className="size-6 text-txtClr" />
-            <UserSettings
-              url=""
-              img={currentUser?.profile.profile_pic || anonymous}
-            />
+          <div className="flex gap-5 items-center">
+            <UserSettings img={currentUser?.profile.profile_pic || anonymous} />
           </div>
         </div>
 
@@ -76,8 +72,8 @@ const ChatUI = () => {
               key={u.id}
               username={u.username}
               img={u.profile.profile_pic || anonymous}
-              message={"Click to see chats"}
-              time="11:20 PM"
+              message={"send a message"}
+              time={`00:00`}
               status={u.user_status.status}
             />
           ))}

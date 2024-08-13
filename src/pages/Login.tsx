@@ -87,7 +87,7 @@ const Login = () => {
             <input
               id="username"
               {...register("username", { required: true })}
-              className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr focus:outline-none focus:border-primary w-full bg-bgComp"
+              className="border border-[#cbcaca] px-4 py-2 rounded-[12px] text-txtClr autofill:bg-transparent focus:outline-none focus:border-primary w-full bg-bgComp"
               placeholder="Username"
               type="text"
             />

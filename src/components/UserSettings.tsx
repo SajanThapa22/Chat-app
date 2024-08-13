@@ -3,15 +3,16 @@ import anonymous from "../assets/img/default_image.png";
 import ProfilePictureUpdate from "./ProfilePictureUpdate";
 import ThemeSelector from "./ThemeSelector";
 import { IoClose } from "react-icons/io5";
+import { useAuth } from "../context/AuthContext";
 
 interface Props {
-  url: string;
   img: string;
 }
 
-const UserSettings = ({ url, img }: Props) => {
+const UserSettings = ({ img }: Props) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [firstVisible, setFirstVisible] = useState<boolean>(true);
+  const { logout } = useAuth();
 
   const handleClick = () => {
     setIsClicked(!isClicked);
@@ -28,7 +29,7 @@ const UserSettings = ({ url, img }: Props) => {
     <div>
       <div
         onClick={handleClick}
-        className="size-8 rounded-full overflow-hidden cursor-pointer"
+        className="size-[40px] rounded-full overflow-hidden cursor-pointer"
       >
         <img
           src={img || anonymous}
@@ -60,14 +61,19 @@ const UserSettings = ({ url, img }: Props) => {
             >
               Change theme
             </div>
-            <div className="mt-2 cursor-pointer px-4 py-2">Log out</div>
+            <div onClick={logout} className="mt-2 cursor-pointer px-4 py-2">
+              Log out
+            </div>
           </div>
 
           <div className="h-full w-[1px] bg-selected"></div>
 
           <div>
             {firstVisible ? (
-              <ProfilePictureUpdate img={img} url={url} />
+              <ProfilePictureUpdate
+                onSuccess={() => setIsClicked(false)}
+                img={img}
+              />
             ) : (
               <ThemeSelector />
             )}
