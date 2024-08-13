@@ -1,17 +1,14 @@
 import { CiSearch } from "react-icons/ci";
 import User from "../components/User";
 import anonymous from "../assets/img/default_image.png";
-import { useAuth } from "../context/AuthContext";
 import GetUsers from "../services/GetUsers";
 import { useEffect, useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
-import { FiLogOut } from "react-icons/fi";
 import UserSettings from "../components/UserSettings";
 import getCurrentUser, { Users } from "../services/getCurrentUser";
 
 const ChatUI = () => {
   const { users } = GetUsers();
-  const { logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
   const [currentUser, setCurrentUser] = useState<Users>();
