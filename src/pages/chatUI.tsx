@@ -36,6 +36,7 @@ const ChatUI = () => {
 
         <div className="rounded-[8px] border border-gray-400 px-2 py-1 flex gap-2">
           <input
+            value={searchTerm}
             type="text"
             placeholder="Search users"
             className="w-full focus:outline-none border-none bg-transparent text-txtClr"

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Users } from "../services/GetUsers";
 import User from "./User";
-import pp from "../assets/img/pp.png";
 import { CiSearch } from "react-icons/ci";
 import api from "../services/api";
+import { debounce } from "lodash";
 
 interface Props {
   searchTerm: string | undefined;
@@ -13,9 +13,30 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
   const [users, setUsers] = useState<Users[]>();
   const [error, setError] = useState<string>();
 
+  // const debouncedFetchUsers = debounce((access: string) => {
+  //   const url = `/chat/users`;
+
+  //   api
+  //     .get(url, {
+  //       headers: {
+  //         Authorization: `Bearer ${access}`,
+  //       },
+  //       params: {
+  //         search: searchTerm,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setUsers(res.data);
+  //     })
+  //     .catch((err) => {
+  //       if (err.response.status === 404) {
+  //         setError("No users found");
+  //       }
+  //     });
+  // }, 300); // Adjust the debounce delay as needed
+
   useEffect(() => {
     const access = localStorage.getItem("access");
-    const url = `/chat/users`;
 
     if (!access) return;
 
@@ -24,23 +45,34 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       return;
     }
 
-    api
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-        params: {
-          search: searchTerm,
-        },
-      })
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        if (err.response.status === 404) {
-          setError("No users found");
-        }
-      });
+    const debouncedFetchUsers = debounce(() => {
+      const url = `/chat/users`;
+
+      api
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+          params: {
+            search: searchTerm,
+          },
+        })
+        .then((res) => {
+          setUsers(res.data);
+        })
+        .catch((err) => {
+          if (err.response.status === 404) {
+            setError("No users found");
+          }
+        });
+    }, 300);
+
+    debouncedFetchUsers();
+
+    // Cleanup function to cancel the debounce on unmount
+    return () => {
+      debouncedFetchUsers.cancel();
+    };
   }, [searchTerm]);
 
   return (
@@ -57,7 +89,12 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       ) : (
         <div className="bg-bgComp w-full h-full">
           {users?.map((u) => (
-            <User key={u.id} img={pp} username={u.username} id={u.id} />
+            <User
+              key={u.id}
+              img={u.profile.profile_pic}
+              username={u.username}
+              id={u.id}
+            />
           ))}
         </div>
       )}
