@@ -95,7 +95,6 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
   };
 
   useEffect(() => {
-    console.log(id);
     initiateSocket();
     subscribeToChat((err, data) => {
       if (err) {
@@ -145,7 +144,6 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
 };
 
 export { ChatContext, ChatProvider };
-
 export const useChat = () => {
   const context = useContext(ChatContext);
   if (context === undefined) {

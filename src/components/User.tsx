@@ -29,10 +29,10 @@ const User = ({
     >
       <div
         onClick={onclick}
-        className={`flex gap-4 px-2 py-2 items-center rounded-md ${style}`}
+        className={`flex gap-3 px-2 py-2 items-center rounded-md ${style}`}
       >
         <div
-          className={`overflow-hidden w-[60px] aspect-square rounded-full ${
+          className={`overflow-hidden w-[70px] aspect-square rounded-full ${
             status === "online" && "border-[3px] border-[#00FF00]"
           }`}
         >

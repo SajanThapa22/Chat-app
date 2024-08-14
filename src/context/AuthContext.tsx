@@ -9,12 +9,27 @@ import {
 import { jwtDecode } from "jwt-decode";
 import api from "../services/api";
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  profile: {
+    profile_pic: string;
+    bio: string;
+  };
+  user_status: {
+    status: string;
+    last_seen: string;
+  };
+}
+
 interface AuthContextType {
   accessToken: string | null;
   isLoggedIn: () => Promise<boolean>;
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   fetchNewAccess: () => void;
+  getCurrentUser: () => Promise<User>;
 }
 
 interface AuthProviderProps {
@@ -94,6 +109,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem("refresh");
   };
 
+  const getCurrentUser = async () => {
+    const url = `/auth/loggedin_user_details/`;
+
+    return await api
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => err.message);
+  };
+
   useEffect(() => {
     isLoggedIn();
   }, [isLoggedIn]);
@@ -106,6 +134,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         fetchNewAccess,
+        getCurrentUser,
       }}
     >
       {children}
