@@ -9,27 +9,12 @@ import {
 import { jwtDecode } from "jwt-decode";
 import api from "../services/api";
 
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  profile: {
-    profile_pic: string;
-    bio: string;
-  };
-  user_status: {
-    status: string;
-    last_seen: string;
-  };
-}
-
 interface AuthContextType {
   accessToken: string | null;
   isLoggedIn: () => Promise<boolean>;
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   fetchNewAccess: () => void;
-  currentUser: User | undefined;
 }
 
 interface AuthProviderProps {
@@ -46,7 +31,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.getItem("refresh")
   );
 
-  const [currentUser, setCurrentUser] = useState<User>();
   const isTokenValid = (token: string | null): boolean => {
     if (!token) return false;
     const decoded = jwtDecode<{ exp: number }>(token);
@@ -122,7 +106,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         fetchNewAccess,
-        currentUser,
       }}
     >
       {children}

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import User from "../components/User";
 import Spinner from "../components/Spinner";
-import { useChat } from "../context/ChatContext";
 import getCurrentUser from "../services/getCurrentUser";
 interface Message {
   id: string;
