@@ -98,7 +98,7 @@ const ProfilePictureUpdate = ({ img, onSuccess }: Props) => {
       >
         <button
           onClick={handleClick}
-          className="bg-primary px-3 py-2 rounded-lg text-center"
+          className="bg-primary px-3 py-2 rounded-lg text-center text-white"
         >
           Choose
         </button>

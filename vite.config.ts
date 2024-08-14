@@ -10,26 +10,34 @@ export default defineConfig({
     svgr(),
     VitePWA({
       registerType: "autoUpdate",
+      includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
       manifest: {
-        name: "Chat App",
-        short_name: "Chat App",
-        description: "A Real Time Chat App",
+        name: "My PWA App",
+        short_name: "PWA App",
+        description: "My awesome Progressive Web App!",
         theme_color: "#ffffff",
+        background_color: "#ffffff",
+        display: "standalone",
+        scope: "/",
+        start_url: "/",
         icons: [
           {
-            src: "/messenger.png",
+            src: "pwa-192x192.png",
             sizes: "192x192",
-            type: "image/svg",
+            type: "image/png",
           },
           {
-            src: "/messenger.png",
+            src: "pwa-512x512.png",
             sizes: "512x512",
-            type: "image/svg",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
           },
         ],
-      },
-      devOptions: {
-        enabled: true, // Enables PWA in development
       },
     }),
   ],
