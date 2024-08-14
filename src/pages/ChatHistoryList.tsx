@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import User from "../components/User";
+import Spinner from "../components/Spinner";
 
 interface Message {
   id: string;
@@ -39,8 +40,10 @@ interface Data {
 const ChatHistoryList = () => {
   const [result, setResult] = useState<Results[]>([]);
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsloading] = useState<boolean>(false);
 
   useEffect(() => {
+    setIsloading(true);
     const accessToken = localStorage.getItem("access");
 
     const getChatHistoryList = async () => {
@@ -52,10 +55,12 @@ const ChatHistoryList = () => {
         });
 
         if (response.status === 200) {
+          setIsloading(false);
           console.log(response.data.results[0].user.username);
           setResult(response.data.results);
         }
         if (response.status === 404) {
+          setIsloading(false);
           setError("no users found");
         }
       } catch (error) {
@@ -68,6 +73,7 @@ const ChatHistoryList = () => {
   if (error) {
     return <div className="">{error}</div>;
   }
+  if (isLoading) return <Spinner size="size-10 border-[6px] mx-auto my-auto" />;
   return (
     <div className="bg-bgComp w-full">
       {result.map((r, index) => (

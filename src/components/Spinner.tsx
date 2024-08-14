@@ -1,6 +1,14 @@
-const Spinner = () => {
+interface Props {
+  size?: string;
+}
+
+const Spinner = ({ size }: Props) => {
   return (
-    <div className="size-6 rounded-full border-[#6b7280] border-b-[#fff] border-[4px] border-spinner animate-spin"></div>
+    <div
+      className={` ${
+        size ? size : "size-6"
+      } rounded-full border-gray-400 border-b-spinner border-[4px] animate-spin`}
+    ></div>
   );
 };
 

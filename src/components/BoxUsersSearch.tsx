@@ -13,28 +13,6 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
   const [users, setUsers] = useState<Users[]>();
   const [error, setError] = useState<string>();
 
-  // const debouncedFetchUsers = debounce((access: string) => {
-  //   const url = `/chat/users`;
-
-  //   api
-  //     .get(url, {
-  //       headers: {
-  //         Authorization: `Bearer ${access}`,
-  //       },
-  //       params: {
-  //         search: searchTerm,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       setUsers(res.data);
-  //     })
-  //     .catch((err) => {
-  //       if (err.response.status === 404) {
-  //         setError("No users found");
-  //       }
-  //     });
-  // }, 300); // Adjust the debounce delay as needed
-
   useEffect(() => {
     const access = localStorage.getItem("access");
 
