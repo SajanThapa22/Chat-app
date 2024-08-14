@@ -25,14 +25,16 @@ const User = ({
   return (
     <NavLink
       to={`/chat/${id}`}
-      className={({ isActive }) => (isActive ? "bg-selected rounded-md" : "")}
+      className={({ isActive }) =>
+        isActive ? "bg-selected rounded-[12px]" : ""
+      }
     >
       <div
         onClick={onclick}
         className={`flex gap-3 px-2 py-2 items-center rounded-md ${style}`}
       >
         <div
-          className={`overflow-hidden w-[70px] aspect-square rounded-full ${
+          className={`overflow-hidden w-[65px] aspect-square rounded-full ${
             status === "online" && "border-[3px] border-[#00FF00]"
           }`}
         >

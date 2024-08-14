@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import User from "../components/User";
 import Spinner from "../components/Spinner";
-
+import { useChat } from "../context/ChatContext";
+import getCurrentUser from "../services/getCurrentUser";
 interface Message {
   id: string;
   user: string;
@@ -37,10 +38,20 @@ interface Data {
   previous: null;
   results: Results[];
 }
+
 const ChatHistoryList = () => {
   const [result, setResult] = useState<Results[]>([]);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsloading] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User>();
+
+  useEffect(() => {
+    const getMe = async () => {
+      const result = await getCurrentUser();
+      setCurrentUser(result);
+    };
+    getMe();
+  }, []);
 
   useEffect(() => {
     setIsloading(true);
@@ -56,7 +67,6 @@ const ChatHistoryList = () => {
 
         if (response.status === 200) {
           setIsloading(false);
-          console.log(response.data.results[0].user.username);
           setResult(response.data.results);
         }
         if (response.status === 404) {
@@ -75,22 +85,37 @@ const ChatHistoryList = () => {
   }
   if (isLoading) return <Spinner size="size-10 border-[6px] mx-auto my-auto" />;
   return (
-    <div className="bg-bgComp w-full">
-      {result.map((r, index) => (
-        <User
-          key={index}
-          img={r.user.profile.profile_pic}
-          username={r.user.username}
-          message={
-            r.messages[0].message.length < 20
-              ? r.messages[0].message
-              : `${r.messages[0].message.slice(0, 20)}...`
-          }
-          id={r.user.id}
-          status={r.user.user_status.status}
-        />
-      ))}
-    </div>
+    <>
+      {result.map((r) => {
+        const messageContent =
+          r.messages[0].user === currentUser?.id
+            ? `you: ${r.messages[0].message}`
+            : r.messages[0].message;
+
+        const slicedMessage =
+          messageContent.length > 25
+            ? `${messageContent.slice(0, 25)}...`
+            : messageContent;
+
+        const date = new Date(r.messages[0].sent_timestamp);
+        const hours = date.getUTCHours().toString().padStart(2, "0");
+        const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+
+        const formattedTime = `${hours}:${minutes}`;
+
+        return (
+          <User
+            id={r.user.id}
+            key={r.user.id}
+            username={r.user.username}
+            img={r.user.profile.profile_pic}
+            message={slicedMessage}
+            time={formattedTime}
+            status={r.user.user_status.status}
+          />
+        );
+      })}
+    </>
   );
 };
 

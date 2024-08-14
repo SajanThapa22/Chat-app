@@ -29,7 +29,7 @@ interface AuthContextType {
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   fetchNewAccess: () => void;
-  getCurrentUser: () => Promise<User>;
+  currentUser: User | undefined;
 }
 
 interface AuthProviderProps {
@@ -46,6 +46,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.getItem("refresh")
   );
 
+  const [currentUser, setCurrentUser] = useState<User>();
   const isTokenValid = (token: string | null): boolean => {
     if (!token) return false;
     const decoded = jwtDecode<{ exp: number }>(token);
@@ -109,19 +110,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem("refresh");
   };
 
-  const getCurrentUser = async () => {
-    const url = `/auth/loggedin_user_details/`;
-
-    return await api
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((res) => res.data)
-      .catch((err) => err.message);
-  };
-
   useEffect(() => {
     isLoggedIn();
   }, [isLoggedIn]);
@@ -134,7 +122,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         fetchNewAccess,
-        getCurrentUser,
+        currentUser,
       }}
     >
       {children}

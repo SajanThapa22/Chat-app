@@ -23,7 +23,7 @@ const ChatUI = () => {
   return (
     <div
       id="all-chats"
-      className="bg-bgComp px-4 border-r border-r-gray-400 max-h-screen h-screen flex flex-col"
+      className="bg-bgComp px-4 border-r border-r-gray-400 h-screen max-h-screen flex flex-col"
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
@@ -51,10 +51,10 @@ const ChatUI = () => {
         </div>
       </div>
 
-      <div className="h-full overflow-y-auto hide-scrollbar relative">
+      <div className="h-full w-full overflow-y-auto hide-scrollbar relative">
         <div
           id="user-chats"
-          className={`absolute bg-bgComp top-0 left-0 mt-6 flex gap-2 flex-1 w-full min-h-full ${
+          className={`absolute bg-bgComp top-0 left-0 mt-6 flex gap-2 justify-center flex-1 w-full min-h-full ${
             searchVisibility ? "visible" : "hidden"
           }`}
         >
@@ -67,6 +67,17 @@ const ChatUI = () => {
             searchVisibility ? "hidden" : "visible"
           } `}
         >
+          {/* {users?.map((u) => (
+              <User
+                id={u.id}
+                key={u.id}
+                username={u.username}
+                img={u.profile.profile_pic || anonymous}
+                message={"send a message"}
+                time={`00:00`}
+                status={u.user_status.status}
+              />
+            ))} */}
           <ChatHistoryList />
         </div>
       </div>
