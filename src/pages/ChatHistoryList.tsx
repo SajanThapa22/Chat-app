@@ -69,16 +69,16 @@ const ChatHistoryList = () => {
     return <div className="">{error}</div>;
   }
   return (
-    <div className="bg-bgComp max-w-full">
+    <div className="bg-bgComp w-full">
       {result.map((r, index) => (
         <User
           key={index}
           img={r.user.profile.profile_pic}
           username={r.user.username}
           message={
-            r.messages[0].message.length < 10
+            r.messages[0].message.length < 20
               ? r.messages[0].message
-              : `${r.messages[0].message.slice(0, 15)}...`
+              : `${r.messages[0].message.slice(0, 20)}...`
           }
           id={r.user.id}
           status={r.user.user_status.status}

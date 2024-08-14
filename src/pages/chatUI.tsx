@@ -23,7 +23,7 @@ const ChatUI = () => {
   return (
     <div
       id="all-chats"
-      className="bg-bgComp px-4 border-r border-r-gray-400 max-h-screen flex flex-col"
+      className="bg-bgComp px-4 border-r border-r-gray-400 max-h-screen h-screen flex flex-col"
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
@@ -51,33 +51,24 @@ const ChatUI = () => {
         </div>
       </div>
 
-      <div className="h-full overflow-y-auto hide-scrollbar">
-        {searchVisibility ? (
-          <div
-            id="user-chats"
-            className="mt-6 flex flex-col gap-2 flex-1 min-h-full"
-          >
-            <BoxUsersSearch searchTerm={searchTerm} />
-          </div>
-        ) : (
-          <div
-            id="user-chats"
-            className="mt-2 flex flex-col flex-1 gap-2 min-h-full"
-          >
-            {/* {users?.map((u) => (
-              <User
-                id={u.id}
-                key={u.id}
-                username={u.username}
-                img={u.profile.profile_pic || anonymous}
-                message={"send a message"}
-                time={`00:00`}
-                status={u.user_status.status}
-              />
-            ))} */}
-            <ChatHistoryList />
-          </div>
-        )}
+      <div className="h-full overflow-y-auto hide-scrollbar relative">
+        <div
+          id="user-chats"
+          className={`absolute bg-bgComp top-0 left-0 mt-6 flex gap-2 flex-1 w-full min-h-full ${
+            searchVisibility ? "visible" : "hidden"
+          }`}
+        >
+          <BoxUsersSearch searchTerm={searchTerm} />
+        </div>
+
+        <div
+          id="user-chats"
+          className={`mt-2 flex flex-col flex-1 gap-2 min-h-full ${
+            searchVisibility ? "hidden" : "visible"
+          } `}
+        >
+          <ChatHistoryList />
+        </div>
       </div>
     </div>
   );

@@ -76,18 +76,20 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
   }, [searchTerm]);
 
   return (
-    <div>
+    <div className="w-full">
       {users?.length === 0 ? (
         !searchTerm ? (
-          <div className="text-center text-[20px] flex gap-3 justify-center text-txtClr capitalize ml-auto mr-auto">
+          <div className="text-center w-full text-[20px] flex gap-3 justify-center text-txtClr capitalize ml-auto mr-auto">
             <CiSearch className="text-[24px]" />
             <div>search users</div>
           </div>
         ) : (
-          <div className="text-center text-[20px] text-txtClr">{error}</div>
+          <div className="w-full text-center text-[20px] text-txtClr">
+            {error}
+          </div>
         )
       ) : (
-        <div className="bg-bgComp w-full h-full">
+        <div className="bg-bgComp w-full flex flex-col justify-start h-full">
           {users?.map((u) => (
             <User
               key={u.id}
