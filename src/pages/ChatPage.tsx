@@ -4,18 +4,17 @@ import { PiPaperPlaneRightFill } from "react-icons/pi";
 import Navigator from "../components/Navigator";
 import anonymous from "../assets/img/default_image.png";
 import { useChat } from "../context/ChatContext";
-import getUser from "../services/getUser";
-import getChatHistory from "../services/getChatHistory";
-import getCurrentUser from "../services/getCurrentUser";
+import getUser from "../hooks/getUser";
+import getChatHistory from "../hooks/getChatHistory";
+import useGetCurrentUser from "../hooks/useGetCurrentUser";
 
 const ChatPage = () => {
+  const { currentUser, error } = useGetCurrentUser();
   const { id } = useParams<{ id: string }>();
   const { user } = getUser(id);
   const {
     setInitialMessages,
     initialMessages,
-    currentUser,
-    setCurrentUser,
     inputMessage,
     setInputMessage,
     url,
@@ -53,35 +52,38 @@ const ChatPage = () => {
     senderUserId: string | undefined,
     receiverUserId: string | undefined
   ) => {
-    const minId =
-      senderUserId && receiverUserId && senderUserId < receiverUserId
-        ? senderUserId
-        : receiverUserId;
-    const maxId =
-      senderUserId && receiverUserId && senderUserId > receiverUserId
-        ? senderUserId
-        : receiverUserId;
+    if (!senderUserId || !receiverUserId) {
+      // Handle the case where one or both IDs are undefined
+      console.error("Both sender and receiver IDs must be defined");
+      return ""; // or handle it in a way that suits your application
+    }
+
+    const minId = senderUserId < receiverUserId ? senderUserId : receiverUserId;
+    const maxId = senderUserId > receiverUserId ? senderUserId : receiverUserId;
     return `${minId}_${maxId}`;
   };
 
   useEffect(() => {
     async function getInitialMessages() {
-      const result = await getCurrentUser();
-      setCurrentUser(result);
-      const historyName = generateChatHistoryName(result.id, id);
-      setHistory(historyName);
-      const initialurl = `https://chat-app-xcsf.onrender.com/chat/history/${historyName}`;
-      getTexts(initialurl);
+      if (currentUser && id) {
+        const historyName = generateChatHistoryName(currentUser.id, id);
+        setHistory(historyName);
+        const initialurl = `https://chat-app-xcsf.onrender.com/chat/history/${historyName}`;
+        await getTexts(initialurl);
+      }
     }
 
     getInitialMessages();
-  }, [id]);
+  }, [currentUser, id]);
 
   const handleLoadMore = async () => {
     if (url.nextUrl) {
       getTexts(url.nextUrl);
     }
   };
+  if (error) {
+    return <div>Error: {error}</div>; // Display any error messages
+  }
 
   return (
     <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
@@ -95,6 +97,7 @@ const ChatPage = () => {
             />
           </div>
           <div className="text-[18px] text-txtClr">{user?.username}</div>
+
           {user?.user_status.status === "online" && (
             <div className="size-3 bg-[#00FF00] rounded-full"></div>
           )}

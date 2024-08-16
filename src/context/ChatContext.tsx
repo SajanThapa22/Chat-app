@@ -10,8 +10,9 @@ import {
   initiateSocket,
   subscribeToChat,
   disconnectSocket,
-} from "../services/useWebSocket";
+} from "../hooks/useWebSocket";
 import { useParams } from "react-router-dom";
+import { useChatHistory } from "./ChatHistoryContext";
 
 interface ChatProviderProps {
   children: ReactNode;
@@ -19,36 +20,20 @@ interface ChatProviderProps {
 }
 
 interface Message {
-  chat_history: string;
-  deliverd_timestamp: null;
   id: number;
-  media: null;
-  message: string;
-  reply_of: null;
-  seen_timestamp: null;
-  sent_timestamp: string;
   user: string;
-}
-
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  profile: {
-    profile_pic: string;
-    bio: string;
-  };
-  user_status: {
-    status: string;
-    last_seen: string;
-  };
+  chat_history: string;
+  message: string;
+  media: null;
+  reply_of: null;
+  sent_timestamp: string;
+  delivered_timestamp: null;
+  seen_timestamp: null;
 }
 
 interface ChatContextType {
   initialMessages: Message[];
   setInitialMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  currentUser: User | undefined;
-  setCurrentUser: React.Dispatch<React.SetStateAction<User | undefined>>;
   inputMessage: string;
   setInputMessage: React.Dispatch<React.SetStateAction<string>>;
   url: {
@@ -72,14 +57,14 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
   const { id } = useParams<{ id: string }>(); // Use URL parameters to get the id
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState<string>("");
-  const [currentUser, setCurrentUser] = useState<User>();
   const [history, setHistory] = useState<string>("");
   const [url, setUrl] = useState<{ nextUrl: string; prevUrl: string }>({
     nextUrl: "",
     prevUrl: "",
   });
+  const { setResult } = useChatHistory();
 
-  const handleSendMessage = () => {
+  function handleSendMessage() {
     if (inputMessage && inputMessage.trim()) {
       const messageData = {
         type: "message",
@@ -92,7 +77,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
 
       setInputMessage("");
     }
-  };
+  }
 
   useEffect(() => {
     initiateSocket();
@@ -104,7 +89,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
 
       const receivedMessage: Message = {
         chat_history: data.message.chat_history,
-        deliverd_timestamp: data.message.deliverd_timestamp,
+        delivered_timestamp: data.message.delivered_timestamp,
         id: data.message.id,
         media: data.message.media,
         message: data.message.message,
@@ -113,6 +98,36 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
         sent_timestamp: data.message.sent_timestamp,
         user: data.message.user,
       };
+
+      const addMessage = (chatHistoryId: string, newMessage: Message) => {
+        setResult((prevResults) => {
+          // Update the messages for the specific chat history
+          const updatedResults = prevResults.map((chat) => {
+            if (chat.chat_history === chatHistoryId) {
+              return {
+                ...chat,
+                messages: [newMessage, ...chat.messages],
+              };
+            }
+            return chat;
+          });
+          // Remove the updated chat history from its current position
+          const updatedChatHistory = updatedResults.find(
+            (chat) => chat.chat_history === chatHistoryId
+          );
+          const filteredResults = updatedResults.filter(
+            (chat) => chat.chat_history !== chatHistoryId
+          );
+          // Add the updated chat history to the beginning of the array
+          if (updatedChatHistory) {
+            filteredResults.unshift(updatedChatHistory);
+          }
+
+          return filteredResults;
+        });
+      };
+
+      addMessage(data.message.chat_history, receivedMessage);
 
       setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
     });
@@ -127,8 +142,6 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
       value={{
         initialMessages,
         setInitialMessages,
-        currentUser,
-        setCurrentUser,
         inputMessage,
         setInputMessage,
         url,

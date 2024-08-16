@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Users } from "../services/GetUsers";
+import { Users } from "../hooks/useGetUsers";
 import User from "./User";
 import { CiSearch } from "react-icons/ci";
 import api from "../services/api";

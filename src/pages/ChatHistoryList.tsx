@@ -1,19 +1,8 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
 import User from "../components/User";
 import Spinner from "../components/Spinner";
-import getCurrentUser from "../services/getCurrentUser";
-interface Message {
-  id: string;
-  user: string;
-  chat_history: string;
-  message: string;
-  media: null;
-  reply_of: null;
-  sent_timestamp: string;
-  deliverd_timestamp: null;
-  seen_timestamp: null;
-}
+import useGetCurrentUser from "../hooks/useGetCurrentUser";
+import { useChatHistory } from "../context/ChatHistoryContext";
+
 interface User {
   id: string;
   username: string;
@@ -26,59 +15,11 @@ interface User {
     last_seen: string;
   };
 }
-interface Results {
-  chat_history: string;
-  user: User;
-  messages: Message[];
-}
-interface Data {
-  count: number;
-  next: null;
-  previous: null;
-  results: Results[];
-}
 
 const ChatHistoryList = () => {
-  const [result, setResult] = useState<Results[]>([]);
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsloading] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<User>();
+  const { result, error, isLoading } = useChatHistory();
+  const { currentUser } = useGetCurrentUser();
 
-  useEffect(() => {
-    const getMe = async () => {
-      const result = await getCurrentUser();
-      setCurrentUser(result);
-    };
-    getMe();
-  }, []);
-
-  useEffect(() => {
-    setIsloading(true);
-    const accessToken = localStorage.getItem("access");
-
-    const getChatHistoryList = async () => {
-      try {
-        const response = await api.get<Data>("/chat/history_list/", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (response.status === 200) {
-          setIsloading(false);
-          setResult(response.data.results);
-        }
-        if (response.status === 404) {
-          setIsloading(false);
-          setError("no users found");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getChatHistoryList();
-  }, []);
   if (error) {
     return <div className="">{error}</div>;
   }
@@ -92,13 +33,13 @@ const ChatHistoryList = () => {
             : r.messages[0].message;
 
         const slicedMessage =
-          messageContent.length > 25
-            ? `${messageContent.slice(0, 25)}...`
+          messageContent.length > 20
+            ? `${messageContent.slice(0, 20)}...`
             : messageContent;
 
         const date = new Date(r.messages[0].sent_timestamp);
-        const hours = date.getUTCHours().toString().padStart(2, "0");
-        const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
 
         const formattedTime = `${hours}:${minutes}`;
 

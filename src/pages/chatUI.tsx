@@ -1,24 +1,15 @@
 import { CiSearch } from "react-icons/ci";
 import anonymous from "../assets/img/default_image.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
 import UserSettings from "../components/UserSettings";
-import getCurrentUser, { Users } from "../services/getCurrentUser";
 import ChatHistoryList from "./ChatHistoryList";
+import useGetCurrentUser from "../hooks/useGetCurrentUser";
 
 const ChatUI = () => {
-  // const { users } = GetUsers();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
-  const [currentUser, setCurrentUser] = useState<Users>();
-
-  useEffect(() => {
-    async function getUser() {
-      const result = await getCurrentUser();
-      setCurrentUser(result);
-    }
-    getUser();
-  }, []);
+  const { currentUser } = useGetCurrentUser();
 
   return (
     <div
@@ -63,21 +54,10 @@ const ChatUI = () => {
 
         <div
           id="user-chats"
-          className={`mt-2 flex flex-col flex-1 gap-2 min-h-full ${
+          className={`mt-2 flex flex-col flex-1 gap-2 min-h-full z-20 ${
             searchVisibility ? "hidden" : "visible"
           } `}
         >
-          {/* {users?.map((u) => (
-              <User
-                id={u.id}
-                key={u.id}
-                username={u.username}
-                img={u.profile.profile_pic || anonymous}
-                message={"send a message"}
-                time={`00:00`}
-                status={u.user_status.status}
-              />
-            ))} */}
           <ChatHistoryList />
         </div>
       </div>

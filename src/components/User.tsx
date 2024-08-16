@@ -31,7 +31,7 @@ const User = ({
     >
       <div
         onClick={onclick}
-        className={`flex gap-3 px-2 py-2 items-center rounded-md ${style}`}
+        className={`flex gap-3 px-2 py-2 items-center rounded-md z-10 ${style}`}
       >
         <div
           className={`overflow-hidden w-[65px] aspect-square rounded-full ${
@@ -43,7 +43,7 @@ const User = ({
 
         <div className="text-txtClr w-full">
           <div className="w-full flex justify-between">
-            <div className="text-[16px]">{username}</div>
+            <div className="text-[18px]">{username}</div>
             {/* {status === "online" && (
               <div className="size-3 bg-[#00FF00] rounded-full"></div>
             )} */}

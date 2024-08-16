@@ -81,7 +81,7 @@ const ProfilePictureUpdate = ({ img, onSuccess }: Props) => {
 
   return (
     <div className="flex flex-col gap-5 items-center">
-      <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
+      <div className="size-[70px] lg:w-[100px] lg:h-[100px] rounded-full overflow-hidden">
         <img
           src={preview || img}
           alt="profile picture"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import api from "./api";
+import api from "../services/api";
 
-interface User {
+export interface Users {
   id: string;
   email: string;
   username: string;
@@ -15,13 +15,14 @@ interface User {
   };
 }
 
-const getUser = (id?: string) => {
-  const [user, setUser] = useState<User>();
-  const [error, setError] = useState();
+const GetUsers = () => {
+  const [users, setUsers] = useState<Users[]>();
 
   useEffect(() => {
     const access = localStorage.getItem("access");
-    const url = `/chat/user/${id}`;
+    const url = `/chat/users`;
+
+    if (!access) return;
 
     api
       .get(url, {
@@ -30,11 +31,15 @@ const getUser = (id?: string) => {
         },
       })
       .then((res) => {
-        setUser(res.data);
+        setUsers(res.data);
       })
-      .catch((err) => setError(err.message));
-  }, [id]);
-  return { user, error };
+      .catch((err) => {
+        if (err.response.status === 400) {
+          console.log(err.message);
+        }
+      });
+  }, []);
+  return { users, setUsers };
 };
 
-export default getUser;
+export default GetUsers;
