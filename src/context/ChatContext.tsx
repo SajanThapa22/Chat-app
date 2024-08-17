@@ -130,12 +130,6 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
       addMessage(data.message.chat_history, receivedMessage);
 
       setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
-
-      const scrollToBottom = (divRef: React.RefObject<HTMLDivElement>) => {
-        if (divRef.current) {
-          divRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-      };
     });
 
     return () => {

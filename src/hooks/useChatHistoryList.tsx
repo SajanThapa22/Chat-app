@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import CheckLogged from "./useCheckLogged";
 import useCheckLogged from "./useCheckLogged";
 
 interface Message {
@@ -58,11 +57,6 @@ const useChatHistoryList = () => {
     );
   };
 
-  const resetChatHistory = () => {
-    setResult([]);
-    setError("");
-  };
-
   const access = localStorage.getItem("access");
 
   const getChatHistoryList = async () => {
@@ -102,7 +96,6 @@ const useChatHistoryList = () => {
     setError,
     isLoading,
     addMessage,
-    resetChatHistory,
   };
 };
 
