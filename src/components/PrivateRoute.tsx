@@ -1,16 +1,17 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import CheckLogged from "../hooks/CheckLogged";
+import CheckLogged from "../hooks/useCheckLogged";
+import useCheckLogged from "../hooks/useCheckLogged";
 
 interface Props {
   children: ReactNode;
 }
 
 const PrivateRoute = ({ children }: Props) => {
-  const { isLoggedIn } = useAuth();
-  const { authenticated } = CheckLogged();
+  const { authenticated } = useCheckLogged();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     const checkAuth = async () => {

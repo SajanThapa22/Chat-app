@@ -9,11 +9,11 @@ const App = () => {
 
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <ChatHistoryProvider>
+      <ChatHistoryProvider>
+        <ThemeProvider>
           <RouterProvider router={router} />
-        </ChatHistoryProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </ChatHistoryProvider>
     </AuthProvider>
   );
 };

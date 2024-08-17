@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const CheckLogged = () => {
+const useCheckLogged = () => {
   const { isLoggedIn } = useAuth();
   const [authenticated, setAuthenticated] = useState<boolean | undefined>();
 
@@ -17,4 +17,4 @@ const CheckLogged = () => {
   return { authenticated, setAuthenticated };
 };
 
-export default CheckLogged;
+export default useCheckLogged;

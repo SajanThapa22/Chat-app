@@ -8,6 +8,7 @@ import {
 } from "react";
 import { jwtDecode } from "jwt-decode";
 import api from "../services/api";
+import { useChatHistory } from "./ChatHistoryContext";
 
 interface AuthContextType {
   accessToken: string | null;

@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from "react";
 import useChatHistoryList from "../hooks/useChatHistoryList";
+import useCheckLogged from "../hooks/useCheckLogged";
 
 interface Message {
   id: number;
@@ -37,6 +38,7 @@ interface ChatHistoryContextProps {
   addMessage: (chatHistoryId: string, newMessage: Message) => void;
   isLoading: boolean;
   error: string;
+  resetChatHistory: () => void;
 }
 
 // Create the context

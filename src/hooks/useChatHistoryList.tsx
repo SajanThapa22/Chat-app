@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import CheckLogged from "./useCheckLogged";
+import useCheckLogged from "./useCheckLogged";
 
 interface Message {
   id: number;
@@ -40,12 +42,12 @@ const useChatHistoryList = () => {
   const [result, setResult] = useState<Results[]>([]);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsloading] = useState<boolean>(false);
+  const { authenticated } = useCheckLogged();
 
   const addMessage = (chatHistoryId: string, newMessage: Message) => {
     setResult((prevResults) =>
       prevResults.map((chat) => {
         if (chat.chat_history === chatHistoryId) {
-          // Prepend the new message to the existing messages
           return {
             ...chat,
             messages: [newMessage, ...chat.messages],
@@ -56,35 +58,52 @@ const useChatHistoryList = () => {
     );
   };
 
-  useEffect(() => {
-    setIsloading(true);
-    const accessToken = localStorage.getItem("access");
+  const resetChatHistory = () => {
+    setResult([]);
+    setError("");
+  };
 
-    const getChatHistoryList = async () => {
-      try {
+  const access = localStorage.getItem("access");
+
+  const getChatHistoryList = async () => {
+    setIsloading(true);
+    try {
+      if (access) {
         const response = await api.get<Data>("/chat/history_list/", {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${access}`,
           },
         });
-
         if (response.status === 200) {
           setIsloading(false);
           setResult(response.data.results);
-        }
-        if (response.status === 404) {
+        } else if (response.status === 404) {
           setIsloading(false);
           setError("no users found");
         }
-      } catch (error) {
-        console.log(error);
       }
-    };
+    } catch (error) {
+      console.log(error);
+      setIsloading(false);
+      setError("An error occurred while fetching data.");
+    }
+  };
 
-    getChatHistoryList();
-  }, []);
+  useEffect(() => {
+    if (authenticated) {
+      getChatHistoryList();
+    }
+  }, [authenticated]);
 
-  return { result, setResult, error, isLoading, addMessage };
+  return {
+    result,
+    setResult,
+    error,
+    setError,
+    isLoading,
+    addMessage,
+    resetChatHistory,
+  };
 };
 
 export default useChatHistoryList;
