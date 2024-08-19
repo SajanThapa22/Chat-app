@@ -14,7 +14,7 @@ const ProfilePictureUpdate = ({ img, onSuccess }: Props) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { accessToken } = useAuth();
+  const access = localStorage.getItem("access");
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,10 +46,10 @@ const ProfilePictureUpdate = ({ img, onSuccess }: Props) => {
     formData.append("profile_pic", selectedFile);
 
     try {
-      const response = await api.patch("/chat/profile", formData, {
+      const response = await api.patch("/chat/profile/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${access}`,
         },
       });
 
