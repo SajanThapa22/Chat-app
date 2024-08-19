@@ -2,7 +2,6 @@ import { useRef, useState, MouseEvent } from "react";
 import api from "../services/api";
 import Button from "./Button";
 import Spinner from "./Spinner";
-import { useAuth } from "../context/AuthContext";
 
 interface Props {
   img: string;
