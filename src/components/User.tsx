@@ -49,7 +49,7 @@ const User = ({
             )} */}
           </div>
           <div className="flex justify-between gap-2 text-[14px]">
-            <div className="">{message}</div>
+            <div className="text-txtClr">{message}</div>
             <div>{time}</div>
           </div>
         </div>
