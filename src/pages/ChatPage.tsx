@@ -1,4 +1,4 @@
-import { FormEvent, useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
 import Navigator from "../components/Navigator";
@@ -7,11 +7,14 @@ import { useChat } from "../context/ChatContext";
 import getUser from "../hooks/getUser";
 import getChatHistory from "../hooks/getChatHistory";
 import useGetCurrentUser from "../hooks/useGetCurrentUser";
+import { useChatHistory } from "../context/ChatHistoryContext";
 
 const ChatPage = () => {
   const { currentUser, error } = useGetCurrentUser();
   const { id } = useParams<{ id: string }>();
   const { user } = getUser(id);
+  const { result } = useChatHistory();
+  const [filteredStatus, setFilteredStatus] = useState<string>();
   const {
     setInitialMessages,
     initialMessages,
@@ -72,9 +75,15 @@ const ChatPage = () => {
         await getTexts(initialurl);
       }
     }
-
     getInitialMessages();
   }, [currentUser, id]);
+
+  useEffect(() => {
+    if (history) {
+      const visibleResult = result.find((res) => res.chat_history === history);
+      setFilteredStatus(visibleResult?.user.user_status.status);
+    }
+  }, [history, result]);
 
   const handleLoadMore = async () => {
     if (url.nextUrl) {
@@ -90,17 +99,23 @@ const ChatPage = () => {
       <div className="px-3 lg:px-8 py-2 lg:py-4 border-b border-b-gray-400">
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
-          <div className="rounded-full aspect-square overflow-hidden size-10">
+          <div className="rounded-full aspect-square size-12 relative">
             <img
               src={user?.profile.profile_pic || anonymous}
-              className="size-full object-cover"
+              className="size-full object-cover rounded-full"
             />
+            {filteredStatus === "online" && (
+              <div className="size-3 bg-[#00FF00] rounded-full absolute bottom-0 right-0"></div>
+            )}
           </div>
-          <div className="text-[18px] text-txtClr">{user?.username}</div>
-
-          {user?.user_status.status === "online" && (
-            <div className="size-3 bg-[#00FF00] rounded-full"></div>
-          )}
+          <div className="flex flex-col text-txtClr">
+            <div className="text-[18px]">{user?.username}</div>
+            {filteredStatus === "online" && (
+              <>
+                <div className="text-[14px]">Active now</div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
