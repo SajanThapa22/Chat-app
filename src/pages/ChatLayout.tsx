@@ -28,7 +28,7 @@ const ChatLayout = () => {
     <ChatProvider id={id}>
       <>
         {width > 750 ? (
-          <div className="grid grid-cols-[1fr,3fr]">
+          <div className="grid grid-cols-[1fr,3fr] bg-bgComp">
             <ChatUI />
             <Outlet />
           </div>

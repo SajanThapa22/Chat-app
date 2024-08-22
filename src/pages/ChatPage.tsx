@@ -15,6 +15,7 @@ const ChatPage = () => {
   const { user } = getUser(id);
   const { result } = useChatHistory();
   const [filteredStatus, setFilteredStatus] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     setInitialMessages,
     initialMessages,
@@ -28,9 +29,11 @@ const ChatPage = () => {
   } = useChat();
 
   const getTexts = async (url: string) => {
+    setIsLoading(true);
     const chats = await getChatHistory(url);
     const chatsData = chats.data;
     if (chats.status === 200) {
+      setIsLoading(false);
       setUrl((prev) => ({ ...prev, nextUrl: chats.data.next }));
       setUrl((prev) => ({ ...prev, prevUrl: chats.data.previous }));
       if (!chatsData.previous) {
@@ -47,6 +50,7 @@ const ChatPage = () => {
         }
       }
     } else {
+      setIsLoading(false);
       setUrl((prev) => ({ ...prev, nextUrl: "", prevUrl: "" }));
     }
   };
@@ -102,88 +106,97 @@ const ChatPage = () => {
   }
 
   return (
-    <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
-      <div className="px-3 lg:px-8 py-2 lg:py-4 border-b border-b-gray-400">
-        <div className="flex gap-4 items-center ml-3">
-          <Navigator />
-          <div className="rounded-full aspect-square size-12 relative">
-            <img
-              src={user?.profile.profile_pic || anonymous}
-              className="size-full object-cover rounded-full"
-            />
-            {filteredStatus === "online" && (
-              <div className="size-3 bg-[#00FF00] rounded-full absolute bottom-0 right-0"></div>
-            )}
-          </div>
-          <div className="flex flex-col text-txtClr">
-            <div className="text-[18px]">{user?.username}</div>
-            {filteredStatus === "online" && (
-              <>
-                <div className="text-[14px]">Active now</div>
-              </>
-            )}
+    !isLoading && (
+      <div
+        id="chat-section"
+        className="flex flex-col bg-bgComp h-dvh max-w-full"
+      >
+        <div className="px-3 lg:px-8 py-2 lg:py-4 border-b border-b-gray-400">
+          <div className="flex gap-4 items-center ml-3">
+            <Navigator />
+            <div className="rounded-full aspect-square size-12 relative">
+              <img
+                src={user?.profile.profile_pic || anonymous}
+                className="size-full object-cover rounded-full"
+              />
+              {filteredStatus === "online" && (
+                <div className="size-3 bg-[#00FF00] rounded-full absolute bottom-0 right-0"></div>
+              )}
+            </div>
+            <div className="flex flex-col text-txtClr">
+              <div className="text-[18px]">{user?.username}</div>
+
+              {filteredStatus === "online" && (
+                <>
+                  <div className="text-[14px]">Active now</div>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="chats" className="flex-1 h-full overflow-y-auto hide-scrollbar">
-        {url.nextUrl && initialMessages && (
-          <div
-            onClick={handleLoadMore}
-            className="text-center text-txtClr mt-3 text-[18px] cursor-pointer"
-          >
-            load more messages...
-          </div>
-        )}
         <div
-          id="chatsdivs"
-          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 lg:px-8 py-5"
+          id="chats"
+          className="flex-1 h-full overflow-y-auto hide-scrollbar"
         >
-          {initialMessages.map(
-            (msg, index) =>
-              msg.chat_history === history && (
-                <div
-                  key={index}
-                  style={{
-                    wordBreak: "break-all",
-                  }}
-                  className={`rounded-[20px] px-4 py-2 text-wrap max-w-[60%] text-white  ${
-                    msg.user === currentUser?.id
-                      ? "bg-primary ml-auto"
-                      : "bg-gray-400 mr-auto"
-                  }`}
-                >
-                  {msg.message}
-                </div>
-              )
+          {url.nextUrl && initialMessages && (
+            <div
+              onClick={handleLoadMore}
+              className="text-center text-txtClr mt-3 text-[18px] cursor-pointer"
+            >
+              load more messages...
+            </div>
           )}
+          <div
+            id="chatsdivs"
+            className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 lg:px-8 py-5"
+          >
+            {initialMessages.map(
+              (msg, index) =>
+                msg.chat_history === history && (
+                  <div
+                    key={index}
+                    style={{
+                      wordBreak: "break-all",
+                    }}
+                    className={`rounded-[20px] px-4 py-2 text-wrap max-w-[60%] text-white  ${
+                      msg.user === currentUser?.id
+                        ? "bg-primary ml-auto"
+                        : "bg-gray-400 mr-auto"
+                    }`}
+                  >
+                    {msg.message}
+                  </div>
+                )
+            )}
+          </div>
+        </div>
+
+        <div className="px-4 lg:px-8 py-5 w-full">
+          <form
+            onSubmit={(e: FormEvent) => {
+              e.preventDefault();
+              handleSendMessage();
+            }}
+            className="w-full flex items-center gap-4"
+          >
+            <input
+              onChange={(e) => setInputMessage(e.target.value)}
+              value={inputMessage}
+              type="text"
+              className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
+              placeholder="Type a message.."
+            />
+            <button
+              type="submit"
+              className="border-none size-8 bg-transparent outline-none rounded-lg text-white"
+            >
+              <PiPaperPlaneRightFill className="text-primary size-8" />
+            </button>
+          </form>
         </div>
       </div>
-
-      <div className="px-4 lg:px-8 py-5 w-full">
-        <form
-          onSubmit={(e: FormEvent) => {
-            e.preventDefault();
-            handleSendMessage();
-          }}
-          className="w-full flex items-center gap-4"
-        >
-          <input
-            onChange={(e) => setInputMessage(e.target.value)}
-            value={inputMessage}
-            type="text"
-            className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
-            placeholder="Type a message.."
-          />
-          <button
-            type="submit"
-            className="border-none size-8 bg-transparent outline-none rounded-lg text-white"
-          >
-            <PiPaperPlaneRightFill className="text-primary size-8" />
-          </button>
-        </form>
-      </div>
-    </div>
+    )
   );
 };
 
