@@ -26,35 +26,36 @@ const ChatHistoryList = () => {
   if (isLoading) return <Spinner size="size-10 border-[6px] mx-auto my-auto" />;
   return (
     <>
-      {result.map((r) => {
-        const messageContent =
-          r.messages[0].user === currentUser?.id
-            ? `you: ${r.messages[0].message}`
-            : r.messages[0].message;
+      {currentUser?.id &&
+        result.map((r) => {
+          const messageContent =
+            r.messages[0].user === currentUser?.id
+              ? `you: ${r.messages[0].message}`
+              : r.messages[0].message;
 
-        const slicedMessage =
-          messageContent.length > 20
-            ? `${messageContent.slice(0, 20)}...`
-            : messageContent;
+          const slicedMessage =
+            messageContent.length > 20
+              ? `${messageContent.slice(0, 20)}...`
+              : messageContent;
 
-        const date = new Date(r.messages[0].sent_timestamp);
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
+          const date = new Date(r.messages[0].sent_timestamp);
+          let hours = date.getHours();
+          let minutes = date.getMinutes();
 
-        const formattedTime = `${hours}:${minutes}`;
+          const formattedTime = `${hours}:${minutes}`;
 
-        return (
-          <User
-            id={r.user.id}
-            key={r.user.id}
-            username={r.user.username}
-            img={r.user.profile.profile_pic}
-            message={slicedMessage}
-            time={formattedTime}
-            status={r.user.user_status.status}
-          />
-        );
-      })}
+          return (
+            <User
+              id={r.user.id}
+              key={r.user.id}
+              username={r.user.username}
+              img={r.user.profile.profile_pic}
+              message={slicedMessage}
+              time={formattedTime}
+              status={r.user.user_status.status}
+            />
+          );
+        })}
     </>
   );
 };

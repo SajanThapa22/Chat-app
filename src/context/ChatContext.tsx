@@ -137,6 +137,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
       }
 
       if (data.type === "user_status_update") {
+        console.log(data);
         setResult((prevResults) =>
           prevResults.map((chat) => {
             if (chat.user.id === data.data.user) {
@@ -145,7 +146,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
                 user: {
                   ...chat.user,
                   user_status: {
-                    last_seen: data.data.last_seen,
+                    ...chat.user.user_status,
                     status: data.data.status,
                   },
                 },

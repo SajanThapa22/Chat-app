@@ -79,10 +79,17 @@ const ChatPage = () => {
   }, [currentUser, id]);
 
   useEffect(() => {
-    if (history) {
-      const visibleResult = result.find((res) => res.chat_history === history);
-      setFilteredStatus(visibleResult?.user.user_status.status);
-    }
+    const updateStatus = () => {
+      if (history) {
+        const visibleResult = result.find(
+          (res) => res.chat_history === history
+        );
+        setFilteredStatus(visibleResult?.user.user_status.status);
+      }
+    };
+
+    // Call the updateStatus function initially
+    updateStatus();
   }, [history, result]);
 
   const handleLoadMore = async () => {
