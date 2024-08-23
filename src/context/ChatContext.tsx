@@ -146,7 +146,7 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
                 user: {
                   ...chat.user,
                   user_status: {
-                    ...chat.user.user_status,
+                    last_seen: data.data.last_seen,
                     status: data.data.status,
                   },
                 },

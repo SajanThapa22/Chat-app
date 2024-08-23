@@ -33,7 +33,9 @@ const ChatLayout = () => {
             <Outlet />
           </div>
         ) : (
-          <Outlet />
+          <div className="bg-bgComp w-full h-screen">
+            <Outlet />
+          </div>
         )}
       </>
     </ChatProvider>
