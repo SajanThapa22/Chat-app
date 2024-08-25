@@ -54,7 +54,7 @@ const ChatUI = () => {
 
         <div
           id="user-chats"
-          className={`mt-2 flex flex-col flex-1 gap-2 min-h-full z-20 ${
+          className={`mt-4 flex flex-col flex-1 gap-2 min-h-full z-20 ${
             searchVisibility ? "hidden" : "visible"
           } `}
         >

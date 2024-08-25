@@ -100,6 +100,15 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
           user: data.message.user,
         };
 
+        const updatedMessageInfo = {
+          type: "updated_message_info",
+          updated_message_info_type: "delivered",
+          receiver_id: data.message.user,
+          message_id: data.message.id,
+        };
+
+        sendMessage(updatedMessageInfo);
+
         const addMessage = (chatHistoryId: string, newMessage: Message) => {
           setResult((prevResults) => {
             // Update the messages for the specific chat history
@@ -134,6 +143,10 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
           ...prevMessages,
           receivedMessage,
         ]);
+      }
+
+      if (data.type === "chat_message_info") {
+        console.log(data);
       }
 
       if (data.type === "user_status_update") {
