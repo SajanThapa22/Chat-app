@@ -146,11 +146,27 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
       }
 
       if (data.type === "chat_message_info") {
-        console.log(data);
+        setResult((prevResults) =>
+          prevResults.map((chat) => {
+            if (chat.user.id === data.data.user) {
+              return {
+                ...chat,
+                messages: chat.messages.map((message, index) =>
+                  index === 0
+                    ? {
+                        ...message,
+                        delivered_timestamp: data.data.delivered_timestamp,
+                      }
+                    : message
+                ),
+              };
+            }
+            return chat;
+          })
+        );
       }
 
       if (data.type === "user_status_update") {
-        console.log(data);
         setResult((prevResults) =>
           prevResults.map((chat) => {
             if (chat.user.id === data.data.user) {

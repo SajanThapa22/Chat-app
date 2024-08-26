@@ -38,11 +38,17 @@ const ChatHistoryList = () => {
               ? `${messageContent.slice(0, 20)}...`
               : messageContent;
 
-          const date = new Date(r.messages[0].sent_timestamp);
-          let hours = date.getHours();
-          let minutes = date.getMinutes();
+          const sentDate = new Date(r.messages[0].sent_timestamp);
+          let sentHours = sentDate.getHours();
+          let sentMinutes = sentDate.getMinutes();
 
-          const formattedTime = `${hours}:${minutes}`;
+          // const deliveredDate =
+          //   r.messages[0].delivered_timestamp &&
+          //   new Date(r.messages[0].delivered_timestamp);
+          //   let deliveredHours = sentDate.getHours();
+          // let deliveredMinutes = sentDate.getMinutes();
+
+          const formattedSentTime = `${sentHours}:${sentMinutes}`;
 
           return (
             <User
@@ -51,8 +57,13 @@ const ChatHistoryList = () => {
               username={r.user.username}
               img={r.user.profile.profile_pic}
               message={slicedMessage}
-              time={formattedTime}
+              time={formattedSentTime}
               status={r.user.user_status.status}
+              delivered={
+                r.messages[0].delivered_timestamp
+                  ? r.messages[0].delivered_timestamp
+                  : ""
+              }
             />
           );
         })}
