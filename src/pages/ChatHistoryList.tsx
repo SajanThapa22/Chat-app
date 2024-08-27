@@ -38,34 +38,54 @@ const ChatHistoryList = () => {
               ? `${messageContent.slice(0, 20)}...`
               : messageContent;
 
-          const sentDate = new Date(r.messages[0].sent_timestamp);
-          let sentHours =
-            sentDate.getHours() > 10
-              ? sentDate.getHours()
-              : `0${sentDate.getHours()}`;
-          let sentMinutes =
-            sentDate.getMinutes() > 10
-              ? sentDate.getMinutes()
-              : `0${sentDate.getMinutes()}`;
+          // const sentDate = new Date(r.messages[0].sent_timestamp);
+          // let sentHours =
+          //   sentDate.getHours() > 10
+          //     ? sentDate.getHours()
+          //     : `0${sentDate.getHours()}`;
+          // let sentMinutes =
+          //   sentDate.getMinutes() > 10
+          //     ? sentDate.getMinutes()
+          //     : `0${sentDate.getMinutes()}`;
 
           function timeAgo(): string {
             const now = new Date();
             const sentDate = new Date(r.messages[0].sent_timestamp);
-            const diff = now.getTime() - sentDate.getTime(); // Get the difference in milliseconds
+            const diff = now.getTime() - sentDate.getTime(); // Difference in milliseconds
 
             const seconds = Math.floor(diff / 1000);
             const minutes = Math.floor(seconds / 60);
             const hours = Math.floor(minutes / 60);
             const days = Math.floor(hours / 24);
-            const weeks = Math.floor(days / 7);
-            const months = Math.floor(days / 30);
-            const years = Math.floor(days / 365);
+            const years = now.getFullYear() - sentDate.getFullYear();
 
-            if (hours < 24) return `${sentHours}:${sentMinutes}`;
-            if (days < 7) return `${days} d ago`;
-            if (weeks < 4) return `${weeks} w ago`;
-            if (months < 12) return `${months} mo ago`;
-            return `${years} y ago`;
+            // Same day: return time in "HH:MM" format
+            if (days < 1) {
+              return sentDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+            }
+
+            // Within the last week: return day of the week
+            if (days < 7) {
+              return sentDate.toLocaleDateString([], { weekday: "short" });
+            }
+
+            // More than a week but less than a year: return "DD MMM" format
+            if (years < 1) {
+              return sentDate.toLocaleDateString([], {
+                day: "numeric",
+                month: "short",
+              });
+            }
+
+            // More than a year: return "DD MMM YYYY" format
+            return sentDate.toLocaleDateString([], {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            });
           }
 
           return (
