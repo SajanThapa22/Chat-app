@@ -146,22 +146,14 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
       }
 
       if (data.type === "chat_message_info") {
-        setResult((prevResults) =>
-          prevResults.map((chat) => {
-            if (chat.user.id === data.data.user) {
+        setInitialMessages((prevResults) =>
+          prevResults.map((msg) => {
+            if (msg.chat_history === data.data.chat_history) {
               return {
-                ...chat,
-                messages: chat.messages.map((message, index) =>
-                  index === 0
-                    ? {
-                        ...message,
-                        delivered_timestamp: data.data.delivered_timestamp,
-                      }
-                    : message
-                ),
+                ...msg,
               };
             }
-            return chat;
+            return msg;
           })
         );
       }

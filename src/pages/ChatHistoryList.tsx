@@ -39,16 +39,34 @@ const ChatHistoryList = () => {
               : messageContent;
 
           const sentDate = new Date(r.messages[0].sent_timestamp);
-          let sentHours = sentDate.getHours();
-          let sentMinutes = sentDate.getMinutes();
+          let sentHours =
+            sentDate.getHours() > 10
+              ? sentDate.getHours()
+              : `0${sentDate.getHours()}`;
+          let sentMinutes =
+            sentDate.getMinutes() > 10
+              ? sentDate.getMinutes()
+              : `0${sentDate.getMinutes()}`;
 
-          // const deliveredDate =
-          //   r.messages[0].delivered_timestamp &&
-          //   new Date(r.messages[0].delivered_timestamp);
-          //   let deliveredHours = sentDate.getHours();
-          // let deliveredMinutes = sentDate.getMinutes();
+          function timeAgo(): string {
+            const now = new Date();
+            const sentDate = new Date(r.messages[0].sent_timestamp);
+            const diff = now.getTime() - sentDate.getTime(); // Get the difference in milliseconds
 
-          const formattedSentTime = `${sentHours}:${sentMinutes}`;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (hours < 24) return `${sentHours}:${sentMinutes}`;
+            if (days < 7) return `${days} d ago`;
+            if (weeks < 4) return `${weeks} w ago`;
+            if (months < 12) return `${months} mo ago`;
+            return `${years} y ago`;
+          }
 
           return (
             <User
@@ -57,13 +75,8 @@ const ChatHistoryList = () => {
               username={r.user.username}
               img={r.user.profile.profile_pic}
               message={slicedMessage}
-              time={formattedSentTime}
+              time={timeAgo()}
               status={r.user.user_status.status}
-              delivered={
-                r.messages[0].delivered_timestamp
-                  ? r.messages[0].delivered_timestamp
-                  : ""
-              }
             />
           );
         })}
