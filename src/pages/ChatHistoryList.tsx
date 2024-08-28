@@ -20,6 +20,47 @@ const ChatHistoryList = () => {
   const { result, error, isLoading } = useChatHistory();
   const { currentUser } = useGetCurrentUser();
 
+  function timeAgo(timestamp: string): string {
+    const now = new Date();
+    const pastDate = new Date(timestamp);
+
+    const diff = now.getTime() - pastDate.getTime(); // Difference in milliseconds
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const years = now.getFullYear() - pastDate.getFullYear();
+
+    // Same day: return time in "HH:MM" format
+    if (days < 1 && now.getDate() === pastDate.getDate()) {
+      return pastDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    // Previous day but within the same week: return the day of the week
+    if (days < 7) {
+      return pastDate.toLocaleDateString([], { weekday: "short" });
+    }
+
+    // More than a week but within the same year: return "DD MMM" format
+    if (years === 0) {
+      return pastDate.toLocaleDateString([], {
+        day: "numeric",
+        month: "short",
+      });
+    }
+
+    // More than a year: return "DD MMM YYYY" format
+    return pastDate.toLocaleDateString([], {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
   if (error) {
     return <div className="">{error}</div>;
   }
@@ -48,46 +89,6 @@ const ChatHistoryList = () => {
           //     ? sentDate.getMinutes()
           //     : `0${sentDate.getMinutes()}`;
 
-          function timeAgo(): string {
-            const now = new Date();
-            const sentDate = new Date(r.messages[0].sent_timestamp);
-            const diff = now.getTime() - sentDate.getTime(); // Difference in milliseconds
-
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            const years = now.getFullYear() - sentDate.getFullYear();
-
-            // Same day: return time in "HH:MM" format
-            if (days < 1) {
-              return sentDate.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-            }
-
-            // Within the last week: return day of the week
-            if (days < 7) {
-              return sentDate.toLocaleDateString([], { weekday: "short" });
-            }
-
-            // More than a week but less than a year: return "DD MMM" format
-            if (years < 1) {
-              return sentDate.toLocaleDateString([], {
-                day: "numeric",
-                month: "short",
-              });
-            }
-
-            // More than a year: return "DD MMM YYYY" format
-            return sentDate.toLocaleDateString([], {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            });
-          }
-
           return (
             <User
               id={r.user.id}
@@ -95,7 +96,7 @@ const ChatHistoryList = () => {
               username={r.user.username}
               img={r.user.profile.profile_pic}
               message={slicedMessage}
-              time={timeAgo()}
+              time={timeAgo(r.messages[0].sent_timestamp)}
               status={r.user.user_status.status}
             />
           );
