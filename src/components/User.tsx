@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-import { IoCheckmark } from "react-icons/io5";
 
 interface Props {
   img: string | undefined;
@@ -23,7 +22,6 @@ const User = ({
   onclick,
   style,
   status,
-  delivered,
 }: Props) => {
   return (
     <NavLink
@@ -54,7 +52,6 @@ const User = ({
           <div className="flex justify-between gap-2 text-[14px]">
             <div className="text-txtClr flex gap-3">
               <div>{message}</div>
-              {delivered && <IoCheckmark />}
             </div>
             <div>{time}</div>
           </div>
