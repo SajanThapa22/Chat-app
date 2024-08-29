@@ -145,18 +145,19 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
         ]);
       }
 
-      if (data.type === "chat_message_info") {
-        setInitialMessages((prevResults) =>
-          prevResults.map((msg) => {
-            if (msg.chat_history === data.data.chat_history) {
-              return {
-                ...msg,
-              };
-            }
-            return msg;
-          })
-        );
-      }
+      // if (data.type === "chat_message_info") {
+      //   setInitialMessages((prevResults) =>
+      //     prevResults.map((msg) => {
+      //       if (msg.chat_history === data.data.chat_history) {
+      //         return {
+      //           ...msg,
+      //           delivered_timestamp:
+      //         };
+      //       }
+      //       return msg;
+      //     })
+      //   );
+      // }
 
       if (data.type === "user_status_update") {
         setResult((prevResults) =>

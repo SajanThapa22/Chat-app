@@ -149,13 +149,22 @@ const ChatPage = () => {
                   style={{
                     wordBreak: "break-all",
                   }}
-                  className={`rounded-[20px] px-4 py-2 text-wrap max-w-[60%] text-white  ${
-                    msg.user === currentUser?.id
-                      ? "bg-primary ml-auto"
-                      : "bg-gray-400 mr-auto"
+                  className={`max-w-[60%] text-white ${
+                    msg.user === currentUser?.id ? "ml-auto" : "mr-auto"
                   }`}
                 >
-                  {msg.message}
+                  <div
+                    className={`rounded-[20px] ${
+                      msg.user === currentUser?.id
+                        ? "bg-primary"
+                        : "bg-gray-400"
+                    } px-4 py-2 text-wrap `}
+                  >
+                    {msg.message}
+                  </div>
+                  {msg.user === currentUser?.id && msg.delivered_timestamp && (
+                    <p>delivered</p>
+                  )}
                 </div>
               )
           )}
