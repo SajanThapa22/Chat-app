@@ -45,7 +45,6 @@ const ChatHistoryList = () => {
       return pastDate.toLocaleDateString([], { weekday: "short" });
     }
 
-    // More than a week but within the same year: return "DD MMM" format
     if (years === 0) {
       return pastDate.toLocaleDateString([], {
         day: "numeric",
@@ -53,7 +52,6 @@ const ChatHistoryList = () => {
       });
     }
 
-    // More than a year: return "DD MMM YYYY" format
     return pastDate.toLocaleDateString([], {
       day: "numeric",
       month: "short",
