@@ -24,7 +24,7 @@ const ChatHistoryList = () => {
     const now = new Date();
     const pastDate = new Date(timestamp);
 
-    const diff = now.getTime() - pastDate.getTime(); // Difference in milliseconds
+    const diff = now.getTime() - pastDate.getTime();
 
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -76,16 +76,6 @@ const ChatHistoryList = () => {
             messageContent.length > 20
               ? `${messageContent.slice(0, 20)}...`
               : messageContent;
-
-          // const sentDate = new Date(r.messages[0].sent_timestamp);
-          // let sentHours =
-          //   sentDate.getHours() > 10
-          //     ? sentDate.getHours()
-          //     : `0${sentDate.getHours()}`;
-          // let sentMinutes =
-          //   sentDate.getMinutes() > 10
-          //     ? sentDate.getMinutes()
-          //     : `0${sentDate.getMinutes()}`;
 
           return (
             <User
