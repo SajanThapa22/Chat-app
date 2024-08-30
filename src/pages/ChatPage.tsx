@@ -89,7 +89,6 @@ const ChatPage = () => {
       }
     };
 
-    // Call the updateStatus function initially
     updateStatus();
   }, [history, result]);
 
@@ -99,7 +98,7 @@ const ChatPage = () => {
     }
   };
   if (error) {
-    return <div>Error: {error}</div>; // Display any error messages
+    return <div>Error: {error}</div>;
   }
 
   return (
