@@ -161,9 +161,9 @@ const ChatPage = () => {
                   >
                     {msg.message}
                   </div>
-                  {msg.user === currentUser?.id && msg.delivered_timestamp && (
+                  {/* {msg.user === currentUser?.id && msg.delivered_timestamp && (
                     <p>delivered</p>
-                  )}
+                  )} */}
                 </div>
               )
           )}
