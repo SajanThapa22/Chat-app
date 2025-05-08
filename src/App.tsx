@@ -1,8 +1,8 @@
 import { RouterProvider } from "react-router-dom";
-import { useAppRouter } from "./routes/route";
-import { ThemeProvider } from "./context/ThemeContext";
-import { AuthProvider } from "./context/AuthContext";
-import { ChatHistoryProvider } from "./context/ChatHistoryContext";
+import { useAppRouter } from "./router";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ChatHistoryProvider } from "./contexts/ChatHistoryContext";
 
 const App = () => {
   const router = useAppRouter();

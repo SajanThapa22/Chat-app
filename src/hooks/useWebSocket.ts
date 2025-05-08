@@ -1,57 +1,78 @@
-// Define a type for the callback function used in subscribeToChat
-type MessageCallback = (error: Error | null, data?: any) => void;
+// src/hooks/useWebSocket.ts
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "./useAuth";
 
-// Global WebSocket variable to manage the connection
-let socket: WebSocket | null = null;
+export const useWebSocket = (url: string, onMessage: (data: any) => void) => {
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-// Function to initiate the WebSocket connection
-export const initiateSocket = (): WebSocket => {
-  const token = localStorage.getItem("access");
-  const socketUrl = `wss://chat-app-xcsf.onrender.com/ws/chat/?token=${token}`;
-  socket = new WebSocket(socketUrl);
+  const { isAuthenticated } = useAuth();
 
-  socket.onopen = () => {
-    console.log("WebSocket connected");
-  };
+  const connect = useCallback(() => {
+    if (!isAuthenticated || !url) return;
 
-  socket.onclose = () => {
-    console.log("WebSocket disconnected");
-  };
+    const ws = new WebSocket(url);
 
-  socket.onerror = (error) => {
-    console.error("WebSocket error:", error);
-  };
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+      setIsConnected(true);
+      setError(null);
+    };
 
-  return socket;
-};
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        onMessage(data);
+      } catch (err) {
+        console.error("Failed to parse WebSocket message:", err);
+      }
+    };
 
-// Function to disconnect the WebSocket
-export const disconnectSocket = (): void => {
-  if (socket) {
-    socket.close();
-    socket = null;
-  }
-};
+    ws.onerror = (event) => {
+      console.error("WebSocket error:", event);
+      setError("WebSocket connection error");
+    };
 
-// Function to subscribe to incoming chat messages
-export const subscribeToChat = (cb: MessageCallback): void => {
-  if (!socket) return;
-  socket.onmessage = (event: MessageEvent) => {
-    try {
-      const data = JSON.parse(event.data);
-      console.log(data);
-      cb(null, data);
-    } catch (error) {
-      cb(error as Error);
-    }
-  };
-};
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+      setIsConnected(false);
 
-// Function to send a message through the WebSocket
-export const sendMessage = (message: any): void => {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify(message));
-  } else {
-    console.error("WebSocket is not open. Unable to send message.");
-  }
+      // Try to reconnect after a delay
+      setTimeout(() => {
+        if (isAuthenticated) {
+          connect();
+        }
+      }, 3000);
+    };
+
+    setSocket(ws);
+
+    return () => {
+      ws.close();
+    };
+  }, [url, isAuthenticated, onMessage]);
+
+  useEffect(() => {
+    connect();
+
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [connect]);
+
+  const sendMessage = useCallback(
+    (data: any) => {
+      if (socket?.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(data));
+        return true;
+      }
+      return false;
+    },
+    [socket]
+  );
+
+  return { socket, isConnected, error, sendMessage };
 };
