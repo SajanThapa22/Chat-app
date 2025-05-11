@@ -11,7 +11,6 @@ import { useChatHistory } from "../hooks/useChatHistory";
 
 interface ChatProviderProps {
   children: ReactNode;
-  id: string | undefined;
 }
 
 interface Message {
