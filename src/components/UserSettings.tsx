@@ -63,7 +63,7 @@ const UserSettings = ({ img }: Props) => {
               !firstVisible && "bg-selected"
             }`}
           >
-            Change theme
+            Choose theme
           </div>
           <div onClick={logout} className="mt-2 cursor-pointer px-2 py-2">
             Log out

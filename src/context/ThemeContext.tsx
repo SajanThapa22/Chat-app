@@ -3,6 +3,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 interface ThemeContextType {
   theme: string;
   setTheme: (theme: string) => void;
+  isSideBarCollapsed: boolean;
+  setIsSideBarCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -21,6 +23,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [theme, setTheme] = useState<string>(
     localStorage.getItem("theme") || "system"
   );
+  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState<boolean>(false);
 
   const element = document.documentElement;
   const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -70,7 +73,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider
+      value={{ theme, setTheme, isSideBarCollapsed, setIsSideBarCollapsed }}
+    >
       {children}
     </ThemeContext.Provider>
   );

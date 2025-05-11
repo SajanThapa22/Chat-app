@@ -2,6 +2,7 @@ import User from "../components/User";
 import Spinner from "../components/Spinner";
 import useGetCurrentUser from "../hooks/useGetCurrentUser";
 import useChatHistoryList from "../hooks/useChatHistoryList";
+import defaultProfilePicture from "../assets/img/default_image.png";
 
 interface User {
   id: string;
@@ -82,7 +83,7 @@ const ChatHistoryList = () => {
               id={r.user.id}
               key={r.user.id}
               username={r.user.username}
-              img={r.user.profile.profile_pic}
+              img={defaultProfilePicture}
               message={slicedMessage}
               time={timeAgo(r.messages[0].sent_timestamp)}
               status={r.user.user_status.status}

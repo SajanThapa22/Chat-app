@@ -12,6 +12,11 @@ export interface Message {
 const ChatLayout = () => {
   const [width, setWidth] = useState<number>(window.innerWidth);
   const { id } = useParams<{ id: string | undefined }>();
+  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState<boolean>(false);
+
+  const handleSidebarToggle = (collapsed: boolean) => {
+    setIsSideBarCollapsed(collapsed);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,7 +33,7 @@ const ChatLayout = () => {
     <>
       <ChatProvider id={id}>
         {width > 750 ? (
-          <div className="grid grid-cols-[1fr,3fr] bg-bgComp">
+          <div className="flex bg-bgComp">
             <ChatUI />
             <Outlet />
           </div>

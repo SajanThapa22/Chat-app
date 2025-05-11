@@ -1,30 +1,37 @@
 import { CiSearch } from "react-icons/ci";
-import anonymous from "../assets/img/default_image.png";
 import { useState } from "react";
 import BoxUsersSearch from "../components/BoxUsersSearch";
 import UserSettings from "../components/UserSettings";
 import ChatHistoryList from "./ChatHistoryList";
-import useGetCurrentUser from "../hooks/useGetCurrentUser";
+// import useGetCurrentUser from "../hooks/useGetCurrentUser";
+import { FaChevronLeft } from "react-icons/fa6";
+import defaultProfilePicture from "../assets/img/default_image.png";
+import { useTheme } from "../context/ThemeContext";
 
 const ChatUI = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchVisibility, setSearchVisibility] = useState<boolean>();
-  const { currentUser } = useGetCurrentUser();
+  // const { currentUser } = useGetCurrentUser();
+  const { isSideBarCollapsed } = useTheme();
 
   return (
     <div
       id="all-chats"
-      className="bg-bgComp px-4 border-r border-r-gray-400 h-screen max-h-screen flex flex-col"
+      className={`relative ${
+        isSideBarCollapsed
+          ? "opacity-0 scale-x-0 w-0 px-0"
+          : "opacity-100 scale-x-100 w-1/4"
+      } transition-transform origin-left duration-75 delay-100 bg-bgComp overflow-hidden px-4 border-r border-r-gray-400 h-screen max-h-screen flex flex-col`}
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
           <div className="text-[22px] font-medium">Chats</div>
           <div className="flex gap-5 items-center">
-            <UserSettings img={currentUser?.profile.profile_pic || anonymous} />
+            <UserSettings img={defaultProfilePicture} />
           </div>
         </div>
 
-        <div className="rounded-[8px] border border-gray-400 px-2 py-1 flex gap-2">
+        <div className="rounded-[8px] border border-gray-400 px-3 py-2 flex gap-2">
           <input
             value={searchTerm}
             type="text"

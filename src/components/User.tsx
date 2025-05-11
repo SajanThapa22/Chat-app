@@ -44,7 +44,7 @@ const User = ({
 
         <div className="text-txtClr w-full">
           <div className="w-full flex justify-between">
-            <div className="text-[18px]">{username}</div>
+            <div className="text-[18px] capitalize">{username}</div>
             {/* {status === "online" && (
               <div className="size-3 bg-[#00FF00] rounded-full"></div>
             )} */}

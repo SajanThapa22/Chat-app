@@ -84,111 +84,109 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
 
   useEffect(() => {
     initiateSocket();
-    subscribeToChat((err, data) => {
-      if (err) {
-        console.error("Error subscribing to chat:", err);
-        return;
-      }
-
-      if (data.type === "chat_message") {
-        const receivedMessage: Message = {
-          chat_history: data.message.chat_history,
-          delivered_timestamp: data.message.delivered_timestamp,
-          id: data.message.id,
-          media: data.message.media,
-          message: data.message.message,
-          reply_of: data.message.reply_of,
-          seen_timestamp: data.message.seen_timestamp,
-          sent_timestamp: data.message.sent_timestamp,
-          user: data.message.user,
-        };
-
-        const updatedMessageInfo = {
-          type: "updated_message_info",
-          updated_message_info_type: "delivered",
-          receiver_id: data.message.user,
-          message_id: data.message.id,
-        };
-
-        sendMessage(updatedMessageInfo);
-
-        const addMessage = (chatHistoryId: string, newMessage: Message) => {
-          setResult((prevResults) => {
-            // Update the messages for the specific chat history
-            const updatedResults = prevResults.map((chat) => {
-              if (chat.chat_history === chatHistoryId) {
-                return {
-                  ...chat,
-                  messages: [newMessage, ...chat.messages],
-                };
-              }
-              return chat;
-            });
-            // Remove the updated chat history from its current position
-            const updatedChatHistory = updatedResults.find(
-              (chat) => chat.chat_history === chatHistoryId
-            );
-            const filteredResults = updatedResults.filter(
-              (chat) => chat.chat_history !== chatHistoryId
-            );
-            // Add the updated chat history to the beginning of the array
-            if (updatedChatHistory) {
-              filteredResults.unshift(updatedChatHistory);
-            }
-
-            return filteredResults;
-          });
-        };
-
-        addMessage(data.message.chat_history, receivedMessage);
-
-        setInitialMessages((prevMessages) => [
-          ...prevMessages,
-          receivedMessage,
-        ]);
-      }
-
-      if (data.type === "chat_message_info") {
-        setInitialMessages((prevResults) =>
-          prevResults.map((msg) => {
-            if (msg.chat_history === data.data.chat_history) {
-              return {
-                ...msg,
-                delivered_timestamp: new Date()
-                  .toISOString()
-                  .replace("Z", "000Z"),
-              };
-            }
-            return msg;
-          })
-        );
-      }
-
-      if (data.type === "user_status_update") {
-        setResult((prevResults) =>
-          prevResults.map((chat) => {
-            if (chat.user.id === data.data.user) {
-              return {
-                ...chat,
-                user: {
-                  ...chat.user,
-                  user_status: {
-                    last_seen: data.data.last_seen,
-                    status: data.data.status,
-                  },
-                },
-              };
-            }
-            return chat;
-          })
-        );
-      }
-    });
 
     return () => {
       disconnectSocket();
     };
   }, []);
+
+  subscribeToChat((err, data) => {
+    if (err) {
+      console.error("Error subscribing to chat:", err);
+      return;
+    }
+
+    if (data.type === "chat_message") {
+      const receivedMessage: Message = {
+        chat_history: data.message.chat_history,
+        delivered_timestamp: data.message.delivered_timestamp,
+        id: data.message.id,
+        media: data.message.media,
+        message: data.message.message,
+        reply_of: data.message.reply_of,
+        seen_timestamp: data.message.seen_timestamp,
+        sent_timestamp: data.message.sent_timestamp,
+        user: data.message.user,
+      };
+
+      const updatedMessageInfo = {
+        type: "updated_message_info",
+        updated_message_info_type: "delivered",
+        receiver_id: data.message.user,
+        message_id: data.message.id,
+      };
+
+      sendMessage(updatedMessageInfo);
+
+      const addMessage = (chatHistoryId: string, newMessage: Message) => {
+        setResult((prevResults) => {
+          // Update the messages for the specific chat history
+          const updatedResults = prevResults.map((chat) => {
+            if (chat.chat_history === chatHistoryId) {
+              return {
+                ...chat,
+                messages: [newMessage, ...chat.messages],
+              };
+            }
+            return chat;
+          });
+          // Remove the updated chat history from its current position
+          const updatedChatHistory = updatedResults.find(
+            (chat) => chat.chat_history === chatHistoryId
+          );
+          const filteredResults = updatedResults.filter(
+            (chat) => chat.chat_history !== chatHistoryId
+          );
+          // Add the updated chat history to the beginning of the array
+          if (updatedChatHistory) {
+            filteredResults.unshift(updatedChatHistory);
+          }
+
+          return filteredResults;
+        });
+      };
+
+      addMessage(data.message.chat_history, receivedMessage);
+
+      setInitialMessages((prevMessages) => [...prevMessages, receivedMessage]);
+    }
+
+    // if (data.type === "chat_message_info") {
+    //   setInitialMessages((prevResults) =>
+    //     prevResults.map((msg) => {
+    //       if (msg.chat_history === data.data.chat_history) {
+    //         return {
+    //           ...msg,
+    //           delivered_timestamp: new Date()
+    //             .toISOString()
+    //             .replace("Z", "000Z"),
+    //         };
+    //       }
+    //       return msg;
+    //     })
+    //   );
+    // }
+
+    if (data.type === "user_status_update") {
+      setResult((prevResults) =>
+        prevResults.map((chat) => {
+          if (chat.user.id === data.data.user) {
+            return {
+              ...chat,
+              user: {
+                ...chat.user,
+                user_status: {
+                  last_seen: data.data.last_seen,
+                  status: data.data.status,
+                },
+              },
+            };
+          }
+          return chat;
+        })
+      );
+    }
+  });
 
   return (
     <ChatContext.Provider

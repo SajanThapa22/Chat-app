@@ -1,15 +1,22 @@
+import { useTheme } from "../context/ThemeContext";
 import { FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { PiPaperPlaneRightFill } from "react-icons/pi";
-import { IoCheckmark } from "react-icons/io5";
-import { BiCheckDouble } from "react-icons/bi";
 import Navigator from "../components/Navigator";
-import anonymous from "../assets/img/default_image.png";
 import { useChat } from "../context/ChatContext";
 import getUser from "../hooks/getUser";
 import getChatHistory from "../hooks/getChatHistory";
 import useGetCurrentUser from "../hooks/useGetCurrentUser";
 import useChatHistoryList from "../hooks/useChatHistoryList";
+import Picker from "@emoji-mart/react";
+import EmojiClickData from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+
+import defaultProfilePicture from "../assets/img/default_image.png";
+import { FaChevronLeft } from "react-icons/fa";
+import { BsEmojiSmile } from "react-icons/bs";
+import { PiPaperPlaneRightFill } from "react-icons/pi";
+import { IoCheckmark } from "react-icons/io5";
+import { BiCheckDouble } from "react-icons/bi";
 
 const ChatPage = () => {
   const { currentUser, error } = useGetCurrentUser();
@@ -17,6 +24,9 @@ const ChatPage = () => {
   const { user } = getUser(id);
   const { result } = useChatHistoryList();
   const [filteredStatus, setFilteredStatus] = useState<string>();
+  const [isEmojiPickerVisible, setIsEmojiPickerVisible] =
+    useState<boolean>(false);
+
   const {
     setInitialMessages,
     initialMessages,
@@ -28,6 +38,8 @@ const ChatPage = () => {
     setHistory,
     handleSendMessage,
   } = useChat();
+
+  const { isSideBarCollapsed, setIsSideBarCollapsed } = useTheme();
 
   const generateChatHistoryName = (
     senderUserId: string | undefined,
@@ -124,13 +136,16 @@ const ChatPage = () => {
   }
 
   return (
-    <div id="chat-section" className="flex flex-col bg-bgComp h-dvh max-w-full">
+    <div
+      id="chat-section"
+      className={`flex flex-col bg-bgComp h-dvh flex-1 max-w-full relative`}
+    >
       <div className="px-3 lg:px-8 py-2 lg:py-4 border-b border-b-gray-400">
         <div className="flex gap-4 items-center ml-3">
           <Navigator />
           <div className="rounded-full aspect-square size-12 relative">
             <img
-              src={user?.profile.profile_pic || anonymous}
+              src={defaultProfilePicture}
               className="size-full object-cover rounded-full"
             />
             {filteredStatus === "online" && (
@@ -138,7 +153,7 @@ const ChatPage = () => {
             )}
           </div>
           <div className="flex flex-col text-txtClr">
-            <div className="text-[18px]">{user?.username}</div>
+            <div className="text-[18px] capitalize">{user?.username}</div>
             {filteredStatus === "online" && (
               <>
                 <div className="text-[14px]">Active now</div>
@@ -148,7 +163,12 @@ const ChatPage = () => {
         </div>
       </div>
 
-      <div id="chats" className="flex-1 h-full overflow-y-auto hide-scrollbar">
+      <div
+        id="chats"
+        className={`flex-1 h-full overflow-y-auto hide-scrollbar ${
+          isSideBarCollapsed && "pl-8"
+        }`}
+      >
         {url.nextUrl && initialMessages && (
           <div
             onClick={handleLoadMore}
@@ -159,10 +179,12 @@ const ChatPage = () => {
         )}
         <div
           id="chatsdivs"
-          className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 lg:px-8 py-5"
+          className={`w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 lg:px-8 py-5`}
         >
-          {filteredMessages.map((msg, index) => (
-            <>
+          {filteredMessages.map((msg, index) => {
+            const isLongMessage = msg.message.length > 50; // Adjust threshold as needed
+
+            return (
               <div
                 key={index}
                 style={{
@@ -175,12 +197,17 @@ const ChatPage = () => {
                 <div
                   className={`rounded-[20px] ${
                     msg.user === currentUser?.id ? "bg-primary" : "bg-gray-400"
-                  } px-4 py-2 text-wrap w-fit relative gap-2`}
+                  } px-4 py-2 text-wrap w-fit flex ${
+                    isLongMessage ? "flex-col" : "flex-row items-end"
+                  } gap-2`}
                 >
-                  {msg.message}
-
-                  <div className="flex gap-2 h-full text-white justify-end">
-                    <span className="text-[10px] lowercase">
+                  <div className="flex-1">{msg.message}</div>
+                  <div
+                    className={`flex gap-2 text-white ${
+                      isLongMessage ? "justify-end" : "items-center"
+                    }`}
+                  >
+                    <span className="text-[10px]">
                       {showTime(
                         msg.delivered_timestamp
                           ? msg.delivered_timestamp
@@ -188,7 +215,7 @@ const ChatPage = () => {
                       )}
                     </span>
                     {msg.user === currentUser?.id && (
-                      <span className="text-md ">
+                      <span className="text-md">
                         {msg.delivered_timestamp ? (
                           <BiCheckDouble />
                         ) : (
@@ -199,8 +226,8 @@ const ChatPage = () => {
                   </div>
                 </div>
               </div>
-            </>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -210,22 +237,51 @@ const ChatPage = () => {
             e.preventDefault();
             handleSendMessage();
           }}
-          className="w-full flex items-center gap-4"
+          className="w-full"
         >
-          <input
-            onChange={(e) => setInputMessage(e.target.value)}
-            value={inputMessage}
-            type="text"
-            className="focus:outline-none border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-txtClr w-full"
-            placeholder="Type a message.."
-          />
-          <button
-            type="submit"
-            className="border-none size-8 bg-transparent outline-none rounded-lg text-white"
-          >
-            <PiPaperPlaneRightFill className="text-primary size-8" />
-          </button>
+          <div className="border border-gray-400 rounded-lg px-4 py-2 flex items-center gap-4">
+            <input
+              onChange={(e) => setInputMessage(e.target.value)}
+              value={inputMessage}
+              type="text"
+              className="focus:outline-none bg-transparent text-txtClr w-full"
+              placeholder="Type a message.."
+            />
+
+            <div onClick={() => setIsEmojiPickerVisible(!isEmojiPickerVisible)}>
+              <BsEmojiSmile className="text-white text-xl cursor-pointer" />
+            </div>
+
+            <div
+              className={`absolute bottom-20 right-8 ${
+                isEmojiPickerVisible ? "block" : "hidden"
+              }`}
+            >
+              <Picker
+                data={data}
+                previewPosition="none"
+                onEmojiSelect={(e: any) => {
+                  setInputMessage(inputMessage + e.native);
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="border-none size-8 bg-transparent outline-none rounded-lg text-white"
+            >
+              <PiPaperPlaneRightFill className="text-primary size-8" />
+            </button>
+          </div>
         </form>
+      </div>
+      <div
+        onClick={() => setIsSideBarCollapsed(!isSideBarCollapsed)}
+        className={`p-2 cursor-pointer bg-slate-400 rounded-full absolute transition-transform delay-75 bottom-1/2 -translate-x-1/2 ${
+          isSideBarCollapsed && "rotate-180 translate-x-1/2"
+        }`}
+      >
+        <FaChevronLeft className="text-white size-5" />
       </div>
     </div>
   );
