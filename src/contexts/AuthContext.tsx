@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(updatedUser);
   }, []);
 
-  // Check authentication status on mount
   useEffect(() => {
     const checkAuthStatus = async () => {
       setIsLoading(true);

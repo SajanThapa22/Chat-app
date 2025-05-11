@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
+import User from "./User";
 import { CiSearch } from "react-icons/ci";
-import api from "../../services/api";
 import { debounce } from "lodash";
 import { Users } from "../../types/chat";
-import User from "../chat/User";
+import { ChatAPI } from "../../api/chat";
 
 interface Props {
   searchTerm: string | undefined;
 }
 
-const BoxUsersSearch = ({ searchTerm }: Props) => {
+const UsersSearch = ({ searchTerm }: Props) => {
   const [users, setUsers] = useState<Users[]>();
   const [error, setError] = useState<string>();
 
@@ -23,26 +23,14 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
       return;
     }
 
-    const debouncedFetchUsers = debounce(() => {
-      const url = `/chat/users`;
-
-      api
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-          params: {
-            search: searchTerm,
-          },
-        })
-        .then((res) => {
-          setUsers(res.data);
-        })
-        .catch((err) => {
-          if (err.response.status === 404) {
-            setError("No users found");
-          }
-        });
+    const debouncedFetchUsers = debounce(async () => {
+      try {
+        const users = await ChatAPI.searchUsers(searchTerm);
+        setUsers(users);
+      } catch (err) {
+        setError("Error searching users");
+        console.error("Error fetching users", err);
+      }
     }, 300);
 
     debouncedFetchUsers();
@@ -82,4 +70,4 @@ const BoxUsersSearch = ({ searchTerm }: Props) => {
   );
 };
 
-export default BoxUsersSearch;
+export default UsersSearch;

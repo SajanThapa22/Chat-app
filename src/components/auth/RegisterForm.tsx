@@ -18,7 +18,7 @@ interface Error {
   username: string;
   email: string;
 }
-const Register = () => {
+const RegisterForm = () => {
   const { isAuthenticated, registerUser, isLoading } = useContext(AuthContext);
 
   useEffect(() => {
@@ -156,4 +156,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterForm;

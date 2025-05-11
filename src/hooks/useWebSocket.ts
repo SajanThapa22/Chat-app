@@ -1,57 +1,82 @@
-// src/hooks/useWebSocket.ts
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 
-export const useWebSocket = (url: string, onMessage: (data: any) => void) => {
+export const useWebSocket = (url: string) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const { isAuthenticated } = useAuth();
 
-  const connect = useCallback(() => {
-    if (!isAuthenticated || !url) return;
+  type MessageCallback = (error: Error | null, data?: any) => void;
 
-    const ws = new WebSocket(url);
+  // Heartbeat state
+  const [lastPong, setLastPong] = useState<number | null>(null);
 
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-      setIsConnected(true);
-      setError(null);
-    };
+  const connect = useCallback(
+    (retryCount = 0, maxRetries = 5) => {
+      if (!isAuthenticated || !url || retryCount > maxRetries) return;
 
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        onMessage(data);
-      } catch (err) {
-        console.error("Failed to parse WebSocket message:", err);
+      const ws = new WebSocket(url);
+
+      ws.onopen = () => {
+        console.log("WebSocket connected");
+        setIsConnected(true);
+        setError(null);
+        setLastPong(Date.now()); // Initialize last pong time
+      };
+
+      ws.onerror = (event) => {
+        console.error("WebSocket error:", event);
+        setError("WebSocket connection error");
+      };
+
+      ws.onclose = () => {
+        console.log("WebSocket disconnected");
+        setIsConnected(false);
+        setTimeout(() => {
+          if (isAuthenticated) {
+            connect(retryCount + 1, maxRetries); // Retry with backoff
+          }
+        }, 3000 * Math.pow(2, retryCount));
+      };
+      ws.send = () => {};
+
+      setSocket(ws);
+
+      return () => {
+        ws.close();
+      };
+    },
+    [url, isAuthenticated]
+  );
+
+  // Heartbeat logic
+  useEffect(() => {
+    if (!socket || !isConnected) return;
+
+    const pingInterval = 30000; // Send ping every 30 seconds
+    const timeout = 10000; // Wait 10 seconds for pong
+
+    // Send ping periodically
+    const pingTimer = setInterval(() => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: "ping" }));
       }
-    };
+    }, pingInterval);
 
-    ws.onerror = (event) => {
-      console.error("WebSocket error:", event);
-      setError("WebSocket connection error");
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
-      setIsConnected(false);
-
-      // Try to reconnect after a delay
-      setTimeout(() => {
-        if (isAuthenticated) {
-          connect();
-        }
-      }, 3000);
-    };
-
-    setSocket(ws);
+    // Check for pong response
+    const checkPongTimer = setInterval(() => {
+      if (lastPong && Date.now() - lastPong > pingInterval + timeout) {
+        console.log("No pong received, closing connection");
+        socket.close(); // Trigger reconnection via onclose
+      }
+    }, 5000);
 
     return () => {
-      ws.close();
+      clearInterval(pingTimer);
+      clearInterval(checkPongTimer);
     };
-  }, [url, isAuthenticated, onMessage]);
+  }, [socket, isConnected, lastPong]);
 
   useEffect(() => {
     connect();
@@ -74,5 +99,21 @@ export const useWebSocket = (url: string, onMessage: (data: any) => void) => {
     [socket]
   );
 
-  return { socket, isConnected, error, sendMessage };
+  const receiveMessage = useCallback(
+    (cb: MessageCallback): void => {
+      if (!socket) return;
+      socket.onmessage = (event: MessageEvent) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log(data);
+          cb(null, data);
+        } catch (error) {
+          cb(error as Error);
+        }
+      };
+    },
+    [socket]
+  );
+
+  return { socket, isConnected, error, sendMessage, receiveMessage };
 };

@@ -1,26 +1,18 @@
-// src/layouts/ChatLayout.tsx
-import React, { useEffect } from "react";
-import { Outlet } from "react-router-dom";
-import { useChat } from "../hooks/useChat";
-import ChatSidebar from "../components/chat/ChatSidebar";
-import Header from "../components/layout/Header";
+import { useEffect, useState } from "react";
+import { Outlet, useParams } from "react-router-dom";
+import ChatSideBar from "../components/chat/ChatSideBar";
 
-const ChatLayout: React.FC = () => {
-  const { fetchChatHistories } = useChat();
+export interface Message {
+  user: string;
+  message: string;
+  receiver: string | undefined;
+}
 
-  useEffect(() => {
-    fetchChatHistories();
-  }, [fetchChatHistories]);
-
+const ChatLayout = () => {
   return (
-    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <ChatSidebar />
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <Outlet />
-        </main>
-      </div>
+    <div className="grid grid-cols-[1fr,3fr] bg-bgComp">
+      <ChatSideBar />
+      <Outlet />
     </div>
   );
 };

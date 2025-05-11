@@ -1,37 +1,31 @@
 // src/components/common/ErrorBoundary.tsx
-import { createBrowserRouter, useRouteError } from "react-router-dom";
-import ProtectedRoute from "../auth/ProtectedRoute";
-import ChatLayout from "../../layouts/ChatLayout";
+import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 
 const ErrorBoundary = () => {
-  //   const error = useRouteError();
+  const error = useRouteError();
+
+  let errorMessage: string;
+
+  if (isRouteErrorResponse(error)) {
+    // If it's a recognized route error from React Router
+    errorMessage = error.statusText;
+  } else if (error instanceof Error) {
+    // If it's a native JS error
+    errorMessage = error.message;
+  } else {
+    // Fallback for unknown errors
+    errorMessage = "An unknown error occurred.";
+  }
 
   return (
     <div className="error-container">
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
-      {/* <p>
-        <i>{error.statusText || error.message}</i>
-      </p> */}
+      <p>
+        <i>{errorMessage}</i>
+      </p>
     </div>
   );
 };
 
 export default ErrorBoundary;
-
-// In router configuration:
-export const createAppRouter = () => {
-  return createBrowserRouter([
-    {
-      path: "/chat",
-      element: (
-        <ProtectedRoute>
-          <ChatLayout />
-        </ProtectedRoute>
-      ),
-      errorElement: <ErrorBoundary />,
-      // ...other route config
-    },
-    // ...other routes
-  ]);
-};

@@ -1,83 +1,209 @@
-import { createContext, ReactNode, useState } from "react";
-import { Message } from "react-hook-form";
-import api from "../api/axios";
-import { Results, Data } from "../types/chat";
+import {
+  ReactNode,
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+} from "react";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { useParams } from "react-router-dom";
+import { useChatHistory } from "../hooks/useChatHistory";
 
-export const ChatContext = createContext<{
-  chatHistories: Results[];
-  currentChat: Results | null;
-  isLoading: boolean;
-  fetchChatHistories: () => Promise<void>;
-  selectChat: (chatId: string) => void;
-  sendMessage: (message: string) => void;
-}>();
+interface ChatProviderProps {
+  children: ReactNode;
+  id: string | undefined;
+}
 
-export const ChatProvider = ({ children }: { children: ReactNode }) => {
-  const [chatHistories, setChatHistories] = useState<Results[]>([]);
-  const [currentChat, setCurrentChat] = useState<Results | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { sendMessage: sendWebSocketMessage } = useWebSocket();
+interface Message {
+  id: number;
+  user: string;
+  chat_history: string;
+  message: string;
+  media: null;
+  reply_of: null;
+  sent_timestamp: string;
+  delivered_timestamp: null;
+  seen_timestamp: null;
+}
 
-  const fetchChatHistories = async () => {
-    setIsLoading(true);
-    try {
-      const response = await api.get<Data>("/chat/history_list/");
-      setChatHistories(response.data.results);
-    } catch (error) {
-      console.error("Failed to fetch chat histories:", error);
-    } finally {
-      setIsLoading(false);
-    }
+interface ChatContextType {
+  initialMessages: Message[];
+  setInitialMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  inputMessage: string;
+  setInputMessage: React.Dispatch<React.SetStateAction<string>>;
+  url: {
+    nextUrl: string;
+    prevUrl: string;
   };
+  setUrl: React.Dispatch<
+    React.SetStateAction<{
+      nextUrl: string;
+      prevUrl: string;
+    }>
+  >;
+  history: string;
+  setHistory: React.Dispatch<React.SetStateAction<string>>;
+  handleSendMessage: () => void;
+}
 
-  const selectChat = (chatId: string) => {
-    const selected =
-      chatHistories.find((chat) => chat.chat_history === chatId) || null;
-    setCurrentChat(selected);
-  };
+const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-  const sendMessage = (message: string) => {
-    if (!currentChat) return;
+const ChatProvider = ({ children }: ChatProviderProps) => {
+  const { id } = useParams<{ id: string }>(); // Use URL parameters to get the id
+  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const [history, setHistory] = useState<string>("");
+  const [url, setUrl] = useState<{ nextUrl: string; prevUrl: string }>({
+    nextUrl: "",
+    prevUrl: "",
+  });
+  const { setChatHistory } = useChatHistory();
+  const { sendMessage, receiveMessage } = useWebSocket(
+    `ws://127.0.0.1:8000/ws/chat/`
+  );
 
-    // Optimistically update UI
-    const newMessage: Message = {
-      id: Date.now(), // Temporary ID
-      user: "me", // Current user ID (should come from auth context)
-      chat_history: currentChat.chat_history,
-      message,
-      media: null,
-      reply_of: null,
-      sent_timestamp: new Date().toISOString(),
-      delivered_timestamp: null,
-      seen_timestamp: null,
-    };
-
-    // Update local state
-    setCurrentChat((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        messages: [...prev.messages, newMessage],
+  function handleSendMessage() {
+    if (inputMessage && inputMessage.trim()) {
+      const messageData = {
+        type: "message",
+        message: inputMessage,
+        receiver_id: id, // Use id here
+        group_id: null,
       };
-    });
 
-    // Send via WebSocket
-    sendWebSocketMessage(message, currentChat.chat_history);
-  };
+      sendMessage(messageData);
+
+      setInputMessage("");
+    }
+  }
+
+  useEffect(() => {
+    receiveMessage((err, data) => {
+      if (err) {
+        console.error("Error subscribing to chat:", err);
+        return;
+      }
+
+      if (data.type === "chat_message") {
+        const receivedMessage: Message = {
+          chat_history: data.message.chat_history,
+          delivered_timestamp: data.message.delivered_timestamp,
+          id: data.message.id,
+          media: data.message.media,
+          message: data.message.message,
+          reply_of: data.message.reply_of,
+          seen_timestamp: data.message.seen_timestamp,
+          sent_timestamp: data.message.sent_timestamp,
+          user: data.message.user,
+        };
+
+        const updatedMessageInfo = {
+          type: "updated_message_info",
+          updated_message_info_type: "delivered",
+          receiver_id: data.message.user,
+          message_id: data.message.id,
+        };
+
+        sendMessage(updatedMessageInfo);
+
+        const addMessage = (chatHistoryId: string, newMessage: Message) => {
+          setChatHistory((prevResults) => {
+            if (!prevResults) return [];
+            // Update the messages for the specific chat history
+            const updatedResults = prevResults?.map((chat) => {
+              if (chat.chat_history === chatHistoryId) {
+                return {
+                  ...chat,
+                  messages: [newMessage, ...chat.messages],
+                };
+              }
+              return chat;
+            });
+            // Remove the updated chat history from its current position
+            const updatedChatHistory = updatedResults?.find(
+              (chat) => chat.chat_history === chatHistoryId
+            );
+            const filteredResults = updatedResults?.filter(
+              (chat) => chat.chat_history !== chatHistoryId
+            );
+            // Add the updated chat history to the beginning of the array
+            if (updatedChatHistory) {
+              filteredResults?.unshift(updatedChatHistory);
+            }
+
+            return filteredResults;
+          });
+        };
+
+        addMessage(data.message.chat_history, receivedMessage);
+
+        setInitialMessages((prevMessages) => [
+          ...prevMessages,
+          receivedMessage,
+        ]);
+      }
+
+      // if (data.type === "chat_message_info") {
+      //   setInitialMessages((prevResults) =>
+      //     prevResults.map((msg) => {
+      //       if (msg.chat_history === data.data.chat_history) {
+      //         return {
+      //           ...msg,
+      //           delivered_timestamp:
+      //         };
+      //       }
+      //       return msg;
+      //     })
+      //   );
+      // }
+
+      if (data.type === "user_status_update") {
+        setChatHistory((prevResults) => {
+          if (!prevResults) return [];
+          return prevResults.map((chat) => {
+            if (chat.user.id === data.data.user) {
+              return {
+                ...chat,
+                user: {
+                  ...chat.user,
+                  user_status: {
+                    last_seen: data.data.last_seen,
+                    status: data.data.status,
+                  },
+                },
+              };
+            }
+            return chat;
+          });
+        });
+      }
+    });
+  }, []);
 
   return (
     <ChatContext.Provider
       value={{
-        chatHistories,
-        currentChat,
-        isLoading,
-        fetchChatHistories,
-        selectChat,
-        sendMessage,
+        initialMessages,
+        setInitialMessages,
+        inputMessage,
+        setInputMessage,
+        url,
+        setUrl,
+        history,
+        setHistory,
+        handleSendMessage,
       }}
     >
       {children}
     </ChatContext.Provider>
   );
+};
+
+export { ChatContext, ChatProvider };
+export const useChat = () => {
+  const context = useContext(ChatContext);
+  if (context === undefined) {
+    throw new Error("useChat must be used within a ChatProvider");
+  }
+  return context;
 };

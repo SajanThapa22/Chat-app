@@ -18,7 +18,7 @@ interface Tokens {
   refresh: string;
 }
 
-const Login = () => {
+const LoginForm = () => {
   const { isAuthenticated, login, isLoading } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -108,4 +108,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

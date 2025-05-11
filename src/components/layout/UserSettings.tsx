@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import anonymous from "../assets/img/default_image.png";
 import ProfilePictureUpdate from "./ProfilePictureUpdate";
 import ThemeSelector from "./ThemeSelector";
-import { useAuth } from "../../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 interface Props {
   img: string;
@@ -11,7 +11,7 @@ interface Props {
 const UserSettings = ({ img }: Props) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [firstVisible, setFirstVisible] = useState<boolean>(true);
-  const { logout } = useAuth();
+  const { logout } = useContext(AuthContext);
 
   const handleClick = () => {
     setIsClicked(!isClicked);

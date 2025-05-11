@@ -10,7 +10,7 @@ export interface Message {
   seen_timestamp: null;
 }
 
-export interface User {
+export interface Users {
   id: string;
   username: string;
   email: string;
@@ -25,7 +25,7 @@ export interface User {
 
 export interface Results {
   chat_history: string;
-  user: User;
+  user: Users;
   messages: Message[];
 }
 

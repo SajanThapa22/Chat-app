@@ -9,18 +9,18 @@ import { lazy, Suspense } from "react";
 
 // Layouts
 import RootLayout from "../layouts/RootLayout";
-import ChatLayout from "../layouts/ChatLayout";
 
 // Components
 import LoadingScreen from "../components/common/LoadingScreen";
 import ErrorBoundary from "../components/common/ErrorBoundary";
+import DefaultMessage from "../pages/chat/DefaultMessage";
 
 // Lazy loaded pages for better performance
-const Login = lazy(() => import("../pages/Auth/Login"));
-const Register = lazy(() => import("../pages/Auth/Register"));
-const ChatHome = lazy(() => import("../pages/Chat/ChatHome"));
-const ChatDetail = lazy(() => import("../pages/Chat/ChatDetail"));
-const NotFound = lazy(() => import("../pages/NotFound"));
+const Login = lazy(() => import("../pages/auth/Login"));
+const Register = lazy(() => import("../pages/auth/Register"));
+const ChatLayout = lazy(() => import("../layouts/ChatLayout"));
+const ChatWindow = lazy(() => import("../components/chat/ChatWindow"));
+const NotFound = lazy(() => import("../pages/NotFount"));
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -41,65 +41,47 @@ export const createAppRouter = () => {
   return createBrowserRouter([
     {
       path: "/",
-      element: <Navigate to={isAuthenticated ? "/chat" : "/login"} replace />,
+      element: <Navigate to={isAuthenticated ? "/" : "/login"} replace />,
     },
     {
       path: "/",
-      element: <RootLayout />,
+      element: <ChatLayout />,
       errorElement: <ErrorBoundary />,
       children: [
         {
-          path: "login",
-          element: (
-            <PublicRoute>
-              <Suspense fallback={<LoadingScreen />}>
-                <Login />
-              </Suspense>
-            </PublicRoute>
-          ),
+          index: true,
+          element: <DefaultMessage />,
         },
+
         {
-          path: "register",
+          path: "chat/:id/",
           element: (
-            <PublicRoute>
-              <Suspense fallback={<LoadingScreen />}>
-                <Register />
-              </Suspense>
-            </PublicRoute>
+            <ProtectedRoute>
+              <ChatWindow />
+            </ProtectedRoute>
           ),
         },
       ],
     },
     {
-      path: "/chat",
+      path: "login",
       element: (
-        <ProtectedRoute>
-          <ChatLayout />
-        </ProtectedRoute>
+        <PublicRoute>
+          <Suspense fallback={<LoadingScreen />}>
+            <Login />
+          </Suspense>
+        </PublicRoute>
       ),
-      errorElement: <ErrorBoundary />,
-      children: [
-        {
-          path: "",
-          element: (
-            <Suspense fallback={<LoadingScreen />}>
-              <ChatHome />
-            </Suspense>
-          ),
-        },
-        {
-          path: ":chatId",
-          element: (
-            <Suspense fallback={<LoadingScreen />}>
-              <ChatDetail />
-            </Suspense>
-          ),
-          loader: async ({ params }) => {
-            // You could load the chat data here
-            return { chatId: params.chatId };
-          },
-        },
-      ],
+    },
+    {
+      path: "register",
+      element: (
+        <PublicRoute>
+          <Suspense fallback={<LoadingScreen />}>
+            <Register />
+          </Suspense>
+        </PublicRoute>
+      ),
     },
     {
       path: "*",
@@ -112,7 +94,6 @@ export const createAppRouter = () => {
   ]);
 };
 
-// Router component that handles auth loading state
 export const Router = () => {
   const { isLoading, initialCheckDone } = useAuth();
   const router = createAppRouter();

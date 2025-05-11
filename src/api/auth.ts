@@ -1,5 +1,5 @@
 import api from "./axios";
-import { User } from "../types/chat";
+import { Users } from "../types/chat";
 
 export const AuthAPI = {
   login: async (email: string, password: string) => {
@@ -14,7 +14,7 @@ export const AuthAPI = {
     return api.post("/auth/logout/");
   },
 
-  getCurrentUser: async (): Promise<User> => {
+  getCurrentUser: async (): Promise<Users> => {
     const response = await api.get("/auth/user/");
     return response.data;
   },
