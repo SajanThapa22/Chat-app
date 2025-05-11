@@ -1,19 +1,21 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
+import { IoCheckmark } from "react-icons/io5";
+import { BiCheckDouble } from "react-icons/bi";
 import Navigator from "../components/Navigator";
 import anonymous from "../assets/img/default_image.png";
 import { useChat } from "../context/ChatContext";
 import getUser from "../hooks/getUser";
 import getChatHistory from "../hooks/getChatHistory";
 import useGetCurrentUser from "../hooks/useGetCurrentUser";
-import { useChatHistory } from "../context/ChatHistoryContext";
+import useChatHistoryList from "../hooks/useChatHistoryList";
 
 const ChatPage = () => {
   const { currentUser, error } = useGetCurrentUser();
   const { id } = useParams<{ id: string }>();
   const { user } = getUser(id);
-  const { result } = useChatHistory();
+  const { result } = useChatHistoryList();
   const [filteredStatus, setFilteredStatus] = useState<string>();
   const {
     setInitialMessages,
@@ -26,6 +28,25 @@ const ChatPage = () => {
     setHistory,
     handleSendMessage,
   } = useChat();
+
+  const generateChatHistoryName = (
+    senderUserId: string | undefined,
+    receiverUserId: string | undefined
+  ) => {
+    if (!senderUserId || !receiverUserId) {
+      // Handle the case where one or both IDs are undefined
+      console.error("Both sender and receiver IDs must be defined");
+      return ""; // or handle it in a way that suits your application
+    }
+
+    const minId = senderUserId < receiverUserId ? senderUserId : receiverUserId;
+    const maxId = senderUserId > receiverUserId ? senderUserId : receiverUserId;
+    return `${minId}_${maxId}`;
+  };
+
+  const filteredMessages = initialMessages.filter(
+    (msg) => msg.chat_history === history
+  );
 
   const getTexts = async (url: string) => {
     const chats = await getChatHistory(url);
@@ -52,27 +73,12 @@ const ChatPage = () => {
     }
   };
 
-  const generateChatHistoryName = (
-    senderUserId: string | undefined,
-    receiverUserId: string | undefined
-  ) => {
-    if (!senderUserId || !receiverUserId) {
-      // Handle the case where one or both IDs are undefined
-      console.error("Both sender and receiver IDs must be defined");
-      return ""; // or handle it in a way that suits your application
-    }
-
-    const minId = senderUserId < receiverUserId ? senderUserId : receiverUserId;
-    const maxId = senderUserId > receiverUserId ? senderUserId : receiverUserId;
-    return `${minId}_${maxId}`;
-  };
-
   useEffect(() => {
     async function getInitialMessages() {
       if (currentUser && id) {
         const historyName = generateChatHistoryName(currentUser.id, id);
         setHistory(historyName);
-        const initialurl = `https://chat-app-xcsf.onrender.com/chat/history/${historyName}`;
+        const initialurl = `http://127.0.0.1:8000/chat/history/${historyName}`;
         await getTexts(initialurl);
       }
     }
@@ -99,6 +105,22 @@ const ChatPage = () => {
   };
   if (error) {
     return <div>Error: {error}</div>;
+  }
+
+  function showTime(timestamp: string): string {
+    const now = new Date();
+    const pastDate = new Date(timestamp);
+
+    const diff = now.getTime() - pastDate.getTime();
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    return pastDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 
   return (
@@ -139,34 +161,46 @@ const ChatPage = () => {
           id="chatsdivs"
           className="w-full min-h-full justify-end flex flex-col gap-3 bottom-0 px-4 lg:px-8 py-5"
         >
-          {initialMessages.map(
-            (msg, index) =>
-              msg.chat_history === history &&
-              currentUser?.id && (
+          {filteredMessages.map((msg, index) => (
+            <>
+              <div
+                key={index}
+                style={{
+                  wordBreak: "break-all",
+                }}
+                className={`max-w-[60%] text-white ${
+                  msg.user === currentUser?.id ? "ml-auto" : "mr-auto"
+                }`}
+              >
                 <div
-                  key={index}
-                  style={{
-                    wordBreak: "break-all",
-                  }}
-                  className={`max-w-[60%] text-white ${
-                    msg.user === currentUser?.id ? "ml-auto" : "mr-auto"
-                  }`}
+                  className={`rounded-[20px] ${
+                    msg.user === currentUser?.id ? "bg-primary" : "bg-gray-400"
+                  } px-4 py-2 text-wrap w-fit relative gap-2`}
                 >
-                  <div
-                    className={`rounded-[20px] ${
-                      msg.user === currentUser?.id
-                        ? "bg-primary"
-                        : "bg-gray-400"
-                    } px-4 py-2 text-wrap `}
-                  >
-                    {msg.message}
+                  {msg.message}
+
+                  <div className="flex gap-2 h-full text-white justify-end">
+                    <span className="text-[10px] lowercase">
+                      {showTime(
+                        msg.delivered_timestamp
+                          ? msg.delivered_timestamp
+                          : msg.sent_timestamp
+                      )}
+                    </span>
+                    {msg.user === currentUser?.id && (
+                      <span className="text-md ">
+                        {msg.delivered_timestamp ? (
+                          <BiCheckDouble />
+                        ) : (
+                          <IoCheckmark />
+                        )}
+                      </span>
+                    )}
                   </div>
-                  {/* {msg.user === currentUser?.id && msg.delivered_timestamp && (
-                    <p>delivered</p>
-                  )} */}
                 </div>
-              )
-          )}
+              </div>
+            </>
+          ))}
         </div>
       </div>
 

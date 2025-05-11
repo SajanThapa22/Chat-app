@@ -1,7 +1,7 @@
 import User from "../components/User";
 import Spinner from "../components/Spinner";
 import useGetCurrentUser from "../hooks/useGetCurrentUser";
-import { useChatHistory } from "../context/ChatHistoryContext";
+import useChatHistoryList from "../hooks/useChatHistoryList";
 
 interface User {
   id: string;
@@ -17,7 +17,7 @@ interface User {
 }
 
 const ChatHistoryList = () => {
-  const { result, error, isLoading } = useChatHistory();
+  const { result, error, isLoading } = useChatHistoryList();
   const { currentUser } = useGetCurrentUser();
 
   function timeAgo(timestamp: string): string {

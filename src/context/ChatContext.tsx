@@ -12,7 +12,7 @@ import {
   disconnectSocket,
 } from "../hooks/useWebSocket";
 import { useParams } from "react-router-dom";
-import { useChatHistory } from "./ChatHistoryContext";
+import useChatHistoryList from "../hooks/useChatHistoryList";
 
 interface ChatProviderProps {
   children: ReactNode;
@@ -27,8 +27,8 @@ interface Message {
   media: null;
   reply_of: null;
   sent_timestamp: string;
-  delivered_timestamp: null;
-  seen_timestamp: null;
+  delivered_timestamp: null | string;
+  seen_timestamp: null | string;
 }
 
 interface ChatContextType {
@@ -49,12 +49,15 @@ interface ChatContextType {
   history: string;
   setHistory: React.Dispatch<React.SetStateAction<string>>;
   handleSendMessage: () => void;
+  receiverId: string;
+  setReceiverId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 const ChatProvider = ({ children }: ChatProviderProps) => {
   const { id } = useParams<{ id: string }>(); // Use URL parameters to get the id
+  const [receiverId, setReceiverId] = useState<string>("");
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState<string>("");
   const [history, setHistory] = useState<string>("");
@@ -62,14 +65,14 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
     nextUrl: "",
     prevUrl: "",
   });
-  const { setResult } = useChatHistory();
+  const { setResult } = useChatHistoryList();
 
   function handleSendMessage() {
     if (inputMessage && inputMessage.trim()) {
       const messageData = {
         type: "message",
         message: inputMessage,
-        receiver_id: id, // Use id here
+        receiver_id: id,
         group_id: null,
       };
 
@@ -145,19 +148,21 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
         ]);
       }
 
-      // if (data.type === "chat_message_info") {
-      //   setInitialMessages((prevResults) =>
-      //     prevResults.map((msg) => {
-      //       if (msg.chat_history === data.data.chat_history) {
-      //         return {
-      //           ...msg,
-      //           delivered_timestamp:
-      //         };
-      //       }
-      //       return msg;
-      //     })
-      //   );
-      // }
+      if (data.type === "chat_message_info") {
+        setInitialMessages((prevResults) =>
+          prevResults.map((msg) => {
+            if (msg.chat_history === data.data.chat_history) {
+              return {
+                ...msg,
+                delivered_timestamp: new Date()
+                  .toISOString()
+                  .replace("Z", "000Z"),
+              };
+            }
+            return msg;
+          })
+        );
+      }
 
       if (data.type === "user_status_update") {
         setResult((prevResults) =>
@@ -197,6 +202,8 @@ const ChatProvider = ({ children }: ChatProviderProps) => {
         history,
         setHistory,
         handleSendMessage,
+        receiverId,
+        setReceiverId,
       }}
     >
       {children}

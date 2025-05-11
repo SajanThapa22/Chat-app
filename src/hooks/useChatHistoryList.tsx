@@ -10,8 +10,8 @@ interface Message {
   media: null;
   reply_of: null;
   sent_timestamp: string;
-  delivered_timestamp: null;
-  seen_timestamp: null;
+  delivered_timestamp: string | null;
+  seen_timestamp: string | null;
 }
 interface User {
   id: string;

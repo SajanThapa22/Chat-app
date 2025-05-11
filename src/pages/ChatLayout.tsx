@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ChatUI from "./chatUI";
 import { Outlet, useParams } from "react-router-dom";
-import { ChatProvider } from "../context/ChatContext";
+import { ChatProvider, useChat } from "../context/ChatContext";
 
 export interface Message {
   user: string;
@@ -25,8 +25,8 @@ const ChatLayout = () => {
   }, []);
 
   return (
-    <ChatProvider id={id}>
-      <>
+    <>
+      <ChatProvider id={id}>
         {width > 750 ? (
           <div className="grid grid-cols-[1fr,3fr] bg-bgComp">
             <ChatUI />
@@ -37,8 +37,8 @@ const ChatLayout = () => {
             <Outlet />
           </div>
         )}
-      </>
-    </ChatProvider>
+      </ChatProvider>
+    </>
   );
 };
 
