@@ -90,7 +90,7 @@ const ChatPage = () => {
       if (currentUser && id) {
         const historyName = generateChatHistoryName(currentUser.id, id);
         setHistory(historyName);
-        const initialurl = `http://127.0.0.1:8000/chat/history/${historyName}`;
+        const initialurl = `https://chat-app-xcsf.onrender.com/chat/history/${historyName}`;
         await getTexts(initialurl);
       }
     }
