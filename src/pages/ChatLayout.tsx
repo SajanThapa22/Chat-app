@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ChatUI from "./chatUI";
 import { Outlet, useParams } from "react-router-dom";
-import { ChatProvider, useChat } from "../context/ChatContext";
+import { ChatProvider } from "../context/ChatContext";
 
 export interface Message {
   user: string;
@@ -12,11 +12,11 @@ export interface Message {
 const ChatLayout = () => {
   const [width, setWidth] = useState<number>(window.innerWidth);
   const { id } = useParams<{ id: string | undefined }>();
-  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState<boolean>(false);
+  // const [isSideBarCollapsed, setIsSideBarCollapsed] = useState<boolean>(false);
 
-  const handleSidebarToggle = (collapsed: boolean) => {
-    setIsSideBarCollapsed(collapsed);
-  };
+  // const handleSidebarToggle = (collapsed: boolean) => {
+  //   setIsSideBarCollapsed(collapsed);
+  // };
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,7 +35,9 @@ const ChatLayout = () => {
         {width > 750 ? (
           <div className="flex bg-bgComp">
             <ChatUI />
-            <Outlet />
+            <div className="flex-1">
+              <Outlet />
+            </div>
           </div>
         ) : (
           <div className="bg-bgComp w-full h-screen">

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import useCheckLogged from "./useCheckLogged";
 
-interface Message {
+export interface Message {
   id: number;
   user: string;
   chat_history: string;
@@ -13,7 +13,7 @@ interface Message {
   delivered_timestamp: string | null;
   seen_timestamp: string | null;
 }
-interface User {
+export interface User {
   id: string;
   username: string;
   email: string;
@@ -25,12 +25,12 @@ interface User {
     last_seen: string;
   };
 }
-interface Results {
+export interface Results {
   chat_history: string;
   user: User;
   messages: Message[];
 }
-interface Data {
+export interface Data {
   count: number;
   next: null;
   previous: null;

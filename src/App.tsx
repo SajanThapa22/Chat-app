@@ -1,17 +1,18 @@
-import { RouterProvider, useParams } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useAppRouter } from "./routes/route";
-import { ChatProvider } from "./context/ChatContext";
+import { ChatHistoryProvider } from "./context/ChatHistoryContext";
 
 const App = () => {
   const router = useAppRouter();
-  const { id } = useParams<{ id: string | undefined }>();
 
   return (
     <AuthProvider>
       <ThemeProvider>
-        <RouterProvider router={router} />
+        <ChatHistoryProvider>
+          <RouterProvider router={router} />
+        </ChatHistoryProvider>
       </ThemeProvider>
     </AuthProvider>
   );

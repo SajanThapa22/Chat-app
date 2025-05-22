@@ -4,7 +4,7 @@ import BoxUsersSearch from "../components/BoxUsersSearch";
 import UserSettings from "../components/UserSettings";
 import ChatHistoryList from "./ChatHistoryList";
 // import useGetCurrentUser from "../hooks/useGetCurrentUser";
-import { FaChevronLeft } from "react-icons/fa6";
+// import { FaChevronLeft } from "react-icons/fa6";
 import defaultProfilePicture from "../assets/img/default_image.png";
 import { useTheme } from "../context/ThemeContext";
 
@@ -17,11 +17,11 @@ const ChatUI = () => {
   return (
     <div
       id="all-chats"
-      className={`relative ${
+      className={` ${
         isSideBarCollapsed
           ? "opacity-0 scale-x-0 w-0 px-0"
-          : "opacity-100 scale-x-100 w-1/4"
-      } transition-transform origin-left duration-75 delay-100 bg-bgComp overflow-hidden px-4 border-r border-r-gray-400 h-screen max-h-screen flex flex-col`}
+          : "opacity-100 scale-x-100 w-1/4 px-4"
+      } transition-transform origin-left duration-75 delay-100 bg-bgComp overflow-hidden border-r border-r-gray-400 h-screen max-h-screen flex flex-col`}
     >
       <div>
         <div className="flex justify-between py-3 text-txtClr items-center">
